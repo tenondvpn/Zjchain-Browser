@@ -3,7 +3,7 @@ from django.urls import path, re_path, include
 from zjchain import views
 
 urlpatterns = (
-    re_path(r'^$',views.tenon_index),
+    re_path(r'^$',views.zjchain_index),
     re_path(r'^transactions/$',views.transactions),
     re_path(r'^vpn_transactions/$',views.vpn_transactions),
     re_path(r'^nodes/$',views.nodes),

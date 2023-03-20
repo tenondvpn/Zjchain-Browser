@@ -497,15 +497,15 @@ function refresh_statistic() {
         dataType: "json"
     }).done(function (response) {
         if (response.status == 0) {
-            var zjchain = Math.floor(response.value.all_tenon / 10000000) + '.' + response.value.all_tenon % 10000000;
-            $("#total_tenon").html(zjchain);
+            var zjchain = Math.floor(response.value.all_zjchain / 10000000) + '.' + response.value.all_zjchain % 10000000;
+            $("#total_zjchain").html(zjchain);
             $("#total_address").html(response.value.all_address);
             $("#total_nodes").html(response.value.all_nodes);
             $("#total_transaction_count").html(response.value.all_transactions);
             $("#total_contracts").html(response.value.all_contracts);
             $("#total_average_qps").html(response.value.qps);
 
-            $("#total_tenon_grad").html('<i class="fas fa-caret-up"></i> ' + (response.value.all_tenon - response.cmp.all_tenon));
+            $("#total_zjchain_grad").html('<i class="fas fa-caret-up"></i> ' + (response.value.all_zjchain - response.cmp.all_zjchain));
             $("#total_address_grad").html('<i class="fas fa-caret-up"></i> ' + (response.value.all_address - response.cmp.all_address));
             $("#total_nodes_grad").html('<i class="fas fa-caret-up"></i> ' + (response.value.all_nodes - response.cmp.all_nodes));
             $("#total_transaction_count_grad").html('<i class="fas fa-caret-up"></i> ' + (response.value.all_transactions - response.cmp.all_transactions));
