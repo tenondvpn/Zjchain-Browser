@@ -67,7 +67,6 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-             os.path.join(BASE_DIR, 'horae/templates'),
              os.path.join(BASE_DIR, 'zjchain/templates'),
         ],
         'APP_DIRS': True,
@@ -89,33 +88,15 @@ WSGI_APPLICATION = 'noah.wsgi.application'
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'HOST': '127.0.0.1',
-        'PORT': 3306,
-        'NAME': 'noah',
-        'OPTIONS': {
-            'init_command': 'SET default_storage_engine=INNODB;',
-        },
-        'USER': 'root',
-        'PASSWORD': 'Xf4aGbTaf1',
-        'CHARSET': "utf8",
-        'TEST_CHARSET': "utf8",
-        'COLLATION': "utf8_general_ci",
-        'TEST_COLLATION': "utf8_general_ci",
-        'CONN_MAX_AGE': 0
-    }
 }
 
 MY_APPS = (
-    'horae',
     'zjchain',
 )
 
 INSTALLED_APPS += MY_APPS
 
 TEMPLATE_DIRS = [
-                os.path.join(BASE_DIR, 'horae/templates'),
                 os.path.join(BASE_DIR, 'zjchain/templates'),
               ]
 

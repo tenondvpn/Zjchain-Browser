@@ -4,15 +4,12 @@ import random
 
 sys.setrecursionlimit(10000)
 from django.shortcuts import render
-from horae.http_helper import *
 from django.contrib import auth
 from django.contrib.auth.models import User
 import django
 from django.contrib.auth import logout as auth_logout
-import pymysql
 from django.contrib.auth.decorators import login_required
 
-from horae import tools_util
 
 def check_user_valid(username, password):
     return False
@@ -23,6 +20,10 @@ def get_test_user_info(username):
         return (1234, random.randint(0, 100000), "test_user_" + str(random.randint(0, 100000)), "email", "phone", "avatar")
     except Exception as ex:
         return None
+
+def get_now_format_time(format):
+    now_time = datetime.datetime.utcnow() + datetime.timedelta(hours=8)
+    return now_time.strftime(format)
 
 @django.db.transaction.atomic
 def login(request):
@@ -47,9 +48,9 @@ def login(request):
 
             User.objects.create_user(
                     username, email, password, first_name=first_name, last_name=avatar,
-                    last_login=tools_util.StaticFunction.get_now_format_time("%Y-%m-%d %H:%M:%S"),
+                    last_login=get_now_format_time("%Y-%m-%d %H:%M:%S"),
                     is_superuser=0, is_staff=1, is_active=1,
-                    date_joined=tools_util.StaticFunction.get_now_format_time("%Y-%m-%d %H:%M:%S"))
+                    date_joined=get_now_format_time("%Y-%m-%d %H:%M:%S"))
         user = auth.authenticate(username=username, password=password)
         if user is not None and user.is_active:
             auth.login(request, user)
@@ -72,9 +73,9 @@ def login(request):
 
                 User.objects.create_user(
                         username, email, password, first_name=first_name, last_name=avatar,
-                        last_login=tools_util.StaticFunction.get_now_format_time("%Y-%m-%d %H:%M:%S"),
+                        last_login=get_now_format_time("%Y-%m-%d %H:%M:%S"),
                         is_superuser=0, is_staff=1, is_active=1,
-                        date_joined=tools_util.StaticFunction.get_now_format_time("%Y-%m-%d %H:%M:%S"))
+                        date_joined=get_now_format_time("%Y-%m-%d %H:%M:%S"))
                 user = auth.authenticate(username=username, password=password)
                 auth.login(request, user)
                 return JsonHttpResponse({'status': 0, 'msg': "OK", 'next': next})
@@ -108,9 +109,9 @@ def register(request):
 
         User.objects.create_user(
                 username, email, password, first_name=first_name, last_name=telno,
-                last_login=tools_util.StaticFunction.get_now_format_time("%Y-%m-%d %H:%M:%S"),
+                last_login=get_now_format_time("%Y-%m-%d %H:%M:%S"),
                 is_superuser=0, is_staff=1, is_active=1,
-                date_joined=tools_util.StaticFunction.get_now_format_time("%Y-%m-%d %H:%M:%S"))
+                date_joined=get_now_format_time("%Y-%m-%d %H:%M:%S"))
         user = auth.authenticate(username=username, password=password)
         if user is not None and user.is_active:
             auth.login(request, user)
@@ -131,9 +132,9 @@ def register(request):
 
                 User.objects.create_user(
                         username, email, password, first_name=first_name, last_name=telno,
-                        last_login=tools_util.StaticFunction.get_now_format_time("%Y-%m-%d %H:%M:%S"),
+                        last_login=get_now_format_time("%Y-%m-%d %H:%M:%S"),
                         is_superuser=0, is_staff=1, is_active=1,
-                        date_joined=tools_util.StaticFunction.get_now_format_time("%Y-%m-%d %H:%M:%S"))
+                        date_joined=get_now_format_time("%Y-%m-%d %H:%M:%S"))
                 user = auth.authenticate(username=username, password=password)
                 auth.login(request, user)
                 return JsonHttpResponse({'status': 0, 'msg': "OK", 'next': next})
