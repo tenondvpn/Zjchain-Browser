@@ -1,0 +1,259 @@
+{
+    "id": 9,
+    "name": "wordcount",
+    "update_timestamp": 1636014825801892,
+    "tasks": [
+        {
+            "id": 63,
+            "name": "初始化字典",
+            "node_name": "ip_name_0",
+            "plugin_id": 22,
+            "params": {
+                "__script_name": "wordcount_init.lua"
+            },
+            "plugin_version": "0.0.1",
+            "type": 2,
+            "last_update_time_us": 0
+        },
+        {
+            "id": 64,
+            "name": "计算wordcount",
+            "node_name": "ip_name_0",
+            "plugin_id": 23,
+            "params": {
+                "__script_name": "wordcount_paral1.lua"
+            },
+            "plugin_version": "0.0.1",
+            "type": 2,
+            "last_update_time_us": 0
+        },
+        {
+            "id": 65,
+            "name": "计算wordcount2",
+            "node_name": "ip_name_0",
+            "plugin_id": 24,
+            "params": {
+                "__script_name": "wordcount_paral2.lua"
+            },
+            "plugin_version": "0.0.1",
+            "type": 2,
+            "last_update_time_us": 0
+        },
+        {
+            "id": 66,
+            "name": "计算wordcount3",
+            "node_name": "ip_name_0",
+            "plugin_id": 25,
+            "params": {
+                "__script_name": "wordcount_paral3.lua"
+            },
+            "plugin_version": "0.0.1",
+            "type": 2,
+            "last_update_time_us": 0
+        },
+        {
+            "id": 67,
+            "name": "计算wordcount4",
+            "node_name": "ip_name_0",
+            "plugin_id": 26,
+            "params": {
+                "__script_name": "wordcount_paral4.lua"
+            },
+            "plugin_version": "0.0.1",
+            "type": 2,
+            "last_update_time_us": 0
+        },
+        {
+            "id": 68,
+            "name": "计算wordcount5",
+            "node_name": "ip_name_0",
+            "plugin_id": 27,
+            "params": {
+                "__script_name": "wordcount_paral5.lua"
+            },
+            "plugin_version": "0.0.1",
+            "type": 2,
+            "last_update_time_us": 0
+        },
+        {
+            "id": 69,
+            "name": "计算wordcount6",
+            "node_name": "ip_name_0",
+            "plugin_id": 28,
+            "params": {
+                "__script_name": "wordcount_paral6.lua"
+            },
+            "plugin_version": "0.0.1",
+            "type": 2,
+            "last_update_time_us": 0
+        },
+        {
+            "id": 122,
+            "name": "test1111",
+            "node_name": "1111",
+            "plugin_id": 2,
+            "params": {
+                "hq_server_ip": "",
+                "hq_server_port": "",
+                "__script_name": "wordcount_init.lua"
+            },
+            "plugin_version": "0.0.2",
+            "type": 2,
+            "last_update_time_us": 1635920032141674
+        },
+        {
+            "id": 123,
+            "name": "test",
+            "node_name": "ALL",
+            "plugin_id": 1,
+            "params": {
+                "a": "a"
+            },
+            "plugin_version": "1.0.0",
+            "type": 2,
+            "last_update_time_us": 1635920149240122
+        }
+    ],
+    "edges": [
+        {
+            "id": 33,
+            "type": 0,
+            "rcm_context": "",
+            "rcm_topic": "",
+            "rcm_partition": 0,
+            "file": "",
+            "dispatch_tag": -1,
+            "last_update_time_us": 0,
+            "prev_task_id": 63,
+            "next_task_id": 64
+        },
+        {
+            "id": 34,
+            "type": 0,
+            "rcm_context": "",
+            "rcm_topic": "",
+            "rcm_partition": 0,
+            "file": "",
+            "dispatch_tag": -1,
+            "last_update_time_us": 0,
+            "prev_task_id": 64,
+            "next_task_id": 65
+        },
+        {
+            "id": 36,
+            "type": 0,
+            "rcm_context": "",
+            "rcm_topic": "",
+            "rcm_partition": 0,
+            "file": "",
+            "dispatch_tag": -1,
+            "last_update_time_us": 0,
+            "prev_task_id": 66,
+            "next_task_id": 67
+        },
+        {
+            "id": 37,
+            "type": 0,
+            "rcm_context": "",
+            "rcm_topic": "",
+            "rcm_partition": 0,
+            "file": "",
+            "dispatch_tag": -1,
+            "last_update_time_us": 0,
+            "prev_task_id": 67,
+            "next_task_id": 68
+        },
+        {
+            "id": 40,
+            "type": 2,
+            "rcm_context": "dags_client3",
+            "rcm_topic": "dags_req3",
+            "rcm_partition": 1,
+            "file": "",
+            "dispatch_tag": -1,
+            "last_update_time_us": 0,
+            "prev_task_id": 69
+        },
+        {
+            "id": 41,
+            "type": 3,
+            "rcm_context": "",
+            "rcm_topic": "",
+            "rcm_partition": 0,
+            "file": "test_out",
+            "dispatch_tag": -1,
+            "last_update_time_us": 0,
+            "prev_task_id": 69
+        },
+        {
+            "id": 77,
+            "type": 1,
+            "rcm_context": "dags_inner_tx_2",
+            "rcm_topic": "dags_inner_topic_2",
+            "rcm_partition": 1,
+            "file": "",
+            "dispatch_tag": -1,
+            "last_update_time_us": 0,
+            "prev_task_id": 65
+        },
+        {
+            "id": 78,
+            "type": 1,
+            "rcm_context": "dags_inner_tx_2",
+            "rcm_topic": "dags_inner_topic_2",
+            "rcm_partition": 1,
+            "file": "",
+            "dispatch_tag": -1,
+            "last_update_time_us": 0,
+            "prev_task_id": 68
+        },
+        {
+            "id": 86,
+            "type": 0,
+            "rcm_context": "",
+            "rcm_topic": "",
+            "rcm_partition": 0,
+            "file": "",
+            "dispatch_tag": -1,
+            "last_update_time_us": 1635920040793608,
+            "prev_task_id": 122,
+            "next_task_id": 69
+        },
+        {
+            "id": 87,
+            "type": 0,
+            "rcm_context": "",
+            "rcm_topic": "",
+            "rcm_partition": 0,
+            "file": "",
+            "dispatch_tag": -1,
+            "last_update_time_us": 1635920156814350,
+            "prev_task_id": 123,
+            "next_task_id": 63
+        },
+        {
+            "id": 88,
+            "type": 0,
+            "rcm_context": "",
+            "rcm_topic": "",
+            "rcm_partition": 0,
+            "file": "",
+            "dispatch_tag": -1,
+            "last_update_time_us": 1635920159400258,
+            "prev_task_id": 123,
+            "next_task_id": 66
+        },
+        {
+            "id": 89,
+            "type": 0,
+            "rcm_context": "",
+            "rcm_topic": "",
+            "rcm_partition": 0,
+            "file": "",
+            "dispatch_tag": -1,
+            "last_update_time_us": 1635920236185860,
+            "prev_task_id": 122,
+            "next_task_id": 123
+        }
+    ]
+}

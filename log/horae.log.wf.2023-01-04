@@ -1,0 +1,20 @@
+2022-04-18 01:24:08: WARNING: connection.py:611 * 140185476679424 Connection dropped: socket connection broken
+2022-04-18 01:24:08: WARNING: connection.py:615 * 140185476679424 Transition to CONNECTING
+2022-04-18 01:24:08: ERROR: zk_manager.py:88 * 140185476679424 connecting to zookeeper failed! will restart
+2022-04-18 01:24:08: WARNING: connection.py:624 * 140185476679424 Session has expired
+2022-04-18 01:24:08: ERROR: zk_manager.py:88 * 140185476679424 connecting to zookeeper failed! will restart
+2022-04-18 01:25:51: WARNING: connection.py:611 * 140185476679424 Connection dropped: socket connection broken
+2022-04-18 01:25:51: WARNING: connection.py:615 * 140185476679424 Transition to CONNECTING
+2022-04-18 01:25:51: ERROR: zk_manager.py:88 * 140185476679424 connecting to zookeeper failed! will restart
+2022-04-18 01:25:52: WARNING: connection.py:624 * 140185476679424 Session has expired
+2022-04-18 01:25:52: ERROR: zk_manager.py:88 * 140185476679424 connecting to zookeeper failed! will restart
+2022-04-18 01:28:03: WARNING: connection.py:611 * 140185476679424 Connection dropped: socket connection broken
+2022-04-18 01:28:03: WARNING: connection.py:615 * 140185476679424 Transition to CONNECTING
+2022-04-18 01:29:34: ERROR: zk_manager.py:88 * 140185476679424 connecting to zookeeper failed! will restart
+2022-04-18 01:29:34: WARNING: connection.py:624 * 140185476679424 Session has expired
+2022-04-18 01:29:34: ERROR: zk_manager.py:88 * 140185476679424 connecting to zookeeper failed! will restart
+2022-04-18 01:34:59: WARNING: connection.py:611 * 140185476679424 Connection dropped: socket connection broken
+2022-04-18 01:34:59: WARNING: connection.py:615 * 140185476679424 Transition to CONNECTING
+2022-04-18 01:34:59: ERROR: zk_manager.py:88 * 140185476679424 connecting to zookeeper failed! will restart
+2022-04-18 01:34:59: WARNING: connection.py:624 * 140185476679424 Session has expired
+2022-04-18 01:34:59: ERROR: zk_manager.py:88 * 140185476679424 connecting to zookeeper failed! will restart

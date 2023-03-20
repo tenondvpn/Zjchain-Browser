@@ -1,0 +1,184 @@
+{
+    "id": 11,
+    "name": "AH排序",
+    "update_timestamp": 1638841772430918,
+    "tasks": [
+        {
+            "id": 100,
+            "name": "快照数据获取",
+            "node_name": "行情节点_0",
+            "plugin_id": 21,
+            "params": {
+                "user": "",
+                "pass": "",
+                "app_key": "8d409322-8fe5-48c7-b878-4014bcdb3f0a",
+                "app_secret": "ffab77e7-fd79-4aee-88e9-8f2dbfc5c62d",
+                "ip_1": "10.20.64.91",
+                "port_1": "9999",
+                "ip_2": "10.20.64.91",
+                "port_2": "9999",
+                "max_numbers": "999",
+                "__cpp_lib_name": "hqsubs",
+                "__cpp_create_plugin_func": "CreateHqSdkPlugin",
+                "__data_type": "1",
+                "__is_data_stream": "1",
+                "pass_codes": "",
+                "use_related_file": "true",
+                "fields": "20032",
+                "__script_name": "hqsdk.lua",
+                "markets": "NEEQ.LXJJ"
+            },
+            "plugin_version": "0.0.1",
+            "type": 2,
+            "last_update_time_us": 1638787317401286
+        },
+        {
+            "id": 140,
+            "name": "Lua_ah_sort",
+            "node_name": "行情节点_0",
+            "plugin_id": 54,
+            "params": {
+                "__script_name": "run.lua"
+            },
+            "plugin_version": "0.0.1",
+            "type": 2,
+            "last_update_time_us": 1637716409520275
+        },
+        {
+            "id": 141,
+            "name": "Lua_sort_server",
+            "node_name": "行情节点_0",
+            "plugin_id": 55,
+            "params": {
+                "__script_name": "lua_sort_server.lua"
+            },
+            "plugin_version": "0.0.1",
+            "type": 2,
+            "last_update_time_us": 1637650689215269
+        },
+        {
+            "id": 145,
+            "name": "双活-快照数据获取",
+            "node_name": "行情节点_1",
+            "plugin_id": 21,
+            "params": {
+                "user": "",
+                "pass": "",
+                "app_key": "8d409322-8fe5-48c7-b878-4014bcdb3f0a",
+                "app_secret": "ffab77e7-fd79-4aee-88e9-8f2dbfc5c62d",
+                "ip_1": "10.20.64.91",
+                "port_1": "9999",
+                "ip_2": "10.20.64.91",
+                "port_2": "9999",
+                "max_numbers": "999",
+                "__cpp_lib_name": "hqsubs",
+                "__cpp_create_plugin_func": "CreateHqSdkPlugin",
+                "__data_type": "1",
+                "__is_data_stream": "1",
+                "pass_codes": "",
+                "use_related_file": "true",
+                "fields": "20032",
+                "__script_name": "hqsdk.lua"
+            },
+            "plugin_version": "0.0.1",
+            "type": 2,
+            "last_update_time_us": 1638787317401286
+        },
+        {
+            "id": 146,
+            "name": "双活-Lua_ah_sort",
+            "node_name": "行情节点_1",
+            "plugin_id": 54,
+            "params": {
+                "__script_name": "run.lua"
+            },
+            "plugin_version": "0.0.1",
+            "type": 2,
+            "last_update_time_us": 1637716409520275
+        },
+        {
+            "id": 147,
+            "name": "双活-Lua_sort_server",
+            "node_name": "行情节点_1",
+            "plugin_id": 55,
+            "params": {
+                "__script_name": "lua_sort_server.lua"
+            },
+            "plugin_version": "0.0.1",
+            "type": 2,
+            "last_update_time_us": 1637650689215269
+        },
+        {
+            "id": 167,
+            "name": "test",
+            "node_name": "行情节点_0",
+            "plugin_id": 64,
+            "params": {},
+            "plugin_version": "0.0.1",
+            "type": 2,
+            "last_update_time_us": 1638841498520610
+        }
+    ],
+    "edges": [
+        {
+            "id": 102,
+            "type": 0,
+            "rcm_context": "",
+            "rcm_topic": "",
+            "rcm_partition": 0,
+            "file": "",
+            "dispatch_tag": -1,
+            "last_update_time_us": 1636694376386427,
+            "prev_task_id": 100,
+            "next_task_id": 140
+        },
+        {
+            "id": 103,
+            "type": 0,
+            "rcm_context": "",
+            "rcm_topic": "",
+            "rcm_partition": 0,
+            "file": "",
+            "dispatch_tag": -1,
+            "last_update_time_us": 1636694417312810,
+            "prev_task_id": 140,
+            "next_task_id": 141
+        },
+        {
+            "id": 105,
+            "type": 0,
+            "rcm_context": "",
+            "rcm_topic": "",
+            "rcm_partition": 0,
+            "file": "",
+            "dispatch_tag": -1,
+            "last_update_time_us": 1636698673478571,
+            "prev_task_id": 146,
+            "next_task_id": 147
+        },
+        {
+            "id": 116,
+            "type": 0,
+            "rcm_context": "",
+            "rcm_topic": "",
+            "rcm_partition": 0,
+            "file": "",
+            "dispatch_tag": -1,
+            "last_update_time_us": 1637829034377701,
+            "prev_task_id": 145,
+            "next_task_id": 146
+        },
+        {
+            "id": 125,
+            "type": 0,
+            "rcm_context": "",
+            "rcm_topic": "",
+            "rcm_partition": 0,
+            "file": "",
+            "dispatch_tag": -1,
+            "last_update_time_us": 1638841765768252,
+            "prev_task_id": 100,
+            "next_task_id": 167
+        }
+    ]
+}

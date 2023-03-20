@@ -1,0 +1,83 @@
+{
+    "id": 16,
+    "name": "测试lua版本快照订阅",
+    "update_timestamp": 1637306456553850,
+    "tasks": [
+        {
+            "id": 149,
+            "name": "快照定阅-lua",
+            "node_name": "行情节点_1",
+            "plugin_id": 59,
+            "params": {
+                "user": "",
+                "pass": "",
+                "app_key": "8d409322-8fe5-48c7-b878-4014bcdb3f0a",
+                "app_secret": "ffab77e7-fd79-4aee-88e9-8f2dbfc5c62d",
+                "ip_1": "10.20.64.91",
+                "port_1": "9999",
+                "ip_2": "10.20.64.91",
+                "port_2": "9999",
+                "max_numbers": "9999",
+                "__data_type": "1",
+                "__is_data_stream": "1",
+                "pass_codes": "",
+                "use_related_file": "true",
+                "fields": "20032",
+                "__script_name": "hqsdk.lua"
+            },
+            "plugin_version": "0.0.1",
+            "type": 2,
+            "last_update_time_us": 1637306424949376
+        },
+        {
+            "id": 150,
+            "name": "双活-Lua_ah_sort",
+            "node_name": "行情节点_1",
+            "plugin_id": 54,
+            "params": {
+                "__script_name": "run.lua"
+            },
+            "plugin_version": "0.0.1",
+            "type": 2,
+            "last_update_time_us": 1637305240863258
+        },
+        {
+            "id": 151,
+            "name": "双活-Lua_sort_server",
+            "node_name": "行情节点_1",
+            "plugin_id": 55,
+            "params": {
+                "__script_name": "lua_sort_server.lua"
+            },
+            "plugin_version": "0.0.1",
+            "type": 2,
+            "last_update_time_us": 1637305280554448
+        }
+    ],
+    "edges": [
+        {
+            "id": 107,
+            "type": 0,
+            "rcm_context": "",
+            "rcm_topic": "",
+            "rcm_partition": 0,
+            "file": "",
+            "dispatch_tag": -1,
+            "last_update_time_us": 1637302916983227,
+            "prev_task_id": 149,
+            "next_task_id": 150
+        },
+        {
+            "id": 108,
+            "type": 0,
+            "rcm_context": "",
+            "rcm_topic": "",
+            "rcm_partition": 0,
+            "file": "",
+            "dispatch_tag": -1,
+            "last_update_time_us": 1637302919502297,
+            "prev_task_id": 150,
+            "next_task_id": 151
+        }
+    ]
+}

@@ -1,0 +1,22 @@
+2023-02-17 02:46:49: INFO: connection.py:639 * 140334579431168 Connecting to 127.0.0.1(127.0.0.1):2181, use_ssl: False
+2023-02-17 02:46:49: WARNING: connection.py:611 * 140334579431168 Connection dropped: socket connection error: Connection refused
+2023-02-17 03:24:41: INFO: connection.py:639 * 140334579431168 Connecting to 127.0.0.1(127.0.0.1):2181, use_ssl: False
+2023-02-17 03:24:41: WARNING: connection.py:611 * 140334579431168 Connection dropped: socket connection error: Connection refused
+2023-02-17 04:35:56: INFO: connection.py:639 * 140334579431168 Connecting to 127.0.0.1(127.0.0.1):2181, use_ssl: False
+2023-02-17 04:35:56: WARNING: connection.py:611 * 140334579431168 Connection dropped: socket connection error: Connection refused
+2023-02-17 05:20:39: INFO: connection.py:639 * 140334579431168 Connecting to 127.0.0.1(127.0.0.1):2181, use_ssl: False
+2023-02-17 05:20:39: WARNING: connection.py:611 * 140334579431168 Connection dropped: socket connection error: Connection refused
+2023-02-17 06:26:26: INFO: connection.py:639 * 140334579431168 Connecting to 127.0.0.1(127.0.0.1):2181, use_ssl: False
+2023-02-17 06:26:26: WARNING: connection.py:611 * 140334579431168 Connection dropped: socket connection error: Connection refused
+2023-02-17 07:07:01: INFO: connection.py:639 * 140334579431168 Connecting to 127.0.0.1(127.0.0.1):2181, use_ssl: False
+2023-02-17 07:07:01: WARNING: connection.py:611 * 140334579431168 Connection dropped: socket connection error: Connection refused
+2023-02-18 02:16:16: WARNING: connection.py:611 * 139933918422784 Connection dropped: socket connection broken
+2023-02-18 02:16:16: WARNING: connection.py:615 * 139933918422784 Transition to CONNECTING
+2023-02-18 02:16:16: INFO: client.py:543 * 139933918422784 Zookeeper connection lost
+2023-02-18 02:16:16: ERROR: zk_manager.py:88 * 139933918422784 connecting to zookeeper failed! will restart
+2023-02-18 02:16:16: INFO: connection.py:639 * 139933918422784 Connecting to 127.0.0.1(127.0.0.1):2181, use_ssl: False
+2023-02-18 02:16:17: WARNING: connection.py:624 * 139933918422784 Session has expired
+2023-02-18 02:16:17: INFO: client.py:537 * 139933918422784 Zookeeper session closed, state: EXPIRED_SESSION
+2023-02-18 02:16:17: ERROR: zk_manager.py:88 * 139933918422784 connecting to zookeeper failed! will restart
+2023-02-18 02:16:17: INFO: connection.py:639 * 139933918422784 Connecting to 127.0.0.1(127.0.0.1):2181, use_ssl: False
+2023-02-18 02:16:17: INFO: client.py:532 * 139933918422784 Zookeeper connection established, state: CONNECTED

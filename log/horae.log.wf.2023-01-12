@@ -1,0 +1,10 @@
+2023-01-12 01:00:48: WARNING: connection.py:611 * 140334579431168 Connection dropped: socket connection broken
+2023-01-12 01:00:49: WARNING: connection.py:615 * 140334579431168 Transition to CONNECTING
+2023-01-12 01:00:49: ERROR: zk_manager.py:88 * 140334579431168 connecting to zookeeper failed! will restart
+2023-01-12 01:00:49: WARNING: connection.py:624 * 140334579431168 Session has expired
+2023-01-12 01:00:49: ERROR: zk_manager.py:88 * 140334579431168 connecting to zookeeper failed! will restart
+2023-01-12 01:02:58: WARNING: connection.py:611 * 140334579431168 Connection dropped: socket connection broken
+2023-01-12 01:02:59: WARNING: connection.py:615 * 140334579431168 Transition to CONNECTING
+2023-01-12 01:02:59: ERROR: zk_manager.py:88 * 140334579431168 connecting to zookeeper failed! will restart
+2023-01-12 01:02:59: WARNING: connection.py:624 * 140334579431168 Session has expired
+2023-01-12 01:02:59: ERROR: zk_manager.py:88 * 140334579431168 connecting to zookeeper failed! will restart

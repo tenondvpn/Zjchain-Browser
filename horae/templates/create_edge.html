@@ -1,0 +1,173 @@
+{% extends "base_iframe.html" %}
+{% block content %}
+{% load static %}
+{% load horae_filter %}
+<div id="page-wrapper" style="margin: 0 0 0 0;background-color:white!important">
+    <input type="hidden" id="prev_task_id" name="variable" value="{{ prev_task_id }}">
+    <input type="hidden" id="next_task_id" name="variable" value="{{ next_task_id }}">
+    <input type="hidden" id="prev_task_name" name="variable" value="{{ prev_task_name }}">
+    <input type="hidden" id="next_task_name" name="variable" value="{{ next_task_name }}">
+    <input type="hidden" id="file_name" name="variable" value="{{ file_name }}">
+    <input type="hidden" id="rcm_context" name="variable" value="{{ rcm_context }}">
+    <input type="hidden" id="rcm_topic" name="variable" value="{{ rcm_topic }}">
+    <input type="hidden" id="rcm_partition" name="variable" value="{{ rcm_partition }}">
+    <input type="hidden" id="def_rcm_context" name="variable" value="{{ def_rcm_context }}">
+    <input type="hidden" id="def_rcm_topic" name="variable" value="{{ def_rcm_topic }}">
+    <div>
+        <form action="" method="post" id="create_task_form" class="all_form" style="margin-left:40px" autocomplete="off">
+            <fieldset>
+                <div class="form-group">
+                    <label>
+                        <font color="red">*</font>
+                        上游任务:
+                    </label>
+                    <input type="text" class="form-control" style="width:335px" id="id_choosed_proc_type" disabled value="{{ prev_task_name }}">
+                </div>
+                <div class="form-group">
+                    <label>
+                        <font color="red">*</font>
+                        下游任务:
+                    </label>
+                    <input type="text" class="form-control" style="width:335px" id="id_choosed_proc_type" disabled value="{{ next_task_name }}">
+                </div>
+                <div class="form-group">
+                    <div id="dispatch_tag_list" style="display:none">
+                        <label>
+                            <font color="red">*</font>
+                            分发标记值:
+                        </label>
+                        <input type="text" id="dispatch_tag_id" class="form-control" placeholder="分发标记值" style="width:335px" value="-1">
+                    </div>
+                </div>
+                <div class="form-group" id="edge_type_inner" style="display:block">
+                    <label>
+                        数据流类型:
+                    </label>
+                    <input type="text" class="form-control" style="width:335px;" id="id_inner_flow_type" disabled value="内部默认流">
+                </div>
+
+                <div class="form-group" id="edge_type_select" style="display:block">
+                    <label>
+                        数据流类型:
+                    </label>&nbsp;&nbsp;
+                    <select id="create_edge_type_select" onChange="ChangeFlowType();" style="width:333px;margin-right:0px;margin-left:10px;" class="select2-select-00 full-width-fix">
+                        {% if prev_task_name == "Data" and next_task_name != "Data" %}}
+                        <option value="1" selected>默认组播</option>
+                        <option value="2">独立组播</option>
+                        <option value="3">文件流</option>
+                        {% elif prev_task_name != "Data" and next_task_name == "Data" %}
+                        <option value="1">默认组播</option>
+                        <option value="2" selected>独立组播</option>
+                        <option value="3">文件流</option>
+                        {% else %}
+                        <option value="1" selected>默认组播</option>
+                        <option value="2">独立组播</option>
+                        <option value="3">文件流</option>
+                        {% endif %}}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <div id="file_stream_file_name" style="display:none">
+                        <label>
+                            <font color="red">*</font>
+                            文件名:
+                        </label>
+                        <input type="text" id="file_name_id" class="form-control" placeholder="文件名" style="width:335px">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div id="rcm_default_stream_info" style="display:none">
+                        <div class="form-group">
+                            <label>
+                                <font color="red">*</font>
+                                消息头部附加8字节任务id:
+                            </label>
+                            <input type="text" id="rcm_def_task_id" class="form-control" placeholder="消息附加任务" style="width:335px" disabled value="{{ next_task_id }}">
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <font color="red">*</font>
+                                组播上下文:
+                            </label>
+                            <input type="text" id="rcm_def_context_name_id" class="form-control" placeholder="组播上下文" style="width:335px" disabled value="{{ def_rcm_context }}">
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <font color="red">*</font>
+                                组播主题名:
+                            </label>
+                            <input type="text" id="rcm_def_topic_id" class="form-control" placeholder="组播主题名" style="width:335px" disabled value="{{ def_rcm_topic }}">
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <font color="red">*</font>
+                                下载配置:
+                            </label>&nbsp;&nbsp;
+                            <a href="">默认组播配置下载</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div id="rcm_stream_info" style="display:none">
+                        <div class="form-group">
+                            <label>
+                                <font color="red">*</font>
+                                组播上下文:
+                            </label>
+                            <input type="text" id="rcm_context_name_id" class="form-control" placeholder="组播上下文" style="width:335px">
+                        </div>
+                        <div class="form-group">
+
+                            <label>
+                                <font color="red">*</font>
+                                组播主题名:
+                            </label>
+                            <input type="text" id="rcm_topic_id" class="form-control" placeholder="组播主题名" style="width:335px">
+                        </div>
+                        <div class="form-group">
+
+                            <label>
+                                <font color="red">*</font>
+                                组播分区号:
+                            </label>
+                            <input type="text" id="rcm_partition_id" class="form-control" placeholder="组播分区号" style="width:335px">
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            <div style="margin-left:80px">
+                <img id="update_busy_icon" src="{% static 'images/busy.gif' %}" style="display:none;">
+                <input type="button" value="保存" id="create_edge_btn"
+                       class="btn btn-primary pipe_btn" style="margin-left:36px" />
+                <a href="javascript:void(0)" onclick="CancelAddEdge();">取消配置</a>
+            </div>
+        </form>
+    </div>
+    <div style="clear:both"></div>
+</div>
+<div class="modal fade" id="messageModal" tabindex="1" role="dialog" aria-labelledby="messageLabel">
+    <div class="modal-dialog" role="document" style="width:500px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>消息</span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <p></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary pipe_btn" data-dismiss="modal" aria-hidden="true">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="{% static 'js/common/select2.min.js' %}"></script>
+<script type="text/javascript" src="{{ "/static/js/common/form_components.js"|file_time_stamp }}"></script>
+<link href="{% static 'css/select2.css' %}" rel="stylesheet" type="text/css" />
+
+<link href="{{ "/static/css/bootstrap-combobox.css"|file_time_stamp }}" rel="stylesheet" type="text/css" media="screen" />
+<script type="text/javascript" src="{{ "/static/js/common/bootstrap-combobox.js"|file_time_stamp }}"></script>
+<link href="{{ "/static/css/pipeline.css"|file_time_stamp }}" rel="stylesheet" type="text/css" media="screen" />
+<script type="text/javascript" src="{{ "/static/js/pipeline/create_edge.js"|file_time_stamp }}"></script>
+{% endblock %}

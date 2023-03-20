@@ -1,0 +1,41 @@
+{
+    "id": 13,
+    "name": "快速开始测试流程",
+    "update_timestamp": 1636023491630309,
+    "tasks": [
+        {
+            "id": 118,
+            "name": "快速开始",
+            "node_name": "行情节点_0",
+            "plugin_id": 42,
+            "params": {},
+            "plugin_version": "0.0.1",
+            "type": 2,
+            "last_update_time_us": 1636019440518143
+        }
+    ],
+    "edges": [
+        {
+            "id": 84,
+            "type": 1,
+            "rcm_context": "dags_inner_tx_2",
+            "rcm_topic": "dags_inner_topic_2",
+            "rcm_partition": 1,
+            "file": "",
+            "dispatch_tag": -1,
+            "last_update_time_us": 1635759444631240,
+            "next_task_id": 118
+        },
+        {
+            "id": 85,
+            "type": 2,
+            "rcm_context": "dags_client3",
+            "rcm_topic": "dags_req3",
+            "rcm_partition": 1,
+            "file": "",
+            "dispatch_tag": 0,
+            "last_update_time_us": 1636022866542558,
+            "prev_task_id": 118
+        }
+    ]
+}
