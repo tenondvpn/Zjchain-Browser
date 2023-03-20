@@ -20,7 +20,7 @@ from django.conf import settings
 
 from common.util import is_admin
 from clickhouse_driver import Client
-
+from zjchain.http_helper import JsonHttpResponse
 ipreader = geoip2.database.Reader(
         '/root/Zjchain-Browser/python3.10/share/GeoLite2-Country.mmdb')
 def zjchain_index(request):
@@ -47,7 +47,7 @@ def get_country(request):
 
 
 def get_balance(request, account_id):
-    cmd = "select shard_id, pool_index, balance from zjchain_ck_account_table where id='" + account_id + "'"
+    cmd = "select shard_id, pool_index, balance from zjc_ck_account_table where id='" + account_id + "'"
     ck_client = Client(host='localhost', port=9000)
     result = ck_client.execute(cmd)
     if result is None or len(result) <= 0:
@@ -129,9 +129,9 @@ def transactions(request):
                 where_str += " hash = '" + search_str + "' or prehash = '" + search_str + "' ";
 
 
-        cmd = 'SELECT shard_id, pool_index, height, type, timestamp, gid, from, to, amount, gas_limit, gas_used, gas_price FROM zjchain_ck_transaction_table '
+        cmd = 'SELECT shard_id, pool_index, height, type, timestamp, gid, from, to, amount, gas_limit, gas_used, gas_price FROM zjc_ck_transaction_table '
         if data_type == 1:
-            cmd = 'SELECT shard_id, pool_index, height, timestamp, prehash, hash, vss, elect_height, timeblock_height, tx_size FROM zjchain_ck_block_table '
+            cmd = 'SELECT shard_id, pool_index, height, timestamp, prehash, hash, vss, elect_height, timeblock_height, tx_size FROM zjc_ck_block_table '
             
         if where_str != "":
             cmd += " where " + where_str
@@ -199,7 +199,7 @@ def vpn_transactions(request):
         order = request.POST.get('order')
         data_type = 0 
         where_str = " (`from`='" + addr + "' and `to`='" + vpn_addr + "') or (`from`='" + vpn_addr + "' and `to`='" + addr + "') ";
-        cmd = 'SELECT shard_id, pool_index, height, type, timestamp, gid, from, to, amount, gas_limit, gas_used, gas_price,balance,to_add FROM zjchain_ck_transaction_table '
+        cmd = 'SELECT shard_id, pool_index, height, type, timestamp, gid, from, to, amount, gas_limit, gas_used, gas_price,balance,to_add FROM zjc_ck_transaction_table '
         if where_str != "":
             cmd += " where " + where_str
 
@@ -268,7 +268,7 @@ def accounts(request):
             else:
                 where_str += " pool_index = " + str(pool)
 
-        cmd = 'SELECT id, shard_id, pool_index, balance FROM zjchain_ck_account_table '
+        cmd = 'SELECT id, shard_id, pool_index, balance FROM zjc_ck_account_table '
         if where_str != "":
             cmd += " where " + where_str
 
@@ -300,7 +300,7 @@ def accounts(request):
 def get_statistics(request):
     if request.method == 'POST':
         limit = request.POST.get('limit')
-        cmd = 'SELECT time, all_zjchain, all_address, all_contracts, all_transactions, all_nodes FROM zjchain_ck_statistic_table order by time desc limit 1'
+        cmd = 'SELECT time, all_zjc, all_address, all_contracts, all_transactions, all_nodes FROM zjc_ck_statistic_table order by time desc limit 1'
         tmp_result = None
         try:
             ck_client = Client(host='localhost', port=9000)
@@ -316,20 +316,20 @@ def get_statistics(request):
 
         timestamp_max = tmp_result[0][0] - limit * 10 + 10
         timestamp_min = tmp_result[0][0] - limit * 10 - 10
-        cmd = 'SELECT time, all_zjchain, all_address, all_contracts, all_transactions, all_nodes FROM zjchain_ck_statistic_table where time >= ' + str(timestamp_min) + ' and time <= ' + str(timestamp_max) +  ' order by time desc limit 1'
+        cmd = 'SELECT time, all_zjc, all_address, all_contracts, all_transactions, all_nodes FROM zjc_ck_statistic_table where time >= ' + str(timestamp_min) + ' and time <= ' + str(timestamp_max) +  ' order by time desc limit 1'
         res_result_prev = {}
         res_result = {}
         try:
-            ck_client = Client(host='localhost', port=9000)
-            result = ck_client.execute(cmd)
+            ck_client0 = Client(host='localhost', port=9000)
+            result = ck_client0.execute(cmd)
             if result is None or len(result) <= 0:
-                cmd = 'SELECT time, all_zjchain, all_address, all_contracts, all_transactions, all_nodes FROM zjchain_ck_statistic_table order by time asc limit 1'
+                cmd = 'SELECT time, all_zjc, all_address, all_contracts, all_transactions, all_nodes FROM zjc_ck_statistic_table order by time asc limit 1'
                 ck_client = Client(host='localhost', port=9000)
                 result = ck_client.execute(cmd)
                 
             res_result_prev = {
                 "time": result[0][0],
-                "all_zjchain": result[0][1],
+                "all_zjc": result[0][1],
                 "all_address": result[0][2],
                 "all_contracts": result[0][3],
                 "all_transactions": result[0][4],
@@ -339,7 +339,7 @@ def get_statistics(request):
 
             res_result = {
                 "time": tmp_result[0][0],
-                "all_zjchain": tmp_result[0][1],
+                "all_zjc": tmp_result[0][1],
                 "all_address": tmp_result[0][2],
                 "all_contracts": tmp_result[0][3],
                 "all_transactions": tmp_result[0][4],
@@ -389,7 +389,7 @@ def get_all_contracts(request):
         if contracts is not None and len(contracts) >= 40:
             where_str += " and to in (" + contracts + ") "
 
-        cmd = 'SELECT from, to, key, value FROM zjchain_ck_account_key_value_table '
+        cmd = 'SELECT from, to, key, value FROM zjc_ck_account_key_value_table '
         if where_str != "":
             cmd += where_str
 
@@ -476,7 +476,7 @@ def get_contract_detail(request):
     if request.method == 'POST':
         contract_id = request.POST.get('contract_id')
         where_str = "where type = 4 and key in('5f5f63736f75726365636f6465', '5f5f636279746573636f6465') and to ='" + contract_id +"'";
-        cmd = 'SELECT from, to, key, value FROM zjchain_ck_account_key_value_table '
+        cmd = 'SELECT from, to, key, value FROM zjc_ck_account_key_value_table '
         if where_str != "":
             cmd += where_str
 
