@@ -554,7 +554,7 @@ $(function () {
     });
 
     $("#jsGrid1").jsGrid({
-        height: "auto",
+        height: "100%",
         width: "100%",
 
         sorting: true,
@@ -645,7 +645,7 @@ $(function () {
     });
 
     $("#jsGrid2").jsGrid({
-        height: "auto",
+        height: "100%",
         width: "100%",
 
         sorting: true,
@@ -698,7 +698,7 @@ $(function () {
     });
 
     $("#jsGrid3").jsGrid({
-        height: "auto",
+        height: "100%",
         width: "100%",
 
         sorting: true,
