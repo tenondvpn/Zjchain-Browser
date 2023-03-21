@@ -568,10 +568,10 @@ $(function () {
                     type: 'post',
                     async: true,
                     url: '/zjchain/transactions/',
-                    data: { 'shard': shard_id, 'pool': -1, 'limit': (20 * page_size).toString() + ",20", 'search': search_str, 'type': 0 },
+                    data: { 'shard': shard_id, 'pool': -1, 'limit': (100 * page_size).toString() + ",100", 'search': search_str, 'type': 0 },
                     dataType: "json"
                 }).done(function (response) {
-                    if (response.value != null && response.value.length == 20) {
+                    if (response.value != null && response.value.length == 100) {
                         has_next = true;
                     } else {
                         has_next = false;
@@ -659,10 +659,10 @@ $(function () {
                     type: 'post',
                     async: true,
                     url: '/zjchain/transactions/',
-                    data: { 'shard': shard_id, 'pool': -1, 'limit': (20 * page_size).toString() + ",20", 'search': search_str, 'type': 1 },
+                    data: { 'shard': shard_id, 'pool': -1, 'limit': (100 * page_size).toString() + ",100", 'search': search_str, 'type': 1 },
                     dataType: "json"
                 }).done(function (response) {
-                    if (response.value != null && response.value.length == 20) {
+                    if (response.value != null && response.value.length == 100) {
                         has_next = true;
                     } else {
                         has_next = false;
@@ -712,10 +712,10 @@ $(function () {
                     type: 'post',
                     async: true,
                     url: '/zjchain/accounts/',
-                    data: { 'shard': shard_id, 'pool': -1, 'limit': (20 * page_size).toString() + ",20", 'search': search_str, 'order': 'order by balance desc' },
+                    data: { 'shard': shard_id, 'pool': -1, 'limit': (100 * page_size).toString() + ",100", 'search': search_str, 'order': 'order by balance desc' },
                     dataType: "json"
                 }).done(function (response) {
-                    if (response.value != null && response.value.length == 20) {
+                    if (response.value != null && response.value.length == 100) {
                         has_next = true;
                     } else {
                         has_next = false;
