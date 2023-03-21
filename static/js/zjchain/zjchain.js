@@ -554,11 +554,11 @@ $(function () {
     });
 
     $("#jsGrid1").jsGrid({
-        height: "100%",
+        height: "auto",
         width: "100%",
-
+        pageSize: 100,
         sorting: true,
-        paging: true,
+        paging: false,
         autoload: true,
         controller: {
             loadData: function () {
@@ -645,11 +645,12 @@ $(function () {
     });
 
     $("#jsGrid2").jsGrid({
-        height: "100%",
+        height: "auto",
         width: "100%",
 
+        pageSize: 100,
         sorting: true,
-        paging: true,
+        paging: false,
         autoload: true,
         controller: {
             loadData: function () {
@@ -698,11 +699,12 @@ $(function () {
     });
 
     $("#jsGrid3").jsGrid({
-        height: "100%",
+        height: "auto",
         width: "100%",
 
+        pageSize: 100,
         sorting: true,
-        paging: true,
+        paging: false,
         autoload: true,
         controller: {
             loadData: function () {
