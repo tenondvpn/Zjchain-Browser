@@ -497,7 +497,7 @@ function refresh_statistic() {
         dataType: "json"
     }).done(function (response) {
         if (response.status == 0) {
-            var zjchain = Math.floor(response.value.all_zjchain / 10000000) + '.' + response.value.all_zjchain % 10000000;
+            var zjchain = Math.floor(response.value.all_zjc / 10000000) + '.' + response.value.all_zjc % 10000000;
             $("#total_zjchain").html(zjchain);
             $("#total_address").html(response.value.all_address);
             $("#total_nodes").html(response.value.all_nodes);
@@ -505,7 +505,7 @@ function refresh_statistic() {
             $("#total_contracts").html(response.value.all_contracts);
             $("#total_average_qps").html(response.value.qps);
 
-            $("#total_zjchain_grad").html('<i class="fas fa-caret-up"></i> ' + (response.value.all_zjchain - response.cmp.all_zjchain));
+            $("#total_zjchain_grad").html('<i class="fas fa-caret-up"></i> ' + (response.value.all_zjc - response.cmp.all_zjc));
             $("#total_address_grad").html('<i class="fas fa-caret-up"></i> ' + (response.value.all_address - response.cmp.all_address));
             $("#total_nodes_grad").html('<i class="fas fa-caret-up"></i> ' + (response.value.all_nodes - response.cmp.all_nodes));
             $("#total_transaction_count_grad").html('<i class="fas fa-caret-up"></i> ' + (response.value.all_transactions - response.cmp.all_transactions));
