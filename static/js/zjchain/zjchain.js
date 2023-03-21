@@ -593,14 +593,14 @@ $(function () {
                 name: "Type", type: "text", width: 60, align: "center", itemTemplate: function (value) {
                     if (value == 16) {
                         return '<span class= "badge badge-warning">statistic</span>';
-                    } else if (value == 15) {
-                        return '<span class= "badge badge-danger">time</span>';
-                    } else if (value == 14) {
-                        return '<span class= "badge badge-info">election</span>';
+                    } else if (value == 8) {
+                        return '<span class= "badge badge-danger">genesis</span>';
+                    } else if (value == 9) {
+                        return '<span class= "badge badge-info">LocalTo</span>';
                     } else if (value == 7) {
-                        return '<span class= "badge badge-warning">mining</span>';
+                        return '<span class= "badge badge-warning">statistic</span>';
                     } else if (value == 6) {
-                        return '<span class= "badge badge-warning">call_contract</span>';
+                        return '<span class= "badge badge-warning">timer</span>';
                     } else if (value == 5) {
                         return '<span class= "badge badge-success">transfer</span>';
                     } else if (value == 4) {
@@ -610,9 +610,11 @@ $(function () {
                     } else if (value == 2) {
                         return '<span class= "badge badge-danger">genesis</span>';
                     } else if (value == 1) {
-                        return '<span class= "badge badge-danger">genesis</span>';
+                        return '<span class= "badge badge-danger">BatchTo</span>';
+                    } else if (value == 0) {
+                        return '<span class= "badge badge-success">From</span>';
                     } else {
-                        return '<span class= "badge badge-success">work</span>';
+                        return '<span class= "badge badge-success">consensus</span>';
                     }
                 },
             },
