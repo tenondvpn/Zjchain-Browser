@@ -13,7 +13,8 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(os.path.join(__file__, os.pardir))))
 CURR_DIR = os.path.basename(os.path.dirname(__file__))
 CONF_DUMP_DIR = "/data/xl/Dags-Dashbord/dags_conf"
 CONF_TMP_DUMP_DIR = "./work_dir/tmp"
@@ -88,7 +89,24 @@ WSGI_APPLICATION = 'noah.wsgi.application'
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
 DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    },
+    'clickhouse': {
+        'ENGINE': 'clickhouse_backend.backend',
+        'NAME': 'default',
+        'HOST': 'localhost',
+        'USER': 'default',
+        'PASSWORD': '',
+        'TEST': {
+            'fake_transaction': True
+        }
+    }
 }
+
+DATABASE_ROUTERS = ['dbrouters.ClickHouseRouter']
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MY_APPS = (
     'zjchain',

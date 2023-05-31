@@ -1,9 +1,10 @@
 #!/usr/bin/env python
+import logging
 import os
 import sys
 
 if __name__ == '__main__':
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'noah.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'noah.settings.prod')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

@@ -22,7 +22,7 @@ from common.util import is_admin
 from clickhouse_driver import Client
 from zjchain.http_helper import JsonHttpResponse
 ipreader = geoip2.database.Reader(
-        '/root/Zjchain-Browser/python3.10/share/GeoLite2-Country.mmdb')
+        'zjchain/resource/GeoLite2-Country.mmdb')
 def zjchain_index(request):
     return render(request, 'zjchain_index.html', {"pipe_id": -1})
 
