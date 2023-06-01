@@ -21,3 +21,6 @@ DEBUG = False
 #
 # DATABASE_ROUTERS = ['dbrouters.ClickHouseRouter']
 # DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CK_HOST = 'localhost'
+CK_PORT = '9000'
