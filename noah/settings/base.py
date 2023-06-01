@@ -89,7 +89,25 @@ WSGI_APPLICATION = 'noah.wsgi.application'
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
 
-
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     },
+#     'clickhouse': {
+#         'ENGINE': 'clickhouse_backend.backend',
+#         'NAME': 'default',
+#         'HOST': '10.101.20.11',
+#         'USER': 'default',
+#         'PASSWORD': '',
+#         'TEST': {
+#             'fake_transaction': True
+#         }
+#     }
+# }
+#
+# DATABASE_ROUTERS = ['noah.settings.dbrouters.ClickHouseRouter']
+# DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MY_APPS = (
     'zjchain',
 )
