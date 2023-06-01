@@ -18,3 +18,6 @@ DATABASES = {
         }
     }
 }
+
+DATABASE_ROUTERS = ['dbrouters.ClickHouseRouter']
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
