@@ -14,6 +14,7 @@ urlpatterns = (
     re_path(r'^get_bytescode/$',views.get_bytescode),
     re_path(r'^get_all_contracts/$',views.get_all_contracts),
     re_path(r'^get_contract_detail/$',views.get_contract_detail),
+    re_path(r'^get_block_detail/(?P<block_hash>.*)/$',views.get_block_detail),
     re_path(r'^get_statistics/$',views.get_statistics),
     re_path(r'^get_prikey/(?P<seckey>.*)/$',views.get_prikey),
     re_path(r'^set_private_key/$',views.set_private_key),

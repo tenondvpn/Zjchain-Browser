@@ -174,9 +174,9 @@ function auto_search_data(val) {
     }
 }
 
-function show_block_detail(hash) {
-    alert(hash);
-}
+// function show_block_detail(hash) {
+//     alert(hash);
+// }
 
 async function test() {
     // Generating private key

@@ -40,7 +40,7 @@ ALLOWED_HOSTS = ['*']
 PROJECT_NAME="noah"
 SITE_ADMIN = ""
 # Application definition
-
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',

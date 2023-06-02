@@ -3,6 +3,7 @@ var page_size = 0;
 var has_next = true;
 var shard_id = -1;
 var search_str = "";
+var block_hash="";
 var refresh_table_period = 5000;
 var now_tm_refresh = 0;
 var Toast = null;
@@ -159,6 +160,15 @@ function auto_search_data(val) {
     } else {
         $("#jsGrid3").jsGrid("loadData");
     }
+}
+function show_block_detail(hash) {
+     block_hash = hash
+     content_mode = 3
+     $("#jsGrid1").hide();
+     $("#jsGrid2").hide();
+     $("#jsGrid3").hide();
+     $("#jsGrid4").show();
+     $("#jsGrid4").jsGrid("loadData");
 }
 
 function click_auto_search_data() {
@@ -739,6 +749,56 @@ $(function () {
             { name: "Balance", type: "number", align: "center", width: 50 },
         ]
     });
+
+    $("#jsGrid4").jsGrid({
+        height: "auto",
+        width: "100%",
+
+        pageSize: 100,
+        sorting: true,
+        paging: false,
+        autoload: true,
+        controller: {
+            loadData: function () {
+                var d = $.Deferred();
+
+                $.ajax({
+                    type: 'get',
+                    async: true,
+                    url: '/zjchain/get_block_detail/'+ block_hash,
+                }).done(function (response) {
+                    if (response.value != null && response.value.length == 100) {
+                        has_next = true;
+                    } else {
+                        has_next = false;
+                    }
+
+                    d.resolve(response.value);
+                });
+
+                return d.promise();
+            }
+        },
+
+        fields: [
+            { name: "shard_id", type: "number", width: 90 },
+            { name: "pool_index", type: "number", align: "center", width: 40, "title": "#" },
+            { name: "height", type: "number", align: "center", width: 40 },
+            { name: "prehash", type: "text", align: "center", width: 50 },
+            { name: "hash", type: "text", align: "center", width: 50 },
+            { name: "vss", type: "number", align: "center", width: 50 },
+            { name: "elect_height", type: "number", align: "center", width: 50 },
+            { name: "bitmap", type: "text", align: "center", width: 50 },
+            { name: "timestamp", type: "number", align: "center", width: 50 },
+            { name: "timeblock_height", type: "number", align: "center", width: 50 },
+            { name: "bls_agg_sign_x", type: "text", align: "center", width: 50 },
+            { name: "bls_agg_sign_y", type: "text", align: "center", width: 50 },
+            { name: "commit_bitmap", type: "text", align: "center", width: 50 },
+            { name: "tx_size", type: "number", align: "center", width: 50 },
+            { name: "date", type: "number", align: "center", width: 50 },]
+    });
+
+
 
     var refresh_table = function () {
         now_tm_refresh += 1000;

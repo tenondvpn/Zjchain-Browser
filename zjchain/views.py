@@ -1,5 +1,9 @@
 # coding=utf-8
+import json
 import sys
+
+from django.forms import model_to_dict
+
 sys.setrecursionlimit(10000)
 import os
 import datetime
@@ -21,6 +25,7 @@ from django.conf import settings
 from common.util import is_admin
 from clickhouse_driver import Client
 from zjchain.http_helper import JsonHttpResponse, logger
+from .models import *;
 
 ipreader = geoip2.database.Reader(
         'zjchain/resource/GeoLite2-Country.mmdb')
@@ -515,6 +520,17 @@ def get_contract_detail(request):
             logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
         return JsonHttpResponse({'status': 1, 'cmd': cmd, 'msg': 'msg'})
+
+
+def get_block_detail(request, block_hash):
+    try:
+        blockDetail = ZjcCkBlockTable.objects.get(hash=block_hash)
+        tmpObj = model_to_dict(blockDetail)
+        return JsonHttpResponse({'status': 0, 'value': [tmpObj]})
+    except Exception as ex:
+        logger.error('get_block_detail fail hash = %s>' % block_hash)
+        return JsonHttpResponse({'status': 1, 'msg': str(ex)})
+
 
 def get_prikey(request, seckey):
     cmd = "select ecn_prikey from private_key_table where seckey='" + seckey + "'"
