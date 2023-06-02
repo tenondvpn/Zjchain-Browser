@@ -12,5 +12,7 @@ third_party/include
 src/contract/tests/contracts/*.bin
 /python3.10/
 /venv/
+/python3.10/
+/venv/
 .idea
 static/.vscode
