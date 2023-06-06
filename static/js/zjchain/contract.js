@@ -313,7 +313,7 @@ function setup_global_private_key() {
                 $("#global_balance").html('<i class="fas fa-map mr-2"></i>' + '0 Ti' + '<span class="float-right text-muted text-sm badge bg-warning">balance</span>');
             } else {
                 var zjchain = Math.floor(result.balance / 10000000) + '.' + result.balance % 10000000;
-                $("#global_balance").html('<i class="fas fa-map mr-2"></i>' + zjchain + ' Ti<span class="float-right text-muted text-sm badge bg-warning">balance</span>');
+                $("#global_balance").html('<i class="fas fa-map mr-2"></i>' + coin + ' Ti<span class="float-right text-muted text-sm badge bg-warning">balance</span>');
                 local_count_shard_id = result.shard_id;
             }
         }
@@ -666,6 +666,7 @@ function do_create_contract() {
 
 function show_contract_detail(index) {
     //alert(Base64.decode(all_contracts[index]['__csourcecode']));
+    console.log(index);
     $.ajax({
         type: 'post',
         async: false,
@@ -677,10 +678,10 @@ function show_contract_detail(index) {
             $("#detail_address").val(all_contracts[index]['to']);
             $("#detail_balance").val(0);
             $("#detail_creator").val(all_contracts[index]['from']);
-            $("#detail_contract_name").val(all_contracts[index]['__ctname']);
-            $("#detail_contract_desc").val(all_contracts[index]['__ctdesc']);
-            $("#detail_contract_source").val(Base64.decode(response.value['__csourcecode']));
-            $("#detail_contract_bytes").val(response.value['__cbytescode']);
+            $("#detail_contract_name").val(all_contracts[index]['to'].substring(20));
+            $("#detail_contract_desc").val(all_contracts[index]['to']);
+            $("#detail_contract_source").val(response.value['__kCreateContractBytesCode']);
+            $("#detail_contract_bytes").val(response.value['__kCreateContractBytesCode']);
             self_contract_address = all_contracts[index]['to'];
             $('#modal-contract-detail').modal({
                 show: true
@@ -840,8 +841,8 @@ function get_all_called_contracts() {
             html_str += ('<div class="col-md-3" style="text-align:center;margin-top:15px;">' +
                 '<a class="btn btn-app" onclick="show_contract_detail(' + i + ')" style = "width: 90%;height:140px;border: 1px solid #3a4047!important;">' +
                 '<span class="badge ' + bgs[Math.floor(Math.random() * bgs.length)] + '">' + response.value[i]["to"] + '</span>' +
-                '<h5 style="margin-top:10px;">' + response.value[i]["__ctname"] + '</h5>' +
-                '<p style="white-space:normal;word-wrap:break-word;word-break:break-all;text-align:left;width:90%;margin-left:5%;"><font size="3">' + response.value[i]["__ctdesc"] + '</font></p>' +
+                '<h5 style="margin-top:10px;">' + response.value[i]["to"].substring(20) + '</h5>' +
+                '<p style="white-space:normal;word-wrap:break-word;word-break:break-all;text-align:left;width:90%;margin-left:5%;"><font size="3">' + response.value[i]["to"].substring(0) + '</font></p>' +
                 '</a>' +
                 '</div>');
         }
@@ -865,8 +866,8 @@ function get_all_contracts() {
             html_str += ('<div class="col-md-3" style="text-align:center;margin-top:15px;">' +
                 '<a class="btn btn-app" onclick="show_contract_detail(' + i + ')" style = "width: 90%;height:140px;border: 1px solid #3a4047!important;">' +
                 '<span class="badge ' + bgs[Math.floor(Math.random() * bgs.length)]+ '">' + response.value[i]["to"] + '</span>' +
-                '<h5 style="margin-top:10px;">' + response.value[i]["__ctname"] + '</h5>' +
-                '<p style="white-space:normal;word-wrap:break-word;word-break:break-all;text-align:left;width:90%;margin-left:5%;"><font size="3">' + response.value[i]["__ctdesc"] + '</font></p>' +
+                '<h5 style="margin-top:10px;">' + response.value[i]["to"].substring(32) + '</h5>' +
+                '<p style="white-space:normal;word-wrap:break-word;word-break:break-all;text-align:left;width:90%;margin-left:5%;"><font size="3">' + response.value[i]["to"].substring(20) + '</font></p>' +
                 '</a>' +
                 '</div>');
         }

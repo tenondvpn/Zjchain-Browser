@@ -17,7 +17,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate
 from django.conf import settings
-
+import logging
 from common.util import is_admin
 from clickhouse_driver import Client
 from zjchain.http_helper import JsonHttpResponse
@@ -33,21 +33,11 @@ def tbc(request):
     return render(request, 'zjchain_business_school.html', {"pipe_id": -1})
 
 def get_country(request):
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')  # 判断是否使用代理
-    if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[0]  # 使用代理获取真实的ip
-    else:
-        ip = request.META.get('REMOTE_ADDR')  # 未使用代理获取IP
-
-    response = ipreader.country(ip)
-    try:
-        return response.country.iso_code
-    except Exception as e:
-        return 'US'
-
+    return 'CN'
 
 def get_balance(request, account_id):
     cmd = "select shard_id, pool_index, balance from zjc_ck_account_table where id='" + account_id + "'"
+    logging.error('get balance ok: <%s, %s>' % ("", cmd))
     ck_client = Client(host='localhost', port=9000)
     result = ck_client.execute(cmd)
     if result is None or len(result) <= 0:
@@ -380,7 +370,7 @@ def get_all_contracts(request):
     if request.method == 'POST':
         contracts = request.POST.get('contracts')
         limit = request.POST.get('limit')
-        where_str = "where type = 4 and key in('5f5f637464657363', '5f5f63746e616d65') "
+        where_str = "where type = 6 and key in('5f5f6b437265617465436f6e74726163744279746573436f6465', '5f5f6b437265617465436f6e74726163744279746573436f6465') "
         if (contracts.endswith(',')):
             contracts = contracts[0: len(contracts) - 1]
 
@@ -407,7 +397,7 @@ def get_all_contracts(request):
                 except Exception as ex:
                     continue
                 val_decode = item[3]
-                if key_decode != '__cbytescode' and key_decode != '__cbytescodecreated':
+                if key_decode != '__kCreateContractBytesCode':
                     try:
                         val_decode = bytes.fromhex(item[3]).decode('utf-8')
                     except Exception as ex:
@@ -475,7 +465,7 @@ def get_all_videos(request):
 def get_contract_detail(request):
     if request.method == 'POST':
         contract_id = request.POST.get('contract_id')
-        where_str = "where type = 4 and key in('5f5f63736f75726365636f6465', '5f5f636279746573636f6465') and to ='" + contract_id +"'";
+        where_str = "where type = 6 and key in('5f5f6b437265617465436f6e74726163744279746573436f6465', '5f5f6b437265617465436f6e74726163744279746573436f6465') and to ='" + contract_id +"'";
         cmd = 'SELECT from, to, key, value FROM zjc_ck_account_key_value_table '
         if where_str != "":
             cmd += where_str
@@ -490,7 +480,7 @@ def get_contract_detail(request):
                 except Exception as ex:
                     continue
                 val_decode = item[3]
-                if key_decode != '__cbytescode' and key_decode != '__cbytescodecreated':
+                if key_decode != '__kCreateContractBytesCode':
                     try:
                         val_decode = bytes.fromhex(item[3]).decode('utf-8')
                     except Exception as ex:
