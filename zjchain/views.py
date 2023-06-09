@@ -48,8 +48,8 @@ def get_country(request):
     else:
         ip = request.META.get('REMOTE_ADDR')  # 未使用代理获取IP
 
-    response = ipreader.country(ip)
     try:
+        response = ipreader.country(ip)
         return response.country.iso_code
     except Exception as e:
         return 'US'
@@ -526,7 +526,7 @@ def get_block_detail(request, block_hash):
     try:
         blockDetail = ZjcCkBlockTable.objects.get(hash=block_hash)
         tmpObj = model_to_dict(blockDetail)
-        return JsonHttpResponse({'status': 0, 'value': [tmpObj]})
+        return JsonHttpResponse({'status': 0, 'value': tmpObj})
     except Exception as ex:
         logger.error('get_block_detail fail hash = %s>' % block_hash)
         return JsonHttpResponse({'status': 1, 'msg': str(ex)})

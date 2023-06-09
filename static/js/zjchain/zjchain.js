@@ -161,14 +161,44 @@ function auto_search_data(val) {
         $("#jsGrid3").jsGrid("loadData");
     }
 }
-function show_block_detail(hash) {
-     block_hash = hash
-     content_mode = 3
-     $("#jsGrid1").hide();
-     $("#jsGrid2").hide();
-     $("#jsGrid3").hide();
-     $("#jsGrid4").show();
-     $("#jsGrid4").jsGrid("loadData");
+function show_block_detail(block_hash) {
+
+     // $("#jsGrid4").jsGrid("loadData");
+      $.ajax({
+        type: 'get',
+        async: false,
+        url: '/zjchain/get_block_detail/'+ block_hash,
+        dataType: "json"
+    }).done(function (response) {
+        if (response.status == 0) {
+
+            $("#block_detail_shard_id").val(response.value['shard_id']);
+            $("#block_detail_pool_index").val(response.value['pool_index']);
+            $("#block_detail_height").val(response.value['height']);
+            $("#block_detail_prehash").val(response.value['prehash']);
+            $("#block_detail_hash").val(response.value['hash']);
+            $("#block_detail_version").val(response.value['version']);
+            $("#block_detail_vss").val(response.value['vss']);
+            $("#block_detail_elect_height").val(response.value['elect_height']);
+            $("#block_detail_bitmap").val(response.value['bitmap']);
+            $("#block_detail_timestamp").val(response.value['timestamp']);
+            $("#block_detail_timeblock_height").val(response.value['timeblock_height']);
+            $("#block_detail_bls_agg_sign_x").val(response.value['bls_agg_sign_x']);
+            $("#block_detail_bls_agg_sign_y").val(response.value['bls_agg_sign_y']);
+            $("#block_detail_commit_bitmap").val(response.value['commit_bitmap']);
+            $("#block_detail_tx_size").val(response.value['tx_size']);
+            $("#block_detail_date").val(response.value['date']);
+            $('#modal-block-detail').modal({
+                show: true
+            });
+
+        } else {
+            Toast.fire({
+                icon: 'error',
+                title: response.msg
+            })
+        }
+    });
 }
 
 function click_auto_search_data() {
@@ -748,54 +778,6 @@ $(function () {
             { name: "Pool", type: "number", align: "center", width: 40 },
             { name: "Balance", type: "number", align: "center", width: 50 },
         ]
-    });
-
-    $("#jsGrid4").jsGrid({
-        height: "auto",
-        width: "100%",
-
-        pageSize: 100,
-        sorting: true,
-        paging: false,
-        autoload: true,
-        controller: {
-            loadData: function () {
-                var d = $.Deferred();
-
-                $.ajax({
-                    type: 'get',
-                    async: true,
-                    url: '/zjchain/get_block_detail/'+ block_hash,
-                }).done(function (response) {
-                    if (response.value != null && response.value.length == 100) {
-                        has_next = true;
-                    } else {
-                        has_next = false;
-                    }
-
-                    d.resolve(response.value);
-                });
-
-                return d.promise();
-            }
-        },
-
-        fields: [
-            { name: "shard_id", type: "number", width: 90 },
-            { name: "pool_index", type: "number", align: "center", width: 40, "title": "#" },
-            { name: "height", type: "number", align: "center", width: 40 },
-            { name: "prehash", type: "text", align: "center", width: 50 },
-            { name: "hash", type: "text", align: "center", width: 50 },
-            { name: "vss", type: "number", align: "center", width: 50 },
-            { name: "elect_height", type: "number", align: "center", width: 50 },
-            { name: "bitmap", type: "text", align: "center", width: 50 },
-            { name: "timestamp", type: "number", align: "center", width: 50 },
-            { name: "timeblock_height", type: "number", align: "center", width: 50 },
-            { name: "bls_agg_sign_x", type: "text", align: "center", width: 50 },
-            { name: "bls_agg_sign_y", type: "text", align: "center", width: 50 },
-            { name: "commit_bitmap", type: "text", align: "center", width: 50 },
-            { name: "tx_size", type: "number", align: "center", width: 50 },
-            { name: "date", type: "number", align: "center", width: 50 },]
     });
 
 
