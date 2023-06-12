@@ -232,45 +232,59 @@ function GetValidHexString(uint256_bytes) {
 
 function create_tx(to, amount, gas_limit, gas_price) {
     var gid = GetValidHexString(Secp256k1.uint256(randomBytes(32)));
-    var tx_type = 5;
-    var msg = gid + "-" +
-        self_account_id.toString(16) + "-" +
-        to + "-" +
-        amount + "-" +
-        gas_limit + "-" +
-        gas_price + "-" +
-        tx_type.toString() + "-";
-    var kechash = keccak256(msg)
+    var tx_type = 0;
+    var frompk = '04' + self_public_key.x.toString(16) + self_public_key.y.toString(16);
+    const MAX_UINT32 = 0xFFFFFFFF;
+    var amount_buf = new ethereumjs.Buffer.Buffer(8);
+    var big = ~~(amount / MAX_UINT32)
+    var low = (amount % MAX_UINT32) - big
+    amount_buf.writeUInt32LE(big, 4)
+    amount_buf.writeUInt32LE(low, 0)
+
+    var gas_limit_buf = new ethereumjs.Buffer.Buffer(8);
+    var big = ~~(gas_limit / MAX_UINT32)
+    var low = (gas_limit % MAX_UINT32) - big
+    gas_limit_buf.writeUInt32LE(big, 4)
+    gas_limit_buf.writeUInt32LE(low, 0)
+
+    var gas_price_buf = new ethereumjs.Buffer.Buffer(8);
+    var big = ~~(gas_price / MAX_UINT32)
+    var low = (gas_price % MAX_UINT32) - big
+    gas_price_buf.writeUInt32LE(big, 4)
+    gas_price_buf.writeUInt32LE(low, 0)
+    var step_buf = new ethereumjs.Buffer.Buffer(8);
+    var big = ~~(tx_type / MAX_UINT32)
+    var low = (tx_type % MAX_UINT32) - big
+    step_buf.writeUInt32LE(big, 0)
+    step_buf.writeUInt32LE(low, 0)
+
+    var message_buf = ethereumjs.Buffer.Buffer.concat(
+        [ethereumjs.Buffer.Buffer.from(gid, 'hex'),
+         ethereumjs.Buffer.Buffer.from(frompk, 'hex'),
+         ethereumjs.Buffer.Buffer.from(to, 'hex'),
+        amount_buf, gas_limit_buf, gas_price_buf, step_buf]);
+    var kechash = keccak256(message_buf)
     var digest = Secp256k1.uint256(kechash, 16)
     const sig = Secp256k1.ecsign(self_private_key, digest)
     const sigR = Secp256k1.uint256(sig.r, 16)
     const sigS = Secp256k1.uint256(sig.s, 16)
     const pubX = Secp256k1.uint256(self_public_key.x, 16)
     const pubY = Secp256k1.uint256(self_public_key.y, 16)
-    const isValidSig = Secp256k1.ecverify(pubX, pubY, sigR, sigS, digest)
-    if (!isValidSig) {
-        Toast.fire({
-            icon: 'error',
-            title: 'signature transaction failed.'
-        })
-
-        return;
-    }
-
     return {
         'gid': gid,
-        'frompk': '04' + self_public_key.x.toString(16) + self_public_key.y.toString(16),
+        'pubkey': '04' + self_public_key.x.toString(16) + self_public_key.y.toString(16),
         'to': to,
         'amount': amount,
         'gas_limit': gas_limit,
         'gas_price': gas_price,
         'type': tx_type,
-        'shard_id': local_count_shard_id,
-        'hash': kechash,
-        'sigr': sigR.toString(16),
-        'sigs': sigS.toString(16)
+        'shard_id': 3,
+        'sign_r': sigR.toString(16),
+        'sign_s': sigS.toString(16),
+        'sign_v': sig.v,
     }
 }
+
 
 function hexToBytes(hex) {
     for (var bytes = [], c = 0; c < hex.length; c += 2)
@@ -525,7 +539,7 @@ function do_transaction() {
     $.ajax({
         type: 'post',
         async: true,
-        url: 'http://82.156.224.174:19098/do_transaction',
+        url: 'http://192.168.44.186:8783/transaction',
         data: data,
         dataType: "json"
     }).done(function (response) {
