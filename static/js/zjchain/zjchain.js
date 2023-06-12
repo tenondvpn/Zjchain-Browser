@@ -52,13 +52,19 @@ function list_transactions() {
     content_mode = 0;
 }
 
+function hide_others_except(str_grid) {
+    $("#jsGrid1").hide();
+    $("#jsGrid2").hide();
+    $("#jsGrid3").hide();
+    $("#jsGrid4").hide();
+    $(str_grid).show();
+}
+
 function list_blocks() {
     $("#id_search").val("");
     search_str = "";
     page_size = 0;
-    $("#jsGrid1").hide();
-    $("#jsGrid3").hide();
-    $("#jsGrid2").show();
+    hide_others_except('#jsGrid2')
     $("#jsGrid2").jsGrid("loadData");
     content_mode = 1;
 }
@@ -162,7 +168,6 @@ function auto_search_data(val) {
     }
 }
 function show_block_detail(block_hash) {
-
      // $("#jsGrid4").jsGrid("loadData");
       $.ajax({
         type: 'get',
@@ -188,9 +193,12 @@ function show_block_detail(block_hash) {
             $("#block_detail_commit_bitmap").val(response.value['commit_bitmap']);
             $("#block_detail_tx_size").val(response.value['tx_size']);
             $("#block_detail_date").val(response.value['date']);
-            $('#modal-block-detail').modal({
-                show: true
-            });
+
+            // $('#modal-block-detail').modal({
+            //     show: true
+            // });
+
+            hide_others_except('#jsGrid4')
 
         } else {
             Toast.fire({

@@ -201,6 +201,143 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         <div id="jsGrid1" style="display:block;"></div>
                                         <div id="jsGrid2" style="display:none;"></div>
                                         <div id="jsGrid3" style="display:none;"></div>
+                                        <div id="jsGrid4" style="display:none;">
+                                              <div class="card card-primary">
+                                                          <div class="card-header">
+                                                            <h4 class="modal-title">Block Detail</h4>
+                                                            <div class="card-tools">
+                                                              <!-- 点击后会移除卡片 -->
+                                                              <button type="button" class="btn btn-tool"  onclick="list_blocks()" >
+                                                              <i class="fas fa-times"></i> </button>
+                                                            </div>
+                                                            <!-- /.card-tools -->
+                                                          </div>
+                                                          <!-- /.card-header -->
+                                                          <div class="card-body">
+                                                            <div class="row">
+                                                              <div class="col-12 col-sm-12">
+                                                                <div  id="div-block-detail" aria-labelledby="custom-tabs-one-home-tab">
+                                                                  <div class="form-group row">
+                                                                    <label for="inputEmail3" class="col-sm-2 col-form-label"> shard_id </label>
+                                                                    <div class="col-sm-10">
+                                                                      <input type="text" class="form-control" disabled id="block_detail_shard_id" placeholder="">
+                                                                    </div>
+                                                                  </div>
+
+                                                                  <div class="form-group row">
+                                                                    <label for="inputEmail3" class="col-sm-2 col-form-label"> pool_index </label>
+                                                                    <div class="col-sm-10">
+                                                                      <input type="text" class="form-control" disabled id="block_detail_pool_index" placeholder="">
+                                                                    </div>
+                                                                  </div>
+
+                                                                  <div class="form-group row">
+                                                                    <label for="inputEmail3" class="col-sm-2 col-form-label"> height </label>
+                                                                    <div class="col-sm-10">
+                                                                      <input type="text" class="form-control" disabled id="block_detail_height" placeholder="">
+                                                                    </div>
+                                                                  </div>
+
+                                                                  <div class="form-group row">
+                                                                    <label for="inputEmail3" class="col-sm-2 col-form-label"> prehash </label>
+                                                                    <div class="col-sm-10">
+                                                                      <input type="text" class="form-control" disabled id="block_detail_prehash" placeholder="">
+                                                                    </div>
+                                                                  </div>
+
+                                                                  <div class="form-group row">
+                                                                    <label for="inputEmail3" class="col-sm-2 col-form-label"> hash </label>
+                                                                    <div class="col-sm-10">
+                                                                      <input type="text" class="form-control" disabled id="block_detail_hash" placeholder="">
+                                                                    </div>
+                                                                  </div>
+
+                                                                  <div class="form-group row">
+                                                                    <label for="inputEmail3" class="col-sm-2 col-form-label"> version </label>
+                                                                    <div class="col-sm-10">
+                                                                      <input type="text" class="form-control" disabled id="block_detail_version" placeholder="">
+                                                                    </div>
+                                                                  </div>
+
+                                                                  <div class="form-group row">
+                                                                    <label for="inputEmail3" class="col-sm-2 col-form-label"> vss </label>
+                                                                    <div class="col-sm-10">
+                                                                      <input type="text" class="form-control" disabled id="block_detail_vss" placeholder="">
+                                                                    </div>
+                                                                  </div>
+
+                                                                  <div class="form-group row">
+                                                                    <label for="inputEmail3" class="col-sm-2 col-form-label"> elect_height </label>
+                                                                    <div class="col-sm-10">
+                                                                      <input type="text" class="form-control" disabled id="block_detail_elect_height" placeholder="">
+                                                                    </div>
+                                                                  </div>
+
+                                                                  <div class="form-group row">
+                                                                    <label for="inputEmail3" class="col-sm-2 col-form-label"> bitmap </label>
+                                                                    <div class="col-sm-10">
+                                                                      <input type="text" class="form-control" disabled id="block_detail_bitmap" placeholder="">
+                                                                    </div>
+                                                                  </div>
+
+                                                                  <div class="form-group row">
+                                                                    <label for="inputEmail3" class="col-sm-2 col-form-label"> timestamp </label>
+                                                                    <div class="col-sm-10">
+                                                                      <input type="text" class="form-control" disabled id="block_detail_timestamp" placeholder="">
+                                                                    </div>
+                                                                  </div>
+
+                                                                  <div class="form-group row">
+                                                                    <label for="inputEmail3" class="col-sm-2 col-form-label"> timeblock_height </label>
+                                                                    <div class="col-sm-10">
+                                                                      <input type="text" class="form-control" disabled id="block_detail_timeblock_height" placeholder="">
+                                                                    </div>
+                                                                  </div>
+
+                                                                  <div class="form-group row">
+                                                                    <label for="inputEmail3" class="col-sm-2 col-form-label"> bls_agg_sign_x </label>
+                                                                    <div class="col-sm-10">
+                                                                      <input type="text" class="form-control" disabled id="block_detail_bls_agg_sign_x" placeholder="">
+                                                                    </div>
+                                                                  </div>
+
+                                                                  <div class="form-group row">
+                                                                    <label for="inputEmail3" class="col-sm-2 col-form-label"> bls_agg_sign_y </label>
+                                                                    <div class="col-sm-10">
+                                                                      <input type="text" class="form-control" disabled id="block_detail_bls_agg_sign_y" placeholder="">
+                                                                    </div>
+                                                                  </div>
+
+                                                                  <div class="form-group row">
+                                                                    <label for="inputEmail3" class="col-sm-2 col-form-label"> commit_bitmap </label>
+                                                                    <div class="col-sm-10">
+                                                                      <input type="text" class="form-control" disabled id="block_detail_commit_bitmap" placeholder="">
+                                                                    </div>
+                                                                  </div>
+
+                                                                  <div class="form-group row">
+                                                                    <label for="inputEmail3" class="col-sm-2 col-form-label"> tx_size </label>
+                                                                    <div class="col-sm-10">
+                                                                      <input type="text" class="form-control" disabled id="block_detail_tx_size" placeholder="">
+                                                                    </div>
+                                                                  </div>
+
+                                                                  <div class="form-group row">
+                                                                    <label for="inputEmail3" class="col-sm-2 col-form-label"> date </label>
+                                                                    <div class="col-sm-10">
+                                                                      <input type="text" class="form-control" disabled id="block_detail_date" placeholder="">
+                                                                    </div>
+                                                                  </div>
+
+
+                                                                </div>
+                                                              </div>
+                                                            </div>
+
+                                                          </div>
+                                                          <!-- /.card-body -->
+                                              </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -294,141 +431,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </div>
             <!-- /.modal-dialog -->
         </div>
-        <div class="modal fade" id="modal-block-detail">
-              <div class="modal-dialog modal-lg">
-                <div class="modal-content bg-default">
-                  <div class="modal-header">
-                    <h4 class="modal-title">Block Detail</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">×</span>
-                    </button>
-                  </div>
-                  <div class="modal-body" style="margin-top:0px; margin-bottom:-20px;">
-                    <div class="row">
-                      <div class="col-12 col-sm-12">
-                        <div  id="div-block-detail" aria-labelledby="custom-tabs-one-home-tab">
-                          <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-2 col-form-label"> shard_id </label>
-                            <div class="col-sm-10">
-                              <input type="text" class="form-control" disabled id="block_detail_shard_id" placeholder="">
-                            </div>
-                          </div>
-
-                          <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-2 col-form-label"> pool_index </label>
-                            <div class="col-sm-10">
-                              <input type="text" class="form-control" disabled id="block_detail_pool_index" placeholder="">
-                            </div>
-                          </div>
-
-                          <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-2 col-form-label"> height </label>
-                            <div class="col-sm-10">
-                              <input type="text" class="form-control" disabled id="block_detail_height" placeholder="">
-                            </div>
-                          </div>
-
-                          <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-2 col-form-label"> prehash </label>
-                            <div class="col-sm-10">
-                              <input type="text" class="form-control" disabled id="block_detail_prehash" placeholder="">
-                            </div>
-                          </div>
-
-                          <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-2 col-form-label"> hash </label>
-                            <div class="col-sm-10">
-                              <input type="text" class="form-control" disabled id="block_detail_hash" placeholder="">
-                            </div>
-                          </div>
-
-                          <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-2 col-form-label"> version </label>
-                            <div class="col-sm-10">
-                              <input type="text" class="form-control" disabled id="block_detail_version" placeholder="">
-                            </div>
-                          </div>
-
-                          <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-2 col-form-label"> vss </label>
-                            <div class="col-sm-10">
-                              <input type="text" class="form-control" disabled id="block_detail_vss" placeholder="">
-                            </div>
-                          </div>
-
-                          <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-2 col-form-label"> elect_height </label>
-                            <div class="col-sm-10">
-                              <input type="text" class="form-control" disabled id="block_detail_elect_height" placeholder="">
-                            </div>
-                          </div>
-
-                          <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-2 col-form-label"> bitmap </label>
-                            <div class="col-sm-10">
-                              <input type="text" class="form-control" disabled id="block_detail_bitmap" placeholder="">
-                            </div>
-                          </div>
-
-                          <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-2 col-form-label"> timestamp </label>
-                            <div class="col-sm-10">
-                              <input type="text" class="form-control" disabled id="block_detail_timestamp" placeholder="">
-                            </div>
-                          </div>
-
-                          <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-2 col-form-label"> timeblock_height </label>
-                            <div class="col-sm-10">
-                              <input type="text" class="form-control" disabled id="block_detail_timeblock_height" placeholder="">
-                            </div>
-                          </div>
-
-                          <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-2 col-form-label"> bls_agg_sign_x </label>
-                            <div class="col-sm-10">
-                              <input type="text" class="form-control" disabled id="block_detail_bls_agg_sign_x" placeholder="">
-                            </div>
-                          </div>
-
-                          <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-2 col-form-label"> bls_agg_sign_y </label>
-                            <div class="col-sm-10">
-                              <input type="text" class="form-control" disabled id="block_detail_bls_agg_sign_y" placeholder="">
-                            </div>
-                          </div>
-
-                          <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-2 col-form-label"> commit_bitmap </label>
-                            <div class="col-sm-10">
-                              <input type="text" class="form-control" disabled id="block_detail_commit_bitmap" placeholder="">
-                            </div>
-                          </div>
-
-                          <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-2 col-form-label"> tx_size </label>
-                            <div class="col-sm-10">
-                              <input type="text" class="form-control" disabled id="block_detail_tx_size" placeholder="">
-                            </div>
-                          </div>
-
-                          <div class="form-group row">
-                            <label for="inputEmail3" class="col-sm-2 col-form-label"> date </label>
-                            <div class="col-sm-10">
-                              <input type="text" class="form-control" disabled id="block_detail_date" placeholder="">
-                            </div>
-                          </div>
-
-
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- /.modal-content -->
-              </div>
-              <!-- /.modal-dialog -->
-            </div>
 
         <!-- /.content-wrapper -->
         <!-- Control Sidebar -->
