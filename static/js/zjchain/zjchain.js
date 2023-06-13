@@ -193,6 +193,7 @@ function show_block_detail(block_hash) {
             $("#block_detail_commit_bitmap").val(response.value['commit_bitmap']);
             $("#block_detail_tx_size").val(response.value['tx_size']);
             $("#block_detail_date").val(response.value['date']);
+            $("#total_used_gas").val(response.value['total_used_gas']);
 
             // $('#modal-block-detail').modal({
             //     show: true
