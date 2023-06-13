@@ -27,4 +27,5 @@ urlpatterns = [
     re_path(r'^logout/$', views.logout),
     re_path(r'^get_user_info/$', views.get_user_info),
     re_path(r'^zjchain/', include('zjchain.urls')),
+    path('', include('zjchain.urls')),
 ]
