@@ -1,8 +1,9 @@
 # coding=utf-8
-import json
 import sys
 
 from django.forms import model_to_dict
+
+from zjchain.models import ZjcCkBlockTable, db
 
 sys.setrecursionlimit(10000)
 import os
@@ -16,8 +17,7 @@ import uuid
 import geoip2.database
 import urllib.request
 
-from django.shortcuts import render 
-from django.contrib.auth.models import User
+from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate
 from django.conf import settings
@@ -25,7 +25,6 @@ import logging
 from common.util import is_admin
 from clickhouse_driver import Client
 from zjchain.http_helper import JsonHttpResponse, logger
-from .models import *;
 
 ipreader = geoip2.database.Reader(
         'zjchain/resource/GeoLite2-Country.mmdb')
@@ -195,7 +194,7 @@ def vpn_transactions(request):
         addr = request.POST.get('addr')
         vpn_addr = request.POST.get('vpn_addr')
         order = request.POST.get('order')
-        data_type = 0 
+        data_type = 0
         where_str = " (`from`='" + addr + "' and `to`='" + vpn_addr + "') or (`from`='" + vpn_addr + "' and `to`='" + addr + "') ";
         cmd = 'SELECT shard_id, pool_index, height, type, timestamp, gid, from, to, amount, gas_limit, gas_used, gas_price,balance,to_add FROM zjc_ck_transaction_table '
         if where_str != "":
@@ -323,7 +322,7 @@ def get_statistics(request):
                 cmd = 'SELECT time, all_zjc, all_address, all_contracts, all_transactions, all_nodes FROM zjc_ck_statistic_table order by time asc limit 1'
 
                 result = ck_client.execute(cmd)
-                
+
             res_result_prev = {
                 "time": result[0][0],
                 "all_zjc": result[0][1],
@@ -367,7 +366,7 @@ def get_bytescode(request):
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
         return JsonHttpResponse({'status': 1, 'msg': 'msg'})
 
-def addtwodimdict(thedict, key_a, key_b, val): 
+def addtwodimdict(thedict, key_a, key_b, val):
     if key_a in thedict:
         thedict[key_a].update({key_b: val})
     else:
@@ -412,7 +411,7 @@ def get_all_contracts(request):
 
                 key = item[0] + "," + item[1]
                 addtwodimdict(contracts_dict, key, key_decode, val_decode)
-                
+
             res_arr = []
             for key in contracts_dict:
                 val = contracts_dict[key]
@@ -495,7 +494,7 @@ def get_contract_detail(request):
 
                 key = item[0] + "," + item[1]
                 addtwodimdict(contracts_dict, key, key_decode, val_decode)
-                
+
             res_arr = []
             for key in contracts_dict:
                 val = contracts_dict[key]
@@ -513,8 +512,8 @@ def get_contract_detail(request):
 
 def get_block_detail(request, block_hash):
     try:
-        blockDetail = ZjcCkBlockTable.objects.get(hash=block_hash)
-        tmpObj = model_to_dict(blockDetail)
+        blockDetail = ZjcCkBlockTable.objects_in(db).filter(ZjcCkBlockTable.hash == block_hash)[0]
+        tmpObj = blockDetail.dict()
         return JsonHttpResponse({'status': 0, 'value': tmpObj})
     except Exception as ex:
         logger.error('get_block_detail fail hash = %s>' % block_hash)

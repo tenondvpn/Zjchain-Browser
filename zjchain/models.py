@@ -1,152 +1,156 @@
-from django.db.models import CheckConstraint, Func, Q, IntegerChoices
-from django.utils import timezone
+import json
 
-from clickhouse_backend import models
+from django.conf import settings
+from infi.clickhouse_orm import *
 
-
-class PrivateKeyTable(models.ClickhouseModel):
-    seckey = models.StringField()
-    ecn_prikey = models.StringField()
-    date = models.UInt32Field()
-
-    class Meta:
-        managed = False
-        db_table = 'private_key_table'
-
-        ordering = ['-seckey']
-        engine = models.ReplacingMergeTree(
-            order_by=['seckey'],
-            partition_by='date'
-        )
+db = Database('default', db_url=settings.CK_URL, username='default', password='')
 
 
-class ZjcCkAccountKeyValueTable(models.ClickhouseModel):
-    from_field = models.StringField(db_column='from')  # Field renamed because it was a Python reserved word.
-    to = models.StringField()
-    type = models.UInt32Field()
-    shard_id = models.UInt32Field()
-    key = models.StringField()
-    value = models.StringField()
+class BaseMode(Model):
+    @classmethod
+    def table_name(self):
+        class_name = self.__name__  # 获取子类的类名
+        snake_case_name = self._convert_to_snake_case(class_name)  # 将类名转换为蛇形命名
+        return snake_case_name
 
-    class Meta:
-        managed = False
-        db_table = 'zjc_ck_account_key_value_table'
+    @classmethod
+    def _convert_to_snake_case(self, name):
+        snake_case = ""
+        for char in name:
+            if char.isupper():
+                snake_case += "_" + char.lower()
+            else:
+                snake_case += char
+        return snake_case.lstrip("_")
 
-        ordering = ['type', 'key', 'from_field', 'to']
-        engine = models.ReplacingMergeTree(
-            order_by=['type', 'key', 'from_field', 'to'],
-            partition_by='shard_id'
-        )
+    def dict(self):
 
+        data = self.get_child_properties()
 
-class ZjcCkAccountTable(models.ClickhouseModel):
-    id = models.StringField(primary_key=True)
-    shard_id = models.UInt32Field()
-    pool_index = models.UInt32Field()
-    balance = models.UInt64Field()
+        return data
 
-    class Meta:
-        managed = False
-        db_table = 'zjc_ck_account_table'
-
-        ordering = ['id', 'pool_index']
-        engine = models.ReplacingMergeTree(
-            order_by=['id', 'pool_index'],
-            partition_by='shard_id'
-        )
+    def get_child_properties(self):
+        public_props = {}
+        for key, value in self.__dict__.items():
+            if not key.startswith('_'):
+                public_props[key] = value
+        return public_props
 
 
-class ZjcCkBlockTable(models.ClickhouseModel):
-    shard_id = models.UInt32Field()
-    pool_index = models.UInt32Field()
-    height = models.UInt64Field()
-    prehash = models.StringField()
-    hash = models.StringField()
-    version = models.UInt32Field()
-    vss = models.UInt64Field()
-    elect_height = models.UInt64Field()
-    bitmap = models.StringField()
-    timestamp = models.UInt64Field()
-    timeblock_height = models.UInt64Field()
-    bls_agg_sign_x = models.StringField()
-    bls_agg_sign_y = models.StringField()
-    commit_bitmap = models.StringField()
-    tx_size = models.UInt32Field()
-    date = models.UInt32Field()
 
-    class Meta:
-        managed = False
-        db_table = 'zjc_ck_block_table'
+class PrivateKeyTable(BaseMode):
+    seckey = StringField()
+    ecn_prikey = StringField()
+    date = UInt32Field()
 
-        ordering = ['pool_index', 'height']
-        engine = models.ReplacingMergeTree(
-            order_by=['pool_index', 'height'],
-            partition_by=['shard_id', 'date']
-        )
+    engine = ReplacingMergeTree(
+        order_by=['seckey'],
+        partition_key=['date']
+    )
 
 
-class ZjcCkStatisticTable(models.ClickhouseModel):
-    time = models.UInt64Field()
-    all_zjc = models.UInt64Field()
-    all_address = models.UInt32Field()
-    all_contracts = models.UInt32Field()
-    all_transactions = models.UInt32Field()
-    all_nodes = models.UInt32Field()
-    all_waiting_nodes = models.UInt32Field()
-    date = models.UInt32Field()
+class ZjcCkAccountKeyValueTable(BaseMode):
+    from_field = StringField(alias='from')  # Field renamed because it was a Python reserved word.
+    to = StringField()
+    type = UInt32Field()
+    shard_id = UInt32Field()
+    key = StringField()
+    value = StringField()
 
-    class Meta:
-        managed = False
-        db_table = 'zjc_ck_statistic_table'
-
-        ordering = ['-time']
-        engine = models.ReplacingMergeTree(
-            order_by=['time'],
-            partition_by='date'
-        )
+    engine = ReplacingMergeTree(
+        order_by=['type', 'key', 'from_field', 'to'],
+        partition_key=['shard_id']
+    )
 
 
-class ZjcCkTransactionTable(models.ClickhouseModel):
-    shard_id = models.UInt32Field()
-    pool_index = models.UInt32Field()
-    height = models.UInt64Field()
-    prehash = models.StringField()
-    hash = models.StringField()
-    version = models.UInt32Field()
-    vss = models.UInt64Field()
-    elect_height = models.UInt64Field()
-    bitmap = models.StringField()
-    timestamp = models.UInt64Field()
-    timeblock_height = models.UInt64Field()
-    bls_agg_sign_x = models.StringField()
-    bls_agg_sign_y = models.StringField()
-    commit_bitmap = models.StringField()
-    gid = models.StringField()
-    from_field = models.StringField(db_column='from')  # Field renamed because it was a Python reserved word.
-    from_pubkey = models.StringField()
-    from_sign = models.StringField()
-    to = models.StringField()
-    amount = models.UInt64Field()
-    gas_limit = models.UInt64Field()
-    gas_used = models.UInt64Field()
-    gas_price = models.UInt64Field()
-    balance = models.UInt64Field()
-    to_add = models.UInt32Field()
-    type = models.UInt32Field()
-    attrs = models.StringField()
-    status = models.UInt32Field()
-    tx_hash = models.StringField()
-    call_contract_step = models.UInt32Field()
-    storages = models.StringField()
-    transfers = models.StringField()
-    date = models.UInt32Field()
+class ZjcCkAccountTable(BaseMode):
+    id = StringField()
+    shard_id = UInt32Field()
+    pool_index = UInt32Field()
+    balance = UInt64Field()
 
-    class Meta:
-        managed = False
-        db_table = 'zjc_ck_transaction_table'
+    engine = ReplacingMergeTree(
+        order_by=['id', 'pool_index'],
+        partition_key=['shard_id']
+    )
 
-        ordering = ['pool_index', 'height', 'type', 'from_field', 'to']
-        engine = models.ReplacingMergeTree(
-            order_by=['pool_index', 'height', 'type', 'from_field', 'to'],
-            partition_by=['shard_id', 'date']
-        )
+
+class ZjcCkBlockTable(BaseMode):
+    shard_id = UInt32Field()
+    pool_index = UInt32Field()
+    height = UInt64Field()
+    prehash = StringField()
+    hash = StringField()
+    version = UInt32Field()
+    vss = UInt64Field()
+    elect_height = UInt64Field()
+    bitmap = StringField()
+    timestamp = UInt64Field()
+    timeblock_height = UInt64Field()
+    bls_agg_sign_x = StringField()
+    bls_agg_sign_y = StringField()
+    commit_bitmap = StringField()
+    tx_size = UInt32Field()
+    date = UInt32Field()
+
+    engine = ReplacingMergeTree(
+        order_by=['pool_index', 'height'],
+        partition_key=['shard_id', 'date']
+    )
+
+
+class ZjcCkStatisticTable(BaseMode):
+    time = UInt64Field()
+    all_zjc = UInt64Field()
+    all_address = UInt32Field()
+    all_contracts = UInt32Field()
+    all_transactions = UInt32Field()
+    all_nodes = UInt32Field()
+    all_waiting_nodes = UInt32Field()
+    date = UInt32Field()
+
+    engine = ReplacingMergeTree(
+        order_by=['time'],
+        partition_key=['date']
+    )
+
+
+class ZjcCkTransactionTable(BaseMode):
+    shard_id = UInt32Field()
+    pool_index = UInt32Field()
+    height = UInt64Field()
+    prehash = StringField()
+    hash = StringField()
+    version = UInt32Field()
+    vss = UInt64Field()
+    elect_height = UInt64Field()
+    bitmap = StringField()
+    timestamp = UInt64Field()
+    timeblock_height = UInt64Field()
+    bls_agg_sign_x = StringField()
+    bls_agg_sign_y = StringField()
+    commit_bitmap = StringField()
+    gid = StringField()
+    from_field = StringField(alias='from')  # Field renamed because it was a Python reserved word.
+    from_pubkey = StringField()
+    from_sign = StringField()
+    to = StringField()
+    amount = UInt64Field()
+    gas_limit = UInt64Field()
+    gas_used = UInt64Field()
+    gas_price = UInt64Field()
+    balance = UInt64Field()
+    to_add = UInt32Field()
+    type = UInt32Field()
+    attrs = StringField()
+    status = UInt32Field()
+    tx_hash = StringField()
+    call_contract_step = UInt32Field()
+    storages = StringField()
+    transfers = StringField()
+    date = UInt32Field()
+
+    engine = ReplacingMergeTree(
+        order_by=['pool_index', 'height', 'type', 'from_field', 'to'],
+        partition_key=['shard_id', 'date']
+    )

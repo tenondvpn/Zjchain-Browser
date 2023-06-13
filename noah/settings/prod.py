@@ -24,3 +24,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CK_HOST = 'localhost'
 CK_PORT = '9000'
+CK_URL = 'http://localhost:8123'

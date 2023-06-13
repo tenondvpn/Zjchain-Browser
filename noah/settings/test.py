@@ -33,4 +33,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CK_HOST = '10.101.20.11'
 CK_PORT = '9000'
-
+CK_URL = 'http://10.101.20.11:8123'
