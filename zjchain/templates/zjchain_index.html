@@ -209,13 +209,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                     <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
 
                                                         <li class="nav-item">
-                                                            <a class="nav-link active" id="custom-tabs-one-home-tab" data-toggle="pill" href="#div-block-detail" role="tab" aria-controls="custom-tabs-one-home" aria-selected="true">Detail</a>
+                                                            <a class="nav-link active" id="custom-tabs-one-home-tab" data-toggle="pill" href="#div-block-detail" role="tab" aria-controls="div-block-detail" aria-selected="true">Detail</a>
                                                         </li>
                                                         <li class="nav-item">
-                                                            <a class="nav-link" id="custom-tabs-one-messages-tab" data-toggle="pill" href="#div-block-transactions" role="tab" aria-controls="custom-tabs-one-messages" aria-selected="false">Transactions Associated</a>
+                                                            <a class="nav-link" id="custom-tabs-one-messages-tab" data-toggle="pill" href="#div-block-transactions" role="tab" aria-controls="div-block-transactions" aria-selected="false">Transactions Associated</a>
                                                         </li>
                                                         <li class="nav-item">
-                                                            <a class="nav-link" id="custom-tabs-one-settings-tab" data-toggle="pill" href="#custom-tabs-one-settings" role="tab" aria-controls="custom-tabs-one-settings" aria-selected="false">Binary</a>
+                                                            <a class="nav-link" id="custom-tabs-one-settings-tab" data-toggle="pill" href="#div-block-nodes" role="tab" aria-controls="div-block-nodes" aria-selected="false">Work Nodes</a>
                                                         </li>
 
                                                         <ul class="card-tools ml-auto">
@@ -352,11 +352,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                         <div class="tab-pane fade" id="div-block-transactions" role="tabpanel" aria-labelledby="custom-tabs-one-settings-tab">
                                                                 <div class="form-group row" style="margin-top:-10px;">
                                                                     <div class="col-sm-12 card-body p-0">
-                                                                        <textarea class="form-control" rows="12" disabled placeholder="" id="detail_contract_bytes" style="white-space:normal;word-wrap:break-word;word-break:break-all;background-color:black;color:darkcyan;"></textarea>
+                                                                            <div id="jsGrid_transactions" style="display:none;">
+                                                                                
+                                                                            </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        <div class="tab-pane fade" id="custom-tabs-one-settings" role="tabpanel" aria-labelledby="custom-tabs-one-settings-tab">
+                                                        <div class="tab-pane fade" id="div-block-nodes" role="tabpanel" aria-labelledby="custom-tabs-one-settings-tab">
                                                                 <div class="form-group row" style="margin-top:-10px;">
                                                                     <div class="col-sm-12 card-body p-0">
                                                                         <textarea class="form-control" rows="12" disabled placeholder="" id="detail_contract_bytes" style="white-space:normal;word-wrap:break-word;word-break:break-all;background-color:black;color:darkcyan;"></textarea>

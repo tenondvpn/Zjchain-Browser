@@ -588,42 +588,8 @@ function FormatNum(num, len) {
     return add_str + str_num;
 }
 
-$(function () {
-    //doDatabaseStuff();
-    clipboard = new ClipboardJS('#save_prikey_id', {
-        text: function () {
-            return self_private_key.toString(16);
-        }
-    });
-    clipboard.on('success', function (e) {
-        Toast.fire({
-            icon: 'info',
-            title: 'copy private key success.'
-        })
-    });
 
-    clipboard.on('error', function (e) {
-        Toast.fire({
-            icon: 'error',
-            title: 'copy private key failed.'
-        })
-    });
-    CreateInitAccount();
-    Toast = Swal.mixin({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 3000
-    });
-
-    $("#jsGrid1").jsGrid({
-        height: "auto",
-        width: "100%",
-        pageSize: 100,
-        sorting: true,
-        paging: false,
-        autoload: true,
-        controller: {
+transactions_jsGrid_controller = {
             loadData: function () {
                 var d = $.Deferred();
 
@@ -645,9 +611,8 @@ $(function () {
 
                 return d.promise();
             }
-        },
-        
-        fields: [
+        };
+transactions_jsGrid_fields = [
             { name: "Time", type: "text", align: "center", width: 90 },
             { name: "Shard", type: "number", align: "center", width: 40, "title": "#" },
             { name: "Pool", type: "number", align: "center", width: 40 },
@@ -706,7 +671,47 @@ $(function () {
                     return Math.floor(value / 10000000) + '.' + FormatNum(value % 10000000, 7);
                 },
             },
-        ]
+        ];
+
+
+$(function () {
+    //doDatabaseStuff();
+    clipboard = new ClipboardJS('#save_prikey_id', {
+        text: function () {
+            return self_private_key.toString(16);
+        }
+    });
+    clipboard.on('success', function (e) {
+        Toast.fire({
+            icon: 'info',
+            title: 'copy private key success.'
+        })
+    });
+
+    clipboard.on('error', function (e) {
+        Toast.fire({
+            icon: 'error',
+            title: 'copy private key failed.'
+        })
+    });
+    CreateInitAccount();
+    Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000
+    });
+
+    $("#jsGrid1").jsGrid({
+        height: "auto",
+        width: "100%",
+        pageSize: 100,
+        sorting: true,
+        paging: false,
+        autoload: true,
+        controller: transactions_jsGrid_controller,
+        
+        fields: transactions_jsGrid_fields
     });
 
     $("#jsGrid2").jsGrid({
