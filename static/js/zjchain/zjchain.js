@@ -45,26 +45,25 @@ function list_transactions() {
     $("#id_search").val("");
     search_str = "";
     page_size = 0;
-    $("#jsGrid2").hide();
-    $("#jsGrid3").hide();
-    $("#jsGrid1").show();
+    hide_others_except('#pjsGrid1');
     $("#jsGrid1").jsGrid("loadData");
     content_mode = 0;
 }
 
 function hide_others_except(str_grid) {
-    $("#jsGrid1").hide();
-    $("#jsGrid2").hide();
-    $("#jsGrid3").hide();
-    $("#jsGrid4").hide();
+    $("#pjsGrid1").hide();
+    $("#pjsGrid2").hide();
+    $("#pjsGrid3").hide();
+    $("#pjsGrid4").hide();
     $(str_grid).show();
+    $(str_grid.replace("p", "")).show();
 }
 
 function list_blocks() {
     $("#id_search").val("");
     search_str = "";
     page_size = 0;
-    hide_others_except('#jsGrid2')
+    hide_others_except('#pjsGrid2');
     $("#jsGrid2").jsGrid("loadData");
     content_mode = 1;
 }
@@ -73,9 +72,7 @@ function list_accounts() {
     $("#id_search").val("");
     search_str = "";
     page_size = 0;
-    $("#jsGrid1").hide();
-    $("#jsGrid2").hide();
-    $("#jsGrid3").show();
+    hide_others_except('#pjsGrid3');
     $("#jsGrid3").jsGrid("loadData");
     content_mode = 2;
 }
@@ -199,7 +196,7 @@ function show_block_detail(block_hash) {
             //     show: true
             // });
 
-            hide_others_except('#jsGrid4')
+            hide_others_except('#pjsGrid4')
 
         } else {
             Toast.fire({
@@ -588,7 +585,23 @@ function FormatNum(num, len) {
     return add_str + str_num;
 }
 
+function initializeGridWithHeadBox(fields, name) {
+    var configPanel
+     if ($('.'+ name + 'headbox').length === 0) {
+         configPanel = $('<div class="' + name + 'headbox' + '"></div>');
+         $("#"+name).before(configPanel);
+     }
 
+    fields.forEach(function(field) {
+                const checkbox = $('<label><input id ='+field.name +' type="checkbox" checked /> ' + field.name + '</label>');
+                configPanel.append(checkbox);
+    });
+
+    $("."+name + "headbox input[type=checkbox]").on("click", function() {
+                var $cb = $(this);
+                $("#"+name).jsGrid("fieldOption", $cb.attr("id"), "visible", $cb.is(":checked"));
+    });
+}
 transactions_jsGrid_controller = {
             loadData: function () {
                 var d = $.Deferred();
@@ -711,8 +724,11 @@ $(function () {
         autoload: true,
         controller: transactions_jsGrid_controller,
         
-        fields: transactions_jsGrid_fields
+        fields: transactions_jsGrid_fields,
+
     });
+    initializeGridWithHeadBox(transactions_jsGrid_fields,'jsGrid1');
+
 
     $("#jsGrid2").jsGrid({
         height: "auto",
