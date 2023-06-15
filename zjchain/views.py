@@ -1,9 +1,9 @@
 # coding=utf-8
 import sys
 
-from django.forms import model_to_dict
 
 from zjchain.models import ZjcCkBlockTable, db
+from zjchain.utils import str2r
 
 sys.setrecursionlimit(10000)
 import os
@@ -110,9 +110,9 @@ def transactions(request):
 
         if block_hash != "":
             if where_str != "":
-                where_str += " and hash = " + hexStr_to_str(block_hash)
+                where_str += " and hash = " + str2r(block_hash)
             else:
-                where_str += " hash = " + hexStr_to_str(block_hash)
+                where_str += " hash = " + str2r(block_hash)
 
         if data_type is None:
             data_type = 0

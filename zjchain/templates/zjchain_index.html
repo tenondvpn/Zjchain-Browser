@@ -181,13 +181,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <div class="card card-primary">
                             <div class="card-header" style="background-color: #343a40">
                                 <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                                    <label class="btn btn-secondary active">
-                                        <input type="radio" onclick="list_transactions()" name="options" id="option_a1" autocomplete="off" checked=""> Transactions
+                                    <label id='btn1'  class="btn btn-secondary active">
+                                        <input  type="radio" onclick="list_transactions()" name="options" id="option_a1" autocomplete="off" checked=""> Transactions
                                     </label>
-                                    <label class="btn btn-secondary">
+                                    <label id='btn2'  class="btn btn-secondary">
                                         <input type="radio" onclick="list_blocks()" name="options" id="option_a2" autocomplete="off"> Blocks
                                     </label>
-                                    <label class="btn btn-secondary">
+                                    <label id='btn3' class="btn btn-secondary">
                                         <input type="radio" onclick="list_accounts()" name="options" id="option_a3" autocomplete="off"> Accounts
                                     </label>
                                 </div>
@@ -212,7 +212,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                             <a class="nav-link active" id="custom-tabs-one-home-tab" data-toggle="pill" href="#div-block-detail" role="tab" aria-controls="div-block-detail" aria-selected="true">Detail</a>
                                                         </li>
                                                         <li class="nav-item">
-                                                            <a class="nav-link" id="custom-tabs-one-messages-tab" data-toggle="pill" href="#div-block-transactions" role="tab" aria-controls="div-block-transactions" aria-selected="false">Transactions Associated</a>
+                                                            <a class="nav-link" id="custom-tabs-one-messages-tab" data-toggle="pill" href="#div-block-transactions" role="tab" aria-controls="div-block-transactions" aria-selected="false" onclick="$('#jsGrid-block-transactions').show()">Transactions Associated</a>
                                                         </li>
                                                         <li class="nav-item">
                                                             <a class="nav-link" id="custom-tabs-one-settings-tab" data-toggle="pill" href="#div-block-nodes" role="tab" aria-controls="div-block-nodes" aria-selected="false">Work Nodes</a>
@@ -352,9 +352,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                                         <div class="tab-pane fade" id="div-block-transactions" role="tabpanel" aria-labelledby="custom-tabs-one-settings-tab">
                                                                 <div class="form-group row" style="margin-top:-10px;">
                                                                     <div class="col-sm-12 card-body p-0">
-                                                                            <div id="jsGrid_transactions" style="display:none;">
-
-                                                                            </div>
+                                                                        <div id ='pjsGrid-block-transactions'>
+                                                                            <div id="jsGrid-block-transactions" style="display:none;"></div>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
