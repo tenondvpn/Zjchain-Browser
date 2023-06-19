@@ -34,3 +34,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CK_HOST = '10.101.20.11'
 CK_PORT = '9000'
 CK_URL = 'http://10.101.20.11:8123'
+
+# STATICFILES_DIRS.append(os.path.abspath(os.path.join(os.path.join(BASE_DIR, os.pardir), 'web')))
+STATICFILES_DIRS.append(os.path.abspath(os.path.join(BASE_DIR, 'web')))
+
+DJANGO_VITE_DEV_MODE = True

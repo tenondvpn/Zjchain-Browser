@@ -34,7 +34,7 @@ NODE_PORT=18792
 SECRET_KEY = 'ib3j-d5eu)h7judfpt5_%9hrwanho=*6$pcye#4w6h$av@eeg4'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 SITE_URL = 'http://127.0.0.1:8000/'
 ALLOWED_HOSTS = ['*']
 PROJECT_NAME="noah"
@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
+    'django_vite',
+    "vv",
 ]
 
 MIDDLEWARE = [
@@ -148,9 +150,14 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
-
+DJANGO_VITE_DEV_MODE = False
+VV_BASE_DIR = BASE_DIR
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+DJANGO_VITE_ASSETS_PATH = os.path.join(os.path.join(BASE_DIR, 'static'), "dist")
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'),
+                    DJANGO_VITE_ASSETS_PATH]
+
+
 CORS_ALLOWED_ORIGIN_REGEXES = [
     r".*",
 ]

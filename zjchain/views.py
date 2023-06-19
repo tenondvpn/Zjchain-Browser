@@ -35,6 +35,9 @@ ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
 def zjchain_index(request):
     return render(request, 'zjchain_index.html', {"pipe_id": -1})
 
+def vue_index(request):
+    return render(request, 'vue.html', {"pipe_id": -1})
+
 
 def contract(request):
     return render(request, 'contract.html', {"pipe_id": -1})
