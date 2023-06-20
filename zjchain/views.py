@@ -36,7 +36,7 @@ def zjchain_index(request):
     return render(request, 'zjchain_index.html', {"pipe_id": -1})
 
 def vue_index(request):
-    return render(request, 'vue.html', {"pipe_id": -1})
+    return render(request, 'index.html', {"pipe_id": -1})
 
 
 def contract(request):

@@ -11,10 +11,12 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+from pathlib import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(os.path.join(__file__, os.pardir))))
+BASE_DIR = Path(BASE_DIR)
 CURR_DIR = os.path.basename(os.path.dirname(__file__))
 CONF_DUMP_DIR = "/data/xl/Dags-Dashbord/dags_conf"
 CONF_TMP_DUMP_DIR = "./work_dir/tmp"
@@ -25,7 +27,7 @@ PACKAGE_PATH = "/data/xl/Dags-Dashbord/package_files"
 ZK_HOSTS = "127.0.0.1:2181"
 ZK_CLUSTER_DIR = "/dags/clusters"
 ZK_DAGS_DIR = "/dags/dags"
-NODE_PORT=18792
+NODE_PORT = 18792
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
@@ -37,7 +39,7 @@ SECRET_KEY = 'ib3j-d5eu)h7judfpt5_%9hrwanho=*6$pcye#4w6h$av@eeg4'
 DEBUG = False
 SITE_URL = 'http://127.0.0.1:8000/'
 ALLOWED_HOSTS = ['*']
-PROJECT_NAME="noah"
+PROJECT_NAME = "noah"
 SITE_ADMIN = ""
 # Application definition
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
@@ -50,7 +52,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'django_vite',
-    "vv",
 ]
 
 MIDDLEWARE = [
@@ -65,12 +66,12 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'noah.urls'
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-             os.path.join(BASE_DIR, 'zjchain/templates'),
+            os.path.join(BASE_DIR, 'zjchain/templates'),
+            BASE_DIR / 'web',
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -85,7 +86,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'noah.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
@@ -117,8 +117,8 @@ MY_APPS = (
 INSTALLED_APPS += MY_APPS
 
 TEMPLATE_DIRS = [
-                os.path.join(BASE_DIR, 'zjchain/templates'),
-              ]
+    os.path.join(BASE_DIR, 'zjchain/templates'),
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -138,7 +138,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
@@ -151,17 +150,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 DJANGO_VITE_DEV_MODE = False
-VV_BASE_DIR = BASE_DIR
 STATIC_URL = '/static/'
+STATIC_ROOT = Path(BASE_DIR) / 'collectedstatic'
 DJANGO_VITE_ASSETS_PATH = os.path.join(os.path.join(BASE_DIR, 'static'), "dist")
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'),
                     DJANGO_VITE_ASSETS_PATH]
 
-
 CORS_ALLOWED_ORIGIN_REGEXES = [
     r".*",
 ]
-CORS_ALLOW_ALL_ORIGINS=True
-CORS_ALLOW_CREDENTIALS=True
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
 X_FRAME_OPTIONS = 'ALLOWALL'
-XS_SHARING_ALLOWED_METHODS = ['POST','GET','OPTIONS', 'PUT', 'DELETE']
+XS_SHARING_ALLOWED_METHODS = ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE']
