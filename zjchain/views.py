@@ -2,27 +2,19 @@
 import sys
 
 
-from zjchain.models import ZjcCkBlockTable, db
+from zjchain.models import ZjcCkBlockTable
 from zjchain.utils import str2r
 
 sys.setrecursionlimit(10000)
 import os
 import datetime
-import configparser
-import shutil
-import hashlib
-import time
-import binascii
 import uuid
 import geoip2.database
 import urllib.request
 
 from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate
 from django.conf import settings
 import logging
-from common.util import is_admin
 from clickhouse_driver import Client
 from zjchain.http_helper import JsonHttpResponse, logger
 
