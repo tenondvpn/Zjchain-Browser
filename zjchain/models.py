@@ -21,7 +21,6 @@ class BassMode:
         return public_props
 
 
-
 class PrivateKeyTable(BassMode, models.ClickhouseModel):
     seckey = models.StringField()
     ecn_prikey = models.StringField()
@@ -101,6 +100,12 @@ class ZjcCkBlockTable(BassMode, models.ClickhouseModel):
             order_by=['pool_index', 'height'],
             partition_by=['shard_id', 'date']
         )
+
+
+class BlockFilter(django_filters.FilterSet):
+    class Meta:
+        model = ZjcCkBlockTable
+        fields = ['hash', 'timestamp']
 
 
 class ZjcCkStatisticTable(BassMode, models.ClickhouseModel):

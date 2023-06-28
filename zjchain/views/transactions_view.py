@@ -1,38 +1,16 @@
 # coding=utf-8
-import json
 import sys
 
 from django.core.paginator import Paginator
 from django.forms import model_to_dict
-from django.http import HttpResponse
 
-from zjchain.http_helper import JsonHttpResponse, logger
-from zjchain.models import ZjcCkBlockTable, TransactionFilter, ZjcCkTransactionTable
-from zjchain.utils import str2r, fromtimestamp
-from django.core import serializers
+from zjchain.http_helper import JsonHttpResponse
+from zjchain.models import TransactionFilter, ZjcCkTransactionTable
+from zjchain.utils import fromtimestamp
 
 sys.setrecursionlimit(10000)
-import os
-import datetime
-import configparser
-import shutil
-import hashlib
-import time
-import binascii
-import uuid
-import geoip2.database
-import urllib.request
-
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate
 from django.conf import settings
-import logging
-from common.util import is_admin
 from clickhouse_driver import Client
-
-ipreader = geoip2.database.Reader(
-    'zjchain/resource/GeoLite2-Country.mmdb')
 
 ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
 
@@ -43,7 +21,7 @@ def transactions_list(request):
     page = request.GET.get('page')
     if page is None: page = 1
 
-    set = ZjcCkTransactionTable.objects.all()
+    set = ZjcCkTransactionTable.objects.all().order_by('-timestamp')
     set = TransactionFilter(request.GET, queryset=set)
     paginator = Paginator(set.qs, limit)
     set = paginator.get_page(page)
