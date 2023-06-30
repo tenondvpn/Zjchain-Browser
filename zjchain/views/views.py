@@ -346,7 +346,8 @@ def get_statistics(request):
         except Exception as ex:
             logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
-
+        block_num = ZjcCkBlockTable.objects.count()
+        res_result['block_num'] = block_num
         return JsonHttpResponse({'status': 0, 'cmd': cmd, 'value': res_result, 'cmp': res_result_prev})
 
 
