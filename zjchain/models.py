@@ -4,6 +4,8 @@ from django.utils import timezone
 import django_filters
 
 from clickhouse_backend import models
+from django.db.models import Q
+
 
 
 class BassMode:
@@ -71,6 +73,12 @@ class ZjcCkAccountTable(BassMode, models.ClickhouseModel):
             order_by=['id', 'pool_index'],
             partition_by='shard_id'
         )
+
+
+class AccountFilter(django_filters.FilterSet):
+    class Meta:
+        model = ZjcCkAccountTable
+        fields = ['id', 'shard_id', 'pool_index']
 
 
 class ZjcCkBlockTable(BassMode, models.ClickhouseModel):
@@ -176,6 +184,13 @@ class ZjcCkTransactionTable(BassMode, models.ClickhouseModel):
 
 
 class TransactionFilter(django_filters.FilterSet):
+    account = django_filters.CharFilter(method='filter_contains_account')
+
     class Meta:
         model = ZjcCkTransactionTable
-        fields = ['hash', 'timestamp']
+        fields = ['hash', 'timestamp', ]
+
+    def filter_contains_account(self, queryset, name, value):
+        return queryset.filter(
+            Q(from_field__icontains=value) | Q(to__icontains=value)
+        )
