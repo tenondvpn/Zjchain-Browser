@@ -549,7 +549,7 @@ def set_private_key(request):
     if request.method == 'POST':
         seckkey = request.POST.get('key')
         prkey = request.POST.get('enc')
-        cmd = "insert into private_key_table values('" + seckkey + "', '" + prkey + "', 0)"
+        cmd = "insert into private_key_table values('" + seckkey + "', '" + prkey + "', 0, 0)"
         try:
 
             ck_client.execute(cmd)
