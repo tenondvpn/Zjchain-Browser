@@ -7,7 +7,6 @@ from clickhouse_backend import models
 from django.db.models import Q
 
 
-
 class BassMode:
     def dict(self):
 
@@ -76,9 +75,14 @@ class ZjcCkAccountTable(BassMode, models.ClickhouseModel):
 
 
 class AccountFilter(django_filters.FilterSet):
+    query = django_filters.CharFilter(method='filter_query')
+
     class Meta:
         model = ZjcCkAccountTable
         fields = ['id', 'shard_id', 'pool_index']
+
+    def filter_query(self, queryset, name, value):
+        return queryset.filter(Q(id__icontains=value))
 
 
 class ZjcCkBlockTable(BassMode, models.ClickhouseModel):
@@ -111,9 +115,14 @@ class ZjcCkBlockTable(BassMode, models.ClickhouseModel):
 
 
 class BlockFilter(django_filters.FilterSet):
+    query = django_filters.CharFilter(method='filter_query')
+
     class Meta:
         model = ZjcCkBlockTable
         fields = ['hash', 'timestamp']
+
+    def filter_query(self, queryset, name, value):
+        return queryset.filter(Q(hash__icontains=value))
 
 
 class ZjcCkStatisticTable(BassMode, models.ClickhouseModel):
@@ -185,6 +194,7 @@ class ZjcCkTransactionTable(BassMode, models.ClickhouseModel):
 
 class TransactionFilter(django_filters.FilterSet):
     account = django_filters.CharFilter(method='filter_contains_account')
+    query = django_filters.CharFilter(method='filter_query')
 
     class Meta:
         model = ZjcCkTransactionTable
@@ -194,3 +204,6 @@ class TransactionFilter(django_filters.FilterSet):
         return queryset.filter(
             Q(from_field__icontains=value) | Q(to__icontains=value)
         )
+
+    def filter_query(self, queryset, name, value):
+        return queryset.filter(Q(tx_hash__icontains=value))

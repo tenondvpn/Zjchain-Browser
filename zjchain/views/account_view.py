@@ -40,7 +40,7 @@ def get_account(request):
     if not account: account = '0000'
 
     try:
-        record = ZjcCkAccountTable.objects.get(id=account)
+        record = ZjcCkAccountTable.objects.distinct().get(id=account)
         record = model_to_dict(record)
     except Exception as ex:
         return JsonHttpResponse({'status': 1, 'msg': str(ex)})
