@@ -1,6 +1,6 @@
-from django.urls import path, re_path, include
+from django.urls import re_path
 #from django.conf.urls import url
-from zjchain import views
+from zjchain.views import views, transactions_view, block_view, account_view
 
 urlpatterns = (
     re_path(r'^$',views.zjchain_index),
@@ -19,4 +19,12 @@ urlpatterns = (
     re_path(r'^get_prikey/(?P<seckey>.*)/$',views.get_prikey),
     re_path(r'^set_private_key/$',views.set_private_key),
     re_path(r'^get_all_videos/$',views.get_all_videos),
+
+    re_path(r'^get_transaction/$', transactions_view.get_transaction),
+    re_path(r'^transactions_list/$', transactions_view.transactions_list),
+    re_path(r'^get_block/$', block_view.get_block),
+    re_path(r'^block_list/$', block_view.block_list),
+    re_path(r'^account_list/$', account_view.account_list),
+    re_path(r'^get_account/$', account_view.get_account),
+
 )

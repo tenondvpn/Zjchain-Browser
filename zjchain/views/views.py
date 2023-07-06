@@ -1,48 +1,44 @@
 # coding=utf-8
-import json
 import sys
 
-from django.forms import model_to_dict
+
+from zjchain.models import ZjcCkBlockTable
+from zjchain.utils import str2r
 
 sys.setrecursionlimit(10000)
 import os
 import datetime
-import configparser
-import shutil
-import hashlib
-import time
-import binascii
 import uuid
 import geoip2.database
 import urllib.request
 
-from django.shortcuts import render 
-from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate
+from django.shortcuts import render
 from django.conf import settings
 import logging
-from common.util import is_admin
 from clickhouse_driver import Client
 from zjchain.http_helper import JsonHttpResponse, logger
-from .models import *;
 
 ipreader = geoip2.database.Reader(
-        'zjchain/resource/GeoLite2-Country.mmdb')
+    'zjchain/resource/GeoLite2-Country.mmdb')
 
 ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
+
 
 def zjchain_index(request):
     return render(request, 'zjchain_index.html', {"pipe_id": -1})
 
+
 def contract(request):
     return render(request, 'contract.html', {"pipe_id": -1})
+
 
 def tbc(request):
     return render(request, 'zjchain_business_school.html', {"pipe_id": -1})
 
+
 def get_country(request):
     return 'CN'
+
 
 def get_balance(request, account_id):
     cmd = "select shard_id, pool_index, balance from zjc_ck_account_table where id='" + account_id + "'"
@@ -64,6 +60,7 @@ def get_balance(request, account_id):
         'country': get_country(request),
         'valid_country': 'AU,CA,CN,DE,FR,GB,HK,IN,JP,NL,SG,US,PH,KR,ID,MY,RU,PH,SA,TW,AE,BR,VN',
         'balance': result[0][2]})
+
 
 def transactions(request):
     if request.method == 'POST':
@@ -105,9 +102,9 @@ def transactions(request):
 
         if block_hash != "":
             if where_str != "":
-                where_str += " and hash = " + hexStr_to_str(block_hash)
+                where_str += " and hash = " + str2r(block_hash)
             else:
-                where_str += " hash = " + hexStr_to_str(block_hash)
+                where_str += " hash = " + str2r(block_hash)
 
         if data_type is None:
             data_type = 0
@@ -117,20 +114,19 @@ def transactions(request):
             if search_str != "":
                 if where_str != "":
                     where_str += " and "
-        
-                where_str += " gid = '" + search_str + "' or from = '" + search_str + "' or to = '" + search_str + "' or hash = '" + search_str + "' or prehash = '" + search_str + "' ";
+
+                where_str += "( gid = '" + search_str + "' or from = '" + search_str + "' or to = '" + search_str + "' or hash = '" + search_str + "' or prehash = '" + search_str + "' )";
         else:
             if search_str != "":
                 if where_str != "":
                     where_str += " and "
-        
-                where_str += " hash = '" + search_str + "' or prehash = '" + search_str + "' ";
 
+                where_str += " hash = '" + search_str + "' or prehash = '" + search_str + "' ";
 
         cmd = 'SELECT shard_id, pool_index, height, type, timestamp, gid, from, to, amount, gas_limit, gas_used, gas_price FROM zjc_ck_transaction_table '
         if data_type == 1:
             cmd = 'SELECT shard_id, pool_index, height, timestamp, prehash, hash, vss, elect_height, timeblock_height, tx_size FROM zjc_ck_block_table '
-            
+
         if where_str != "":
             cmd += " where " + where_str
 
@@ -189,13 +185,14 @@ def transactions(request):
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
         return JsonHttpResponse({'status': 1, 'msg': 'msg'})
 
+
 def vpn_transactions(request):
     if request.method == 'POST':
         limit = request.POST.get('limit')
         addr = request.POST.get('addr')
         vpn_addr = request.POST.get('vpn_addr')
         order = request.POST.get('order')
-        data_type = 0 
+        data_type = 0
         where_str = " (`from`='" + addr + "' and `to`='" + vpn_addr + "') or (`from`='" + vpn_addr + "' and `to`='" + addr + "') ";
         cmd = 'SELECT shard_id, pool_index, height, type, timestamp, gid, from, to, amount, gas_limit, gas_used, gas_price,balance,to_add FROM zjc_ck_transaction_table '
         if where_str != "":
@@ -242,6 +239,7 @@ def vpn_transactions(request):
             logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
         return JsonHttpResponse({'status': 1, 'msg': 'msg'})
+
 
 def accounts(request):
     if request.method == 'POST':
@@ -295,6 +293,7 @@ def accounts(request):
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
         return JsonHttpResponse({'status': 1, 'msg': 'msg'})
 
+
 def get_statistics(request):
     if request.method == 'POST':
         limit = request.POST.get('limit')
@@ -314,7 +313,8 @@ def get_statistics(request):
 
         timestamp_max = tmp_result[0][0] - limit * 10 + 10
         timestamp_min = tmp_result[0][0] - limit * 10 - 10
-        cmd = 'SELECT time, all_zjc, all_address, all_contracts, all_transactions, all_nodes FROM zjc_ck_statistic_table where time >= ' + str(timestamp_min) + ' and time <= ' + str(timestamp_max) +  ' order by time desc limit 1'
+        cmd = 'SELECT time, all_zjc, all_address, all_contracts, all_transactions, all_nodes FROM zjc_ck_statistic_table where time >= ' + str(
+            timestamp_min) + ' and time <= ' + str(timestamp_max) + ' order by time desc limit 1'
         res_result_prev = {}
         res_result = {}
         try:
@@ -323,7 +323,7 @@ def get_statistics(request):
                 cmd = 'SELECT time, all_zjc, all_address, all_contracts, all_transactions, all_nodes FROM zjc_ck_statistic_table order by time asc limit 1'
 
                 result = ck_client.execute(cmd)
-                
+
             res_result_prev = {
                 "time": result[0][0],
                 "all_zjc": result[0][1],
@@ -346,8 +346,9 @@ def get_statistics(request):
         except Exception as ex:
             logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
-
-        return JsonHttpResponse({'status': 0, 'cmd': cmd, 'value': res_result, 'cmp': res_result_prev })
+        block_num = ZjcCkBlockTable.objects.count()
+        res_result['block_num'] = block_num
+        return JsonHttpResponse({'status': 0, 'cmd': cmd, 'value': res_result, 'cmp': res_result_prev})
 
 
 def get_bytescode(request):
@@ -367,11 +368,13 @@ def get_bytescode(request):
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
         return JsonHttpResponse({'status': 1, 'msg': 'msg'})
 
-def addtwodimdict(thedict, key_a, key_b, val): 
+
+def addtwodimdict(thedict, key_a, key_b, val):
     if key_a in thedict:
         thedict[key_a].update({key_b: val})
     else:
-        thedict.update({key_a:{key_b: val}})
+        thedict.update({key_a: {key_b: val}})
+
 
 def get_all_contracts(request):
     if request.method == 'POST':
@@ -412,7 +415,7 @@ def get_all_contracts(request):
 
                 key = item[0] + "," + item[1]
                 addtwodimdict(contracts_dict, key, key_decode, val_decode)
-                
+
             res_arr = []
             for key in contracts_dict:
                 val = contracts_dict[key]
@@ -427,16 +430,18 @@ def get_all_contracts(request):
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
         return JsonHttpResponse({'status': 1, 'cmd': cmd, 'msg': 'msg'})
 
+
 def nodes(request):
     try:
         data = urllib.parse.urlencode({'Host': 'search.cpsa.ca', 'Connection': 'keep-alive', 'Content-Length': 23796,
-                                     'Origin': 'http://search.cpsa.ca', 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-                                     'Cahce-Control': 'no-cache', 'X-Requested-With': 'XMLHttpRequest',
-                                     'X-MicrosoftAjax': 'Delta=true', 'Accept': '*/*',
-                                     'Referer': 'http://search.cpsa.ca/PhysicianSearch',
-                                     'Accept-Encoding': 'gzip, deflate',
-                                     'Accept-Language': 'en-GB,en-US;q=0.8,en;q=0.6',
-                                     'Cookie': 'ASP.NET_SessionId=kcwsgio3dchqjmyjtwue402c; _ga=GA1.2.412607756.1459536682; _gat=1'})
+                                       'Origin': 'http://search.cpsa.ca',
+                                       'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                                       'Cahce-Control': 'no-cache', 'X-Requested-With': 'XMLHttpRequest',
+                                       'X-MicrosoftAjax': 'Delta=true', 'Accept': '*/*',
+                                       'Referer': 'http://search.cpsa.ca/PhysicianSearch',
+                                       'Accept-Encoding': 'gzip, deflate',
+                                       'Accept-Language': 'en-GB,en-US;q=0.8,en;q=0.6',
+                                       'Cookie': 'ASP.NET_SessionId=kcwsgio3dchqjmyjtwue402c; _ga=GA1.2.412607756.1459536682; _gat=1'})
         data = data.encode('ascii')
         res = urllib.request.urlopen("http://82.156.224.174:8101/nodes", data).read().decode('utf-8')
         logger.error('get res ok: <%s, %s>' % ("", res))
@@ -445,6 +450,7 @@ def nodes(request):
         print("get res err: ", err)
         logger.error('get res err: <%s, %s>' % ("", str(err)))
         return JsonHttpResponse({'status': 0, 'routes': [], 'vpns': []})
+
 
 def get_all_videos(request):
     if request.method == 'POST':
@@ -469,10 +475,11 @@ def get_all_videos(request):
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
         return JsonHttpResponse({'status': 1, 'cmd': cmd, 'msg': 'msg'})
 
+
 def get_contract_detail(request):
     if request.method == 'POST':
         contract_id = request.POST.get('contract_id')
-        where_str = "where type = 6 and key in('5f5f6b437265617465436f6e74726163744279746573436f6465', '5f5f6b437265617465436f6e74726163744279746573436f6465') and to ='" + contract_id +"'";
+        where_str = "where type = 6 and key in('5f5f6b437265617465436f6e74726163744279746573436f6465', '5f5f6b437265617465436f6e74726163744279746573436f6465') and to ='" + contract_id + "'";
         cmd = 'SELECT from, to, key, value FROM zjc_ck_account_key_value_table '
         if where_str != "":
             cmd += where_str
@@ -495,7 +502,7 @@ def get_contract_detail(request):
 
                 key = item[0] + "," + item[1]
                 addtwodimdict(contracts_dict, key, key_decode, val_decode)
-                
+
             res_arr = []
             for key in contracts_dict:
                 val = contracts_dict[key]
@@ -513,8 +520,14 @@ def get_contract_detail(request):
 
 def get_block_detail(request, block_hash):
     try:
-        blockDetail = ZjcCkBlockTable.objects.get(hash=block_hash)
-        tmpObj = model_to_dict(blockDetail)
+        blockDetail = ZjcCkBlockTable.objects_in(db).filter(ZjcCkBlockTable.hash == block_hash)[0]
+        tmpObj = blockDetail.dict()
+        cmd = "select sum(gas_used) as value from zjc_ck_block_table a inner join zjc_ck_transaction_table b on a.hash = b.hash" \
+              " and  b.hash ='" + str(block_hash) + "' "\
+              " group by b.hash " \
+
+        result = ck_client.execute(cmd)
+        tmpObj['total_used_gas'] = result[0][0]
         return JsonHttpResponse({'status': 0, 'value': tmpObj})
     except Exception as ex:
         logger.error('get_block_detail fail hash = %s>' % block_hash)
@@ -531,11 +544,12 @@ def get_prikey(request, seckey):
     return JsonHttpResponse({
         'status': 0, 'cmd': cmd, 'prikey': result[0][0]})
 
+
 def set_private_key(request):
     if request.method == 'POST':
         seckkey = request.POST.get('key')
         prkey = request.POST.get('enc')
-        cmd = "insert into private_key_table values('" + seckkey + "', '" + prkey + "', 0)"
+        cmd = "insert into private_key_table values('" + seckkey + "', '" + prkey + "', 0, 0)"
         try:
 
             ck_client.execute(cmd)

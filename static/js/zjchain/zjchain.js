@@ -45,26 +45,26 @@ function list_transactions() {
     $("#id_search").val("");
     search_str = "";
     page_size = 0;
-    $("#jsGrid2").hide();
-    $("#jsGrid3").hide();
-    $("#jsGrid1").show();
+    hide_others_except('#pjsGrid1');
     $("#jsGrid1").jsGrid("loadData");
     content_mode = 0;
 }
 
 function hide_others_except(str_grid) {
-    $("#jsGrid1").hide();
-    $("#jsGrid2").hide();
-    $("#jsGrid3").hide();
-    $("#jsGrid4").hide();
+    $("#pjsGrid1").hide();
+    $("#pjsGrid2").hide();
+    $("#pjsGrid3").hide();
+    $("#pjsGrid4").hide();
+    $("#jsGrid-block-transactions").hide();
     $(str_grid).show();
+    $(str_grid.replace("p", "")).show();
 }
 
 function list_blocks() {
     $("#id_search").val("");
     search_str = "";
     page_size = 0;
-    hide_others_except('#jsGrid2')
+    hide_others_except('#pjsGrid2');
     $("#jsGrid2").jsGrid("loadData");
     content_mode = 1;
 }
@@ -73,9 +73,7 @@ function list_accounts() {
     $("#id_search").val("");
     search_str = "";
     page_size = 0;
-    $("#jsGrid1").hide();
-    $("#jsGrid2").hide();
-    $("#jsGrid3").show();
+    hide_others_except('#pjsGrid3');
     $("#jsGrid3").jsGrid("loadData");
     content_mode = 2;
 }
@@ -156,6 +154,22 @@ function search_data() {
     }
 }
 
+function auto_search_transactions(val) {
+    $("#id_search").val(val);
+    search_str = val;
+    search_str = "";
+    page_size = 0;
+    $("#jsGrid1").jsGrid("loadData");
+    hide_others_except('#pjsGrid1');
+    content_mode = 0;
+    $('#btn1').addClass('active');
+    $('#btn2').removeClass('active');
+    $('#btn3').removeClass('active');
+
+}
+
+
+
 function auto_search_data(val) {
     $("#id_search").val(val);
     search_str = val;
@@ -167,12 +181,12 @@ function auto_search_data(val) {
         $("#jsGrid3").jsGrid("loadData");
     }
 }
-function show_block_detail(block_hash) {
+function show_block_detail(block_hash_str) {
      // $("#jsGrid4").jsGrid("loadData");
       $.ajax({
         type: 'get',
         async: false,
-        url: '/zjchain/get_block_detail/'+ block_hash,
+        url: '/zjchain/get_block_detail/'+ block_hash_str,
         dataType: "json"
     }).done(function (response) {
         if (response.status == 0) {
@@ -193,12 +207,20 @@ function show_block_detail(block_hash) {
             $("#block_detail_commit_bitmap").val(response.value['commit_bitmap']);
             $("#block_detail_tx_size").val(response.value['tx_size']);
             $("#block_detail_date").val(response.value['date']);
+            $("#total_used_gas").val(response.value['total_used_gas']);
 
             // $('#modal-block-detail').modal({
             //     show: true
             // });
 
-            hide_others_except('#jsGrid4')
+            hide_others_except('#pjsGrid4')
+            if ($('#custom-tabs-one-messages-tab').attr("aria-selected") === "true") {
+                block_hash = block_hash_str;
+                $('#jsGrid-block-transactions').jsGrid("loadData");
+                block_hash = null;
+                $('#jsGrid-block-transactions').show();
+
+            }
 
         } else {
             Toast.fire({
@@ -587,42 +609,24 @@ function FormatNum(num, len) {
     return add_str + str_num;
 }
 
-$(function () {
-    //doDatabaseStuff();
-    clipboard = new ClipboardJS('#save_prikey_id', {
-        text: function () {
-            return self_private_key.toString(16);
-        }
-    });
-    clipboard.on('success', function (e) {
-        Toast.fire({
-            icon: 'info',
-            title: 'copy private key success.'
-        })
+function initializeGridWithHeadBox(fields, name) {
+    var configPanel
+     if ($('.'+ name + 'headbox').length === 0) {
+         configPanel = $('<div class="' + name + 'headbox' + '"></div>');
+         $("#"+name).before(configPanel);
+     }
+
+    fields.forEach(function(field) {
+                const checkbox = $('<label><input id ='+field.name +' type="checkbox" checked /> ' + field.name + '</label>');
+                configPanel.append(checkbox);
     });
 
-    clipboard.on('error', function (e) {
-        Toast.fire({
-            icon: 'error',
-            title: 'copy private key failed.'
-        })
+    $("."+name + "headbox input[type=checkbox]").on("click", function() {
+                var $cb = $(this);
+                $("#"+name).jsGrid("fieldOption", $cb.attr("id"), "visible", $cb.is(":checked"));
     });
-    CreateInitAccount();
-    Toast = Swal.mixin({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 3000
-    });
-
-    $("#jsGrid1").jsGrid({
-        height: "auto",
-        width: "100%",
-        pageSize: 100,
-        sorting: true,
-        paging: false,
-        autoload: true,
-        controller: {
+}
+transactions_jsGrid_controller = {
             loadData: function () {
                 var d = $.Deferred();
 
@@ -630,7 +634,7 @@ $(function () {
                     type: 'post',
                     async: true,
                     url: '/zjchain/transactions/',
-                    data: { 'shard': shard_id, 'pool': -1, 'limit': (100 * page_size).toString() + ",100", 'search': search_str, 'type': 0 },
+                    data: { 'shard': shard_id, 'pool': -1, 'limit': (100 * page_size).toString() + ",100",'hash': block_hash,  'search': search_str, 'type': 0 },
                     dataType: "json"
                 }).done(function (response) {
                     if (response.value != null && response.value.length == 100) {
@@ -644,9 +648,8 @@ $(function () {
 
                 return d.promise();
             }
-        },
-        
-        fields: [
+        };
+transactions_jsGrid_fields = [
             { name: "Time", type: "text", align: "center", width: 90 },
             { name: "Shard", type: "number", align: "center", width: 40, "title": "#" },
             { name: "Pool", type: "number", align: "center", width: 40 },
@@ -682,17 +685,17 @@ $(function () {
             },
             {
                 name: "Gid", type: "text", width: 75, align: "center", itemTemplate: function (value) {
-                    return '<a href="javascript:void(0);" onclick="auto_search_data(\'' + value + '\')">' + value.substring(0, 4) + "..." + value.substring(value.length - 4, value.length) + '</a>';
+                    return '<a href="javascript:void(0);" onclick="auto_search_transactions(\'' + value + '\')">' + value.substring(0, 4) + "..." + value.substring(value.length - 4, value.length) + '</a>';
                 },
             },
             {
                 name: "From", type: "text", width: 75, align: "center", itemTemplate: function (value) {
-                    return '<a href="javascript:void(0);" onclick="auto_search_data(\'' + value + '\')">' + value.substring(0, 4) + "..." + value.substring(value.length - 4, value.length) + '</a>';
+                    return '<a href="javascript:void(0);" onclick="auto_search_transactions(\'' + value + '\')">' + value.substring(0, 4) + "..." + value.substring(value.length - 4, value.length) + '</a>';
                 },
             },
             {
                 name: "To", type: "text", width: 75, align: "center", itemTemplate: function (value) {
-                    return '<a href="javascript:void(0);" onclick="auto_search_data(\'' + value + '\')">' + value.substring(0, 4) + "..." + value.substring(value.length - 4, value.length) + '</a>';
+                    return '<a href="javascript:void(0);" onclick="auto_search_transactions(\'' + value + '\')">' + value.substring(0, 4) + "..." + value.substring(value.length - 4, value.length) + '</a>';
                 },
             },
             {
@@ -705,8 +708,144 @@ $(function () {
                     return Math.floor(value / 10000000) + '.' + FormatNum(value % 10000000, 7);
                 },
             },
-        ]
+        ];
+
+block_transactions_fields =  [
+            {
+                name: "Type", type: "text", width: 60, align: "center", itemTemplate: function (value) {
+                    if (value == 16) {
+                        return '<span class= "badge badge-warning">statistic</span>';
+                    } else if (value == 8) {
+                        return '<span class= "badge badge-danger">genesis</span>';
+                    } else if (value == 9) {
+                        return '<span class= "badge badge-info">LocalTo</span>';
+                    } else if (value == 7) {
+                        return '<span class= "badge badge-warning">statistic</span>';
+                    } else if (value == 6) {
+                        return '<span class= "badge badge-warning">timer</span>';
+                    } else if (value == 5) {
+                        return '<span class= "badge badge-success">transfer</span>';
+                    } else if (value == 4) {
+                        return '<span class= "badge badge-info">new_contract</span>';
+                    } else if (value == 3) {
+                        return '<span class= "badge badge-info">new_addr</span>';
+                    } else if (value == 2) {
+                        return '<span class= "badge badge-danger">genesis</span>';
+                    } else if (value == 1) {
+                        return '<span class= "badge badge-danger">BatchTo</span>';
+                    } else if (value == 0) {
+                        return '<span class= "badge badge-success">From</span>';
+                    } else {
+                        return '<span class= "badge badge-success">consensus</span>';
+                    }
+                },
+            },
+            {
+                name: "Gid", type: "text", width: 75, align: "center", itemTemplate: function (value) {
+                    return '<a href="javascript:void(0);" onclick="auto_search_transactions(\'' + value + '\')">' + value.substring(0, 4) + "..." + value.substring(value.length - 4, value.length) + '</a>';
+                },
+            },
+            {
+                name: "From", type: "text", width: 75, align: "center", itemTemplate: function (value) {
+                    return '<a href="javascript:void(0);" onclick="auto_search_transactions(\'' + value + '\')">' + value.substring(0, 4) + "..." + value.substring(value.length - 4, value.length) + '</a>';
+                },
+            },
+            {
+                name: "To", type: "text", width: 75, align: "center", itemTemplate: function (value) {
+                    return '<a href="javascript:void(0);" onclick="auto_search_transactions(\'' + value + '\')">' + value.substring(0, 4) + "..." + value.substring(value.length - 4, value.length) + '</a>';
+                },
+            },
+            {
+                name: "Amount", type: "number", align: "center", width: 70, itemTemplate: function (value) {
+                    return Math.floor(value / 10000000) + '.' + FormatNum(value % 10000000, 7);
+                },
+            },
+            {
+                name: "Gas", type: "number", align: "center", width: 70, itemTemplate: function (value) {
+                    return Math.floor(value / 10000000) + '.' + FormatNum(value % 10000000, 7);
+                },
+            },
+        ];
+
+ block_list_fileds = [
+            { name: "Time", type: "text", width: 90 },
+            { name: "Shard", type: "number", align: "center", width: 40, "title": "#" },
+            { name: "Pool", type: "number", align: "center", width: 40 },
+            { name: "Height", type: "number", align: "center", width: 50 },
+            {
+                name: "PrevHash", type: "text", width: 120, align: "center", itemTemplate: function (value) {
+                    return '<a href="javascript:void(0);" onclick="auto_search_data(\'' + value + '\')">' + value.substring(0, 6) + "..." + value.substring(value.length - 6, value.length) + '</a><span class="badge badge-warning " style="margin-left:5px;" onclick="show_block_detail(\'' + value + '\');">&nbsp;i&nbsp;</span>';
+                },
+            },
+            {
+                name: "Hash", type: "text", width: 120, align: "center", itemTemplate: function (value) {
+                    return '<a href="javascript:void(0);" onclick="auto_search_data(\'' + value + '\')">' + value.substring(0, 6) + "..." + value.substring(value.length - 6, value.length) + '</a><span class="badge badge-warning " style="margin-left:5px;" onclick="show_block_detail(\'' + value + '\');">&nbsp;i&nbsp;</span>';
+                },
+            },
+            { name: "Vss", type: "number", align: "center", width: 130 },
+            { name: "ElectHeight", type: "number", align: "center", width: 50, "title": "EH" },
+            { name: "TimeHeight", type: "number", align: "center", width: 50, "title": "TH" },
+            { name: "TxSize", type: "number", align: "center", width: 50 },
+        ];
+
+
+$(function () {
+    //doDatabaseStuff();
+    clipboard = new ClipboardJS('#save_prikey_id', {
+        text: function () {
+            return self_private_key.toString(16);
+        }
     });
+    clipboard.on('success', function (e) {
+        Toast.fire({
+            icon: 'info',
+            title: 'copy private key success.'
+        })
+    });
+
+    clipboard.on('error', function (e) {
+        Toast.fire({
+            icon: 'error',
+            title: 'copy private key failed.'
+        })
+    });
+    CreateInitAccount();
+    Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000
+    });
+
+    $("#jsGrid-block-transactions").jsGrid({
+        height: "auto",
+        width: "100%",
+        pageSize: 100,
+        sorting: true,
+        paging: false,
+        autoload: true,
+        controller: transactions_jsGrid_controller,
+
+        fields: block_transactions_fields,
+
+    });
+    initializeGridWithHeadBox(block_transactions_fields,'jsGrid-block-transactions');
+
+
+    $("#jsGrid1").jsGrid({
+        height: "auto",
+        width: "100%",
+        pageSize: 100,
+        sorting: true,
+        paging: false,
+        autoload: true,
+        controller: transactions_jsGrid_controller,
+        
+        fields: transactions_jsGrid_fields,
+
+    });
+    initializeGridWithHeadBox(transactions_jsGrid_fields,'jsGrid1');
+
 
     $("#jsGrid2").jsGrid({
         height: "auto",
@@ -740,27 +879,9 @@ $(function () {
             }
         },
 
-        fields: [
-            { name: "Time", type: "text", width: 90 },
-            { name: "Shard", type: "number", align: "center", width: 40, "title": "#" },
-            { name: "Pool", type: "number", align: "center", width: 40 },
-            { name: "Height", type: "number", align: "center", width: 50 },
-            {
-                name: "PrevHash", type: "text", width: 120, align: "center", itemTemplate: function (value) {
-                    return '<a href="javascript:void(0);" onclick="auto_search_data(\'' + value + '\')">' + value.substring(0, 6) + "..." + value.substring(value.length - 6, value.length) + '</a><span class="badge badge-warning " style="margin-left:5px;" onclick="show_block_detail(\'' + value + '\');">&nbsp;i&nbsp;</span>';
-                },
-            },
-            {
-                name: "Hash", type: "text", width: 120, align: "center", itemTemplate: function (value) {
-                    return '<a href="javascript:void(0);" onclick="auto_search_data(\'' + value + '\')">' + value.substring(0, 6) + "..." + value.substring(value.length - 6, value.length) + '</a><span class="badge badge-warning " style="margin-left:5px;" onclick="show_block_detail(\'' + value + '\');">&nbsp;i&nbsp;</span>';
-                },
-            },
-            { name: "Vss", type: "number", align: "center", width: 130 },
-            { name: "ElectHeight", type: "number", align: "center", width: 50, "title": "EH" },
-            { name: "TimeHeight", type: "number", align: "center", width: 50, "title": "TH" },
-            { name: "TxSize", type: "number", align: "center", width: 50 },
-        ]
+        fields: block_list_fileds,
     });
+    initializeGridWithHeadBox(block_list_fileds, "jsGrid2");
 
     $("#jsGrid3").jsGrid({
         height: "auto",
@@ -821,4 +942,5 @@ $(function () {
     // We could use setInterval instead, but I prefer to do it this way
     setTimeout(refresh_table, 1000);
     refresh_statistic();
+    list_transactions();
 });
