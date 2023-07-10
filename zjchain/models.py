@@ -57,6 +57,12 @@ class ZjcCkAccountKeyValueTable(BassMode, models.ClickhouseModel):
         )
 
 
+class AccountKeyValueFilter(django_filters.FilterSet):
+    class Meta:
+        model = ZjcCkAccountKeyValueTable
+        fields = ['from_field', 'type', 'key']
+
+
 class ZjcCkAccountTable(BassMode, models.ClickhouseModel):
     id = models.StringField(primary_key=True)
     shard_id = models.UInt32Field()

@@ -1,6 +1,6 @@
 from django.urls import re_path
 #from django.conf.urls import url
-from zjchain.views import views, transactions_view, block_view, account_view
+from zjchain.views import views, transactions_view, block_view, account_view, data_view
 
 urlpatterns = (
     re_path(r'^$',views.zjchain_index),
@@ -22,9 +22,13 @@ urlpatterns = (
 
     re_path(r'^get_transaction/$', transactions_view.get_transaction),
     re_path(r'^transactions_list/$', transactions_view.transactions_list),
+
     re_path(r'^get_block/$', block_view.get_block),
     re_path(r'^block_list/$', block_view.block_list),
+
     re_path(r'^account_list/$', account_view.account_list),
     re_path(r'^get_account/$', account_view.get_account),
+
+    re_path(r'^data_list/$', data_view.data_list),
 
 )
