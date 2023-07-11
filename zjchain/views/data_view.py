@@ -16,10 +16,10 @@ def data_list(request):
     paginator = Paginator(set.qs, limit)
     set = paginator.get_page(page)
 
-    # set = serializers.serialize("json", set.object_list)
-    # set = json.loads(set)
-    list = []
-    for s in set.object_list:
-        list.append(model_to_dict(s))
+    if request.GET.get("isContracts") is not None:
+        set = set.object_list.values('from_field', 'to', 'type')
+    else:
+        set = set.object_list.values()
 
-    return JsonHttpResponse({'status': 1, 'msg': "ok", 'total': paginator.count, 'dataList': list})
+    dataList = list(set)
+    return JsonHttpResponse({'status': 1, 'msg': "ok", 'total': paginator.count, 'dataList': dataList})

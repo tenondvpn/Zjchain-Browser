@@ -58,6 +58,19 @@ class ZjcCkAccountKeyValueTable(BassMode, models.ClickhouseModel):
 
 
 class AccountKeyValueFilter(django_filters.FilterSet):
+    isContracts = django_filters.BooleanFilter(method='filter_is_contracts')
+
+    def filter_is_contracts(self, queryset, name, value):
+        if value:
+            included_keys = [
+                '5f5f6b437265617465436f6e74726163744279746573436f6465',
+                '5f5f6b437265617465436f6e74726163744279746573436f6465'
+            ]
+            return queryset\
+                .filter(type=6, key__in=included_keys)\
+                .distinct('from_field', 'to')
+        return queryset
+
     class Meta:
         model = ZjcCkAccountKeyValueTable
         fields = ['from_field', 'type', 'key']
