@@ -41,7 +41,7 @@ def get_transaction(request):
     if not tx_id: tx_id = '0000'
 
     try:
-        tx = ZjcCkTransactionTable.objects.get(tx_hash=tx_id)
+        tx = ZjcCkTransactionTable.objects.filter(tx_hash=tx_id).order_by('-timestamp').first()
         tx = model_to_dict(tx)
     except Exception as ex:
         return JsonHttpResponse({'status': 1, 'msg': str(ex)})
