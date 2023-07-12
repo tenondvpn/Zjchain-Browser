@@ -364,7 +364,7 @@ def get_bytescode(request):
             bin_code_arr = bin_code.split("\n")
             return JsonHttpResponse({'status': 0, 'code': bin_code_arr[3]})
         except Exception as ex:
-            logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
+            logger.error('select fail: <%s, %s>' % (str(ex)))
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
         return JsonHttpResponse({'status': 1, 'msg': 'msg'})
 
