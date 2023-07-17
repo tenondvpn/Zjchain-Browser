@@ -2,10 +2,12 @@
 import sys
 
 from django.core.paginator import Paginator
+from django.db.models import Count
 from django.forms import model_to_dict
 
 from zjchain.http_helper import JsonHttpResponse
-from zjchain.models import ZjcCkAccountTable, AccountFilter
+from zjchain.models import ZjcCkAccountTable, AccountFilter, ZjcCkAccountKeyValueTable, AccountKeyValueFilter, \
+    included_keys
 from zjchain.utils import fromtimestamp
 
 sys.setrecursionlimit(10000)
@@ -21,7 +23,7 @@ def account_list(request):
     page = request.GET.get('page')
     if page is None: page = 1
 
-    set = ZjcCkAccountTable.objects.all().order_by('-balance')
+    set = ZjcCkAccountTable.objects.all().order_by('-balance', 'id')
     set = AccountFilter(request.GET, queryset=set)
     paginator = Paginator(set.qs, limit)
     set = paginator.get_page(page)
@@ -42,6 +44,14 @@ def get_account(request):
     try:
         record = ZjcCkAccountTable.objects.distinct().get(id=account)
         record = model_to_dict(record)
+        contract_data_rows = ZjcCkAccountKeyValueTable.objects.filter(
+            to=account,
+            type=6,
+            key__in=included_keys
+        )
+
+        contract_data_count = contract_data_rows.aggregate(row_count=Count('to'))['row_count']
+        record['contract_data_count'] = contract_data_count
     except Exception as ex:
         return JsonHttpResponse({'status': 1, 'msg': str(ex)})
     return JsonHttpResponse({'status': 1, 'msg': 'ok', 'total': 1, 'data': record})

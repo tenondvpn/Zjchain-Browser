@@ -6,7 +6,10 @@ import django_filters
 from clickhouse_backend import models
 from django.db.models import Q
 
-
+included_keys = [
+    '5f5f6b437265617465436f6e74726163744279746573436f6465',
+    '5f5f6b437265617465436f6e74726163744279746573436f6465'
+]
 class BassMode:
     def dict(self):
 
@@ -62,10 +65,6 @@ class AccountKeyValueFilter(django_filters.FilterSet):
 
     def filter_is_contracts(self, queryset, name, value):
         if value:
-            included_keys = [
-                '5f5f6b437265617465436f6e74726163744279746573436f6465',
-                '5f5f6b437265617465436f6e74726163744279746573436f6465'
-            ]
             return queryset\
                 .filter(type=6, key__in=included_keys)\
                 .distinct('from_field', 'to')
