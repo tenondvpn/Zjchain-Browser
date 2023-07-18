@@ -72,7 +72,7 @@ class AccountKeyValueFilter(django_filters.FilterSet):
 
     class Meta:
         model = ZjcCkAccountKeyValueTable
-        fields = ['from_field', 'type', 'key']
+        fields = ['from_field', 'type', 'key', 'to']
 
 
 class ZjcCkAccountTable(BassMode, models.ClickhouseModel):
