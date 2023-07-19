@@ -16,3 +16,4 @@ src/contract/tests/contracts/*.bin
 /venv/
 .idea
 static/.vscode
+/collectedstatic/

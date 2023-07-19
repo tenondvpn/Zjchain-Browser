@@ -11,10 +11,12 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+from pathlib import Path
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(os.path.join(__file__, os.pardir))))
+BASE_DIR = Path(BASE_DIR)
 CURR_DIR = os.path.basename(os.path.dirname(__file__))
 CONF_DUMP_DIR = "/data/xl/Dags-Dashbord/dags_conf"
 CONF_TMP_DUMP_DIR = "./work_dir/tmp"
@@ -63,12 +65,14 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'noah.urls'
-
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), BASE_DIR / 'zj-block-explorer/dist', ]
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-             os.path.join(BASE_DIR, 'zjchain/templates'),
+             os.path.join(BASE_DIR, 'zjchain/templates', STATIC_ROOT),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -149,8 +153,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
 CORS_ALLOWED_ORIGIN_REGEXES = [
     r".*",
 ]

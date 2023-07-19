@@ -15,8 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, re_path, include
-#from django.conf.urls import url, include
-
+from django.views.decorators.cache import never_cache
+from django.views.generic import TemplateView
 from noah import views
 
 urlpatterns = [
@@ -27,5 +27,5 @@ urlpatterns = [
     re_path(r'^logout/$', views.logout),
     re_path(r'^get_user_info/$', views.get_user_info),
     re_path(r'^zjchain/', include('zjchain.urls')),
-    path('', include('zjchain.urls')),
+    path('', never_cache(TemplateView.as_view(template_name='index.html')), name='index'),
 ]
