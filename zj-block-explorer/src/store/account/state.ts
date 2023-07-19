@@ -32,6 +32,8 @@ export interface AccountStateInterface {
     selfPublicKey:PublicKey;
     selfAccountAddress: string;
     keepSecKey:string;
+    needReLogin:boolean;
+    selfShardId:number;
 }
 export type PublicKey = {
     x: string;
@@ -93,5 +95,7 @@ export function state(): AccountStateInterface {
         selfPublicKey: null as PublicKey,
         selfAccountAddress:'',
         keepSecKey: '',
+        needReLogin:false,
+        selfShardId:0,
     };
 }

@@ -1,11 +1,12 @@
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue';
+import { computed, defineComponent, ref, watch } from 'vue';
 import { Dialog, DialogChainObject, useQuasar } from 'quasar';
 import { useStore } from 'src/store';
 import { isHexadecimal } from 'src/utils/string-utils';
-import { getStorePassword, process_global_private_key } from 'src/utils/zjchain';
+import { process_global_private_key } from 'src/utils/zjUtils';
 import BN from 'bn.js';
 import { PublicKey } from 'src/store/account/state';
+import { getStorePassword } from 'src/api/zjChainApi';
 
 
 export default defineComponent({
@@ -15,6 +16,8 @@ export default defineComponent({
         const store = useStore();
         const error = ref<string>(null);
         const account = computed(() => store.state.account.selfAccountAddress);
+        const needReLogin = computed(() => store.state.account.needReLogin);
+
         const loading = {};
         const walletDialog = ref<DialogChainObject>(null);
         const iconSize = computed(() => {
@@ -24,11 +27,18 @@ export default defineComponent({
             return '1.5em';
         });
 
+        watch(needReLogin,  () => {
+            if (needReLogin.value === true) {
+                void onLogin();
+                store.commit('account/setNeedReLogin', false);
+                console.log('reLogin');
+            }
+        });
+
         const onLogin = async () => {
-            error.value = null;
             try {
-                let password = store.state.account.selfPrivateKey?.toString() || '';
-                if(password === '') {
+                let password = store.state.account.selfPrivateKey?.toString(16) || '';
+                if (password === '') {
                     password = await loginHandler();
                 }
                 const {
@@ -37,20 +47,32 @@ export default defineComponent({
                     selfPublicKey,
                     keepSecKey,
                 }: {
-                    selfAccountAddress:string,
-                    selfPrivateKey:BN,
-                    selfPublicKey:PublicKey,
-                    keepSecKey:string
+                    selfAccountAddress: string,
+                    selfPrivateKey: BN,
+                    selfPublicKey: PublicKey,
+                    keepSecKey: string
                 } = process_global_private_key(password);
-                await store.dispatch('account/login', { selfAccountAddress, selfPrivateKey, selfPublicKey, keepSecKey });
+                await store.dispatch('account/login', {
+                    selfAccountAddress,
+                    selfPrivateKey,
+                    selfPublicKey,
+                    keepSecKey,
+                });
             } catch (e) {
-                error.value = e as string;
-                console.error(error.value);
+                const error = e as string;
+                $q.notify({
+                    color: 'green-4',
+                    textColor: 'white',
+                    icon: 'cloud_done',
+                    message: error,
+                });
+                console.error(error);
             }
             walletDialog.value.hide();
         };
+
         async function loginHandler() {
-            let password =  getStorePassword();
+            let password = await getStorePassword() as string;
             if (password) {
                 return password;
             } else {

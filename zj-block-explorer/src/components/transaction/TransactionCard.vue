@@ -17,6 +17,12 @@ export default defineComponent({
     setup() {
         const store = useStore();
         const propertyOrder: string[] = [
+            'amount',
+            'gas_limit',
+            'gas_used',
+            'gas_price',
+            'balance',
+            'gid',
             'date',
             'shard_id',
             'pool_index',
@@ -30,16 +36,8 @@ export default defineComponent({
             'bls_agg_sign_x',
             'bls_agg_sign_y',
             'commit_bitmap',
-            'gid',
-            'from_field',
             'from_pubkey',
             'from_sign',
-            'to',
-            'amount',
-            'gas_limit',
-            'gas_used',
-            'gas_price',
-            'balance',
             'to_add',
             'type',
             'attrs',
@@ -128,14 +126,6 @@ export default defineComponent({
                         </div>
                         <div class="col-xs-12 col-sm-6 text-right text-bold">
                             <AccountFormat :account="blockNum" type="block"/>
-                            <q-btn
-                                flat
-                                round
-                                color="black"
-                                icon="content_copy"
-                                size="sm"
-                                @click="copy(blockNum)"
-                            />
                         </div>
                     </div>
                 </q-card-section>

@@ -4,10 +4,12 @@ import { copyToClipboard, useQuasar } from 'quasar';
 import { formatDate } from 'src/utils/string-utils';
 import TextFormat from 'components/transaction/TextFormat.vue';
 import { Account } from 'src/types/zj_tpyes/Account';
+import NewTransactions from 'components/zjcomponents/NewTransactions.vue';
+import { useStore } from 'src/store';
 
 export default defineComponent({
     name: 'AccountCard',
-    components: { TextFormat },
+    components: { NewTransactions, TextFormat },
     props: {
         accountData: {
             type: Object as PropType<Account>,
@@ -17,7 +19,13 @@ export default defineComponent({
     },
     setup(props) {
         const q = useQuasar();
+        const store = useStore();
+        const account_id = computed(() => accountData.value?.id || '');
+        const vNewTransaction =  computed(() => store.state.account.selfAccountAddress === account_id.value);
+
+
         const accountData = computed(() => props.accountData);
+
         function copy(value: string) {
             copyToClipboard(value)
                 .then((): void => {
@@ -44,7 +52,8 @@ export default defineComponent({
             'balance',
         ];
         return {
-            account_id: computed(() => accountData.value?.id || ''),
+            account_id,
+            vNewTransaction,
             formatDate,
             copy,
             propertyOrder,
@@ -62,6 +71,7 @@ export default defineComponent({
                 <q-card-section class="q-pl-md">
                     <div class="row q-col-gutter-sm justify-between">
                         <div class="col-auto text-h4 text-bold">Account</div>
+                        <div v-if="vNewTransaction"><NewTransactions/></div>
                     </div>
                 </q-card-section>
                 <q-card-section class="q-pt-none">

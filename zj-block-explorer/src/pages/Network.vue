@@ -110,7 +110,7 @@ export default defineComponent({
         </div>
     </div>
     <div class="container-max-width" :class="{'container-margin' : false}">
-        <MapData class="map-data-position"  map-visible/>
+        <MapData />
         <TransactionsTable/>
         <BlocksTable/>
 

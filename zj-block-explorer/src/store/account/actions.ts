@@ -3,13 +3,15 @@ import { StateInterface } from 'src/store/index';
 import { AccountStateInterface } from 'src/store/account/state';
 import { api } from 'src/api/index';
 import { Action } from 'src/types';
+import { zjApi } from 'src/api/zjApi';
 
 
 export const actions: ActionTree<AccountStateInterface, StateInterface> = {
-    login({ commit }, {
+    async login({ commit }, {
         selfAccountAddress, selfPrivateKey, selfPublicKey, keepSecKey,
     }) {
-
+        const accountData = await zjApi.getAccount(selfAccountAddress);
+        commit('setSelfShardId', accountData.shard_id);
         commit('setSelfAccountAddress', selfAccountAddress);
         commit('setSelfPublicKey', selfPublicKey);
         commit('setSelfPrivateKey', selfPrivateKey);
@@ -22,6 +24,7 @@ export const actions: ActionTree<AccountStateInterface, StateInterface> = {
         commit('setSelfAccountAddress', '');
         commit('setSelfPublicKey', null);
         commit('setSelfPrivateKey', null);
+        commit('setSelfShardId', 0);
 
 
         localStorage.removeItem('selfAccountAddress');

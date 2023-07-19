@@ -4,12 +4,6 @@ import { useStore } from 'src/store';
 
 export default defineComponent({
     name: 'MapData',
-    props: {
-        mapVisible: {
-            type: Boolean,
-            required: true,
-        },
-    },
     setup() {
         const store = useStore();
 

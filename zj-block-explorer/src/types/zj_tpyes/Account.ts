@@ -3,5 +3,6 @@ export interface Account {
     shard_id: number;
     pool_index: number;
     balance: number;
+    contract_data_count:number;
 }
 

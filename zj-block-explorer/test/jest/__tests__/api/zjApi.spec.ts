@@ -42,3 +42,11 @@ test('getAccount', async () => {
     console.log(jsonObject);
 });
 
+
+test('getAccountKeyValues', async () => {
+    const response = await zjApi.getAccountKeyValues({
+        account:'6500000000000000000000000000000000000000',
+    });
+    const jsonObject = JSON.stringify(response);
+    console.log(jsonObject);
+});

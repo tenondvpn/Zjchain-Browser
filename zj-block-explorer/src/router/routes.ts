@@ -49,15 +49,6 @@ const routes: RouteRecordRaw[] = [
         }],
     },
     {
-        path: '/vote',
-        name: 'vote',
-        component: () => import('layouts/MainLayout.vue'),
-        children: [{
-            path: '',
-            component: () => import('pages/Vote.vue'),
-        }],
-    },
-    {
         path: '/accountTab',
         name: 'accountTab',
         component: () => import('layouts/MainLayout.vue'),
@@ -67,59 +58,12 @@ const routes: RouteRecordRaw[] = [
         }],
     },
     {
-        path: '/proposal',
-        name: 'proposal',
+        path: '/contracts',
+        name: 'contractsPage',
         component: () => import('layouts/MainLayout.vue'),
         children: [{
             path: '',
-            component: () => import('pages/Proposal.vue'),
-        }],
-    },
-    {
-        path: '/proposal/new',
-        name: 'ProposalNew',
-        component: () => import('layouts/MainLayout.vue'),
-        children: [
-            {
-                path: '',
-                component: () => import('src/pages/ProposalNew.vue'),
-            },
-        ],
-    },
-    {
-        path: '/proposal/:proposalName',
-        name: 'ProposalItem',
-        component: () => import('layouts/MainLayout.vue'),
-        children: [{
-            path: '',
-            component: () => import('pages/ProposalItem.vue'),
-        }],
-    },
-    {
-        path: '/explore',
-        name: 'explore',
-        component: () => import('layouts/MainLayout.vue'),
-        children: [{
-            path: '',
-            component: () => import('pages/Explore.vue'),
-        }],
-    },
-    {
-        path: '/repository',
-        name: 'repository',
-        component: () => import('layouts/MainLayout.vue'),
-        children: [{
-            path: '',
-            component: () => import('pages/Repository.vue'),
-        }],
-    },
-    {
-        path: '/key/:key',
-        name: 'key',
-        component: () => import('layouts/MainLayout.vue'),
-        children: [{
-            path: '',
-            component: () => import('pages/Key.vue'),
+            component: () => import('pages/zjPages/ContractPage.vue'),
         }],
     },
     // Always leave this as last one,

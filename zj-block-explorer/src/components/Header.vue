@@ -78,23 +78,17 @@ export default defineComponent({
                 to="/accountTab"
             />
             <q-route-tab
+                class="deactive"
+                name="contracts"
+                label="Contracts"
+                to="/contracts"
+            />
+            <q-route-tab
                 v-if="account"
                 class="deactive"
                 name="wallet"
                 label="Wallet"
                 :to="'/account/' + account"
-            />
-            <q-route-tab
-                class="deactive"
-                name="vote"
-                label="Vote"
-                to="/vote"
-            />
-            <q-route-tab
-                class="deactive"
-                name="proposal"
-                label="Proposal"
-                to="/proposal"
             />
         </q-tabs>
     </div>

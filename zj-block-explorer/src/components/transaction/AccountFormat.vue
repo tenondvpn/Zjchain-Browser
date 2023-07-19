@@ -13,6 +13,10 @@ export default defineComponent({
             type: String,
             required: true,
         },
+        notTip: {
+            type: Boolean,
+            default: false,
+        },
     },
     methods: {
         copy(value: string) {
@@ -54,7 +58,7 @@ export default defineComponent({
     class="hover-dec"
     :href=" '/' + type + '/' + accAccount"
 >{{ type === 'transaction' || 'block' ? accAccount.slice(0, 8) : accAccount }}</a>
-<q-tooltip v-if="longText">
+<q-tooltip v-if="longText && !notTip">
     {{ accText }}
 </q-tooltip>
 <q-btn

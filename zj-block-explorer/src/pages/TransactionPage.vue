@@ -1,9 +1,6 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted, computed, watch } from 'vue';
-import TransactionsTable from 'src/components/TransactionsTable.vue';
 import TransactionCard from 'components/transaction/TransactionCard.vue';
-import TraceTree from 'components/transaction/TraceTree.vue';
-import JsonViewer from 'vue-json-viewer';
 import { useStore } from 'src/store';
 import { useRoute, useRouter } from 'vue-router';
 
@@ -35,11 +32,8 @@ export default defineComponent({
         };
     },
     components: {
-        TransactionsTable,
         TransactionCard,
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        JsonViewer,
-        TraceTree,
     },
 });
 </script>
@@ -61,64 +55,6 @@ export default defineComponent({
                     </q-card>
                 </div>
             </div>
-        </div>
-        <div v-if="false" class="q-pt-lg">
-            <q-tabs
-                v-model="tab"
-                class="text-grey text-grey-5 tab-text"
-                dense
-                indicator-color="grey-3"
-                active-color="grey-3"
-                align="center"
-                no-caps
-            >
-                <div class="row full-height items-center">
-                    <div class="col-10">
-                        <q-tab name="actions">
-                            <div class="text-body">Actions
-                                <div class="q-pl-xs inline-block">
-                                    <div class="bg-blur">
-                                        <q-badge color="transparent">{{ actionCount }}</q-badge>
-                                    </div>
-                                </div>
-                            </div>
-                        </q-tab>
-                    </div>
-                </div>
-                <div class="row full-height items-center">
-                    <div class="col-10">
-                        <q-tab name="traces">
-                            <div class="text-body">Traces
-                                <div class="q-pl-xs inline-block">
-                                    <div class="bg-blur">
-                                        <q-badge color="transparent">{{ actionCount }}</q-badge>
-                                    </div>
-                                </div>
-                            </div>
-                        </q-tab>
-                    </div>
-                </div>
-                <q-tab name="raw" label="Raw"/>
-            </q-tabs>
-            <q-separator color="grey-8"/>
-            <q-tab-panels v-model="tab" class="tab-panel">
-                <q-tab-panel name="actions">
-                    <TransactionsTable :account="Array.isArray(transaction) ? transaction[0] : transaction"/>
-                </q-tab-panel>
-                <q-tab-panel name="traces" class="container-max-width">
-                    <TraceTree/>
-                </q-tab-panel>
-                <q-tab-panel name="raw" class="container-max-width">
-                    <JsonViewer
-                        :value="jsonTransaction"
-                        :expand-depth="5"
-                        preview-mode="preview-mode"
-                        boxed="boxed"
-                        copyable="copyable"
-                        sort="sort"
-                    />
-                </q-tab-panel>
-            </q-tab-panels>
         </div>
     </div>
 </div>

@@ -1,6 +1,7 @@
 /* regex to validate EOSIO account name convention see: https://regex101.com/r/d8uKrG/1 */
 import { getChain } from 'src/config/ConfigManager';
 import { RexHistory } from 'src/types';
+import { copyToClipboard, Notify } from 'quasar';
 
 export function isValidAccount(account: string): boolean {
     const regEx = /(^[a-z1-5.]{1,11}[a-z1-5]$)|(^[a-z1-5.]{12}[a-z1-5]$)/;
@@ -112,5 +113,25 @@ export function hexToBytes(hex: string): number[] {
         bytes.push(parseInt(hex.substr(c, 2), 16));
     }
     return bytes;
+}
+
+export function  copy(value: string) {
+    copyToClipboard(value)
+        .then((): void => {
+            Notify.create({
+                color: 'green-4',
+                textColor: 'white',
+                message: 'Copied to clipboard',
+                timeout: 1000,
+            });
+        })
+        .catch(() => {
+            Notify.create({
+                color: 'red-8',
+                textColor: 'white',
+                message: 'Could not copy',
+                timeout: 1000,
+            });
+        });
 }
 

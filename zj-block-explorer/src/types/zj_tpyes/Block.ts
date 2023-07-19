@@ -1,4 +1,5 @@
 import { Transaction } from 'src/types/zj_tpyes/Transaction';
+import { AxiosRequestConfig } from 'axios';
 
 export interface Block {
     shard_id: number;
@@ -21,7 +22,7 @@ export interface Block {
     transactions: Transaction[];
 }
 
-export interface BlockFilter {
+export interface CommonFilter {
     page?: number; // the page variable sustitutes the skip
     skip?: number;
     limit?: number;
@@ -32,4 +33,38 @@ export interface BlockFilter {
     before?: string;
     extras?: { [key: string]: string };
     query?:string;
+    isContracts?:boolean;
+    to?:string;
+}
+
+export function applyDefaultFilter(filter: CommonFilter): AxiosRequestConfig {
+    const {
+        account = '',
+        page = 1,
+        limit = 10,
+        notified = '',
+        sort = 'desc',
+        after = '',
+        before = '',
+        query = '',
+        isContracts = false,
+        to = '',
+    } = filter;
+
+    const aux = {
+        page,
+        ...query && { query },
+        ...account && { from_field: account },
+        ...limit && { limit },
+        ...Math.max(0, page - 1) * limit && { skip: Math.max(0, page - 1) * limit },
+        ...notified && { notified },
+        ...sort && { sort },
+        ...after && { after },
+        ...before && { before },
+        ...isContracts && { isContracts },
+        ...filter.extras && {  ...filter.extras },
+        ...to && { to },
+    };
+
+    return aux as AxiosRequestConfig;
 }

@@ -1,5 +1,4 @@
 /* eslint-disable */
-import 'ethereumjs-tx';
 import BN from 'bn.js';
 
 import randomBytes from 'randombytes';

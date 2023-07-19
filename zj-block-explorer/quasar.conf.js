@@ -13,7 +13,6 @@ const { configure } = require('quasar/wrappers');
 const envparsers = require('./src/config/envparser');
 const { resolve } = require('path');
 
-
 module.exports = configure(function (ctx) {
     return {
         // https://quasar.dev/quasar-cli/supporting-ts
@@ -40,7 +39,7 @@ module.exports = configure(function (ctx) {
         // https://github.com/quasarframework/quasar/tree/dev/extras
         extras: [
             // 'ionicons-v4',
-            // 'mdi-v5',
+            'mdi-v5',
             'fontawesome-v5',
             // 'eva-icons',
             // 'themify',
@@ -54,8 +53,7 @@ module.exports = configure(function (ctx) {
         build: {
             vueRouterMode: 'history', // available values: 'hash', 'history'
             distDir: "dist",
-            // 为了让django识别静态文件，加入static头，对应到打包的地址 www
-
+            // 为了让django识别静态文件，加入static头，对应到打包的地址
             extendWebpack(cfg) {
                 if (cfg.mode !== "development") {
                     cfg.output.publicPath = "/static/";
@@ -102,9 +100,18 @@ module.exports = configure(function (ctx) {
             proxy: {
                 // 将所有以/api开头的请求代理到jsonplaceholder
                 '/zjchain': {
-                    target: 'http://localhost:8000',
+                    // target: 'http://localhost:8000',
+                    target: 'http://localhost:801',
                     changeOrigin: true,
                     pathRewrite: {
+                    }
+                },
+                '/chain_server':{
+                    // target: 'http://10.101.20.11:801',
+
+                    target: 'http://localhost:8783',
+                    changeOrigin: true,
+                    pathRewrite: {'^/chain_server':''
                     }
                 }
             }
@@ -113,6 +120,7 @@ module.exports = configure(function (ctx) {
         // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
         framework: {
             config: {
+                loading: { /* please wait */ },
                 notify: {
                     timeout: 3000,
                     position: 'top',
@@ -141,6 +149,8 @@ module.exports = configure(function (ctx) {
                 'Notify',
                 'Dialog',
                 'LocalStorage',
+                'Loading',
+                'Cookies',
             ],
         },
 

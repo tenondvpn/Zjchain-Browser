@@ -1,7 +1,7 @@
 import { API } from '@greymass/eosio';
 import { User } from 'universal-authenticator-library';
 import { GetterTree } from 'vuex';
-import { StateInterface } from 'src/store/index';
+import { StateInterface } from 'src/store';
 import { AccountStateInterface } from 'src/store/account/state';
 
 export const getters: GetterTree<AccountStateInterface, StateInterface> = {
@@ -31,5 +31,8 @@ export const getters: GetterTree<AccountStateInterface, StateInterface> = {
     },
     getKeepSecKey(state: AccountStateInterface) {
         return  state.keepSecKey;
+    },
+    getSelfShardId(state: AccountStateInterface) {
+        return  state.selfShardId;
     },
 };

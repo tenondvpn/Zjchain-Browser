@@ -1,5 +1,5 @@
 <script lang="ts">
-import { computed, defineComponent, onMounted, PropType, ref, watch } from 'vue';
+import { defineComponent, onMounted, ref } from 'vue';
 import { useQuasar } from 'quasar';
 import { Error, PaginationSettings } from 'src/types';
 import { zjApi } from 'src/api/zjApi';
@@ -14,7 +14,7 @@ const initialStatePagination = {
 };
 
 export default defineComponent({
-    name: 'ProposalTable',
+    name: 'AccountsTab',
     props: {
         title: {
             type: String,
@@ -24,29 +24,12 @@ export default defineComponent({
             type: String,
             required: true,
         },
-        type: {
-            type: String as PropType<
-                'needsYourSignature' | 'proposalsCreated' | 'allAccounts'
-            >,
-            required: true,
-        },
-        blockProducers: {
-            type: Array as PropType<string[]>,
-        },
     },
-    setup(setupProps) {
+    setup() {
         const $q = useQuasar();
 
         const rows = ref<Account[]>([]);
         const pagination = ref(initialStatePagination);
-        const isSigned = ref(false);
-        const isExecuted = ref(false);
-        const blockProducer = ref('');
-        const filterDropdown = ref(false);
-
-        const hasSomeFilterActive = computed(
-            () => isSigned.value || isExecuted.value || blockProducer.value,
-        );
         const columns = [
             {
                 name: 'id',
@@ -120,47 +103,12 @@ export default defineComponent({
             });
         });
 
-        watch([isSigned, isExecuted, blockProducer], async () => {
-            filterDropdown.value = false;
-            pagination.value = initialStatePagination;
-            await onRequest({
-                pagination: pagination.value,
-            });
-        });
-
-        const optionsBlockProducers = ref<string[]>(setupProps.blockProducers);
-
-        function onFilterBlockProducer(
-            inputValue: string,
-            update: (callback: () => void) => void,
-        ) {
-            if (inputValue === '') {
-                update(() => {
-                    optionsBlockProducers.value = setupProps.blockProducers;
-                });
-                return;
-            }
-
-            update(() => {
-                const formattedValue = inputValue.toLowerCase();
-                optionsBlockProducers.value = setupProps.blockProducers.filter(
-                    item => item.toLowerCase().indexOf(formattedValue) > -1,
-                );
-            });
-        }
-
         return {
             columns,
             rows,
             pagination,
-            isSigned,
-            isExecuted,
-            blockProducer,
-            hasSomeFilterActive,
-            optionsBlockProducers,
-            filterDropdown,
             onRequest,
-            onFilterBlockProducer,
+
         };
     },
 });
@@ -187,7 +135,7 @@ export default defineComponent({
         </div>
     </template>
     <template v-slot:no-data><span class="q-pa-md full-width text-center text-body2">
-        No proposals
+        No Data
     </span></template>
     <template v-slot:body="props">
         <q-tr :props="props">

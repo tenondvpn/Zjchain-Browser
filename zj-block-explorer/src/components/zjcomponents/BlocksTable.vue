@@ -22,6 +22,8 @@ import { getChain } from 'src/config/ConfigManager';
 import { Block } from 'src/types/zj_tpyes/Block';
 import AccountFormat from 'components/transaction/AccountFormat.vue';
 import DateField from 'components/DateField.vue';
+import AccountSearch from 'components/AccountSearch.vue';
+import TokenSearch from 'components/TokenSearch.vue';
 
 const chain: Chain = getChain();
 
@@ -30,6 +32,8 @@ const TWO_SECONDS = 2000;
 export default defineComponent({
     name: 'BlocksTable',
     components: {
+        TokenSearch,
+        AccountSearch,
         DateField,
         AccountFormat,
 
@@ -56,7 +60,7 @@ export default defineComponent({
         },
         filtersEnabled: {
             type: Boolean,
-            default: true,
+            default: false,
         },
         showPaginationExtras: {
             // show/hide pagination "last" button and total row count

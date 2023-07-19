@@ -84,4 +84,11 @@ export const mutations: MutationTree<AccountStateInterface> = {
     setKeepSecKey(state: AccountStateInterface, keepSecKey:string) {
         state.keepSecKey = keepSecKey;
     },
+    setNeedReLogin(state: AccountStateInterface, needReLogin:boolean) {
+        state.needReLogin = needReLogin;
+    },
+    setSelfShardId(state: AccountStateInterface, selfShardId:number) {
+        state.selfShardId = selfShardId;
+    },
+
 };
