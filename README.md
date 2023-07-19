@@ -6,8 +6,9 @@ cd Zjchain-Browser/zj-block-explorer
 yarn
 yarn build
 cd ..
-python .\manage.py collectstatic   
-python .\manage.py runserver 0.0.0.0:801
+conda activate  Zjchain-Browser
+python manage.py collectstatic   
+python manage.py runserver 0.0.0.0:801
 ```
 
 open http://localhost:801/
