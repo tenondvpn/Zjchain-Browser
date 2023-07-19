@@ -1,0 +1,10 @@
+[[redirects]]
+from = "/*"
+to = "/"
+status = 200
+
+[build]
+publish = "dist/spa"
+command = "quasar build"
+
+
