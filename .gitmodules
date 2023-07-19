@@ -1,2 +1,3 @@
 [submodule "zj-block-explorer"]
-	url = git@github.com:tenondvpn/zj-block-explorer.git
+	url = https://github.com/tenondvpn/zj-block-explorer
+	path = zj-block-explorer
