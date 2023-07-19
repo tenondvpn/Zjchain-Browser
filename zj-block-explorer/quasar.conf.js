@@ -11,6 +11,8 @@
 const { info } = require('console');
 const { configure } = require('quasar/wrappers');
 const envparsers = require('./src/config/envparser');
+const { resolve } = require('path');
+
 
 module.exports = configure(function (ctx) {
     return {
@@ -51,7 +53,15 @@ module.exports = configure(function (ctx) {
         // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
         build: {
             vueRouterMode: 'history', // available values: 'hash', 'history'
+            distDir: "dist",
+            // 为了让django识别静态文件，加入static头，对应到打包的地址 www
 
+            extendWebpack(cfg) {
+                if (cfg.mode !== "development") {
+                    cfg.output.publicPath = "/static/";
+                    cfg.output.path = resolve(__dirname, "dist");
+                }
+            },
             // transpile: false,
             publicPath: '/',
 
