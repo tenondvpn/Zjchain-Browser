@@ -355,7 +355,7 @@ def get_bytescode(request):
     if request.method == 'POST':
         sorce_codes = request.POST.get('sorce_codes')
         try:
-            filename = "/tmp/" + uuid.uuid4().hex
+            filename = "./tmp/" + uuid.uuid4().hex
             fo = open(filename, "w")
             fo.write(sorce_codes)
             fo.close()
@@ -364,7 +364,7 @@ def get_bytescode(request):
             bin_code_arr = bin_code.split("\n")
             return JsonHttpResponse({'status': 0, 'code': bin_code_arr[3]})
         except Exception as ex:
-            logger.error('select fail: <%s, %s>' % (str(ex)))
+            logger.error('select fail:' +  (str(ex)))
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
         return JsonHttpResponse({'status': 1, 'msg': 'msg'})
 
