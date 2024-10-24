@@ -1,5 +1,5 @@
 # See: man pkg-config
-prefix=/root/tools/Python-3.10.1/install
+prefix=/root/tools/Python-3.10.12/install
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include
@@ -9,5 +9,5 @@ Description: Embed Python into an application
 Requires:
 Version: 3.10
 Libs.private: -lcrypt -lpthread -ldl  -lutil -lm
-Libs: -L${libdir} -lpython3.10d
-Cflags: -I${includedir}/python3.10d
+Libs: -L${libdir} -lpython3.10
+Cflags: -I${includedir}/python3.10

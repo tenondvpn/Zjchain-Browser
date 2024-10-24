@@ -1,5 +1,1 @@
-#!/root/tools/Python-3.10.1/install/bin/python3.10
-import sys
-from lib2to3.main import main
-
-sys.exit(main("lib2to3.fixes"))
+2to3-3.10

@@ -1,4 +1,4 @@
-#!/root/tools/Python-3.10.1/install/bin/python3.10
+#!/root/Zjchain-Browser/python3.10/bin/python3.10
 # -*- coding: utf-8 -*-
 import re
 import sys

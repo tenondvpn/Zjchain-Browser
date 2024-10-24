@@ -1,3 +1,13 @@
+zjchain/__pycache__/
+install.tar.gz
+zjchain/views/__pycache__/
+zjchain/migrations/__pycache__/
+noah/settings/__pycache__/
+zookeeper/logs/
+zookeeper.tar.gz
+static/js/common/crypto.tar.gz
+python3.10.tar.gz
+*.log
 third_party/libBLS_n
 third_party/libBLS/deps
 cbuild_Debug

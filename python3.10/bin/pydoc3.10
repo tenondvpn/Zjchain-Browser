@@ -1,4 +1,4 @@
-#!/root/tools/Python-3.10.1/install/bin/python3.10
+#!/root/tools/Python-3.10.12/install/bin/python3.10
 
 import pydoc
 if __name__ == '__main__':

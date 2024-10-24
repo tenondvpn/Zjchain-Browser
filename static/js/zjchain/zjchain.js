@@ -561,7 +561,7 @@ function do_transaction() {
     $.ajax({
         type: 'post',
         async: true,
-        url: 'http://192.168.44.186:8783/transaction',
+        url: 'http://82.156.224.174:23001/transaction',
         data: data,
         dataType: "json"
     }).done(function (response) {
