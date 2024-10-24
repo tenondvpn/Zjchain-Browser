@@ -829,7 +829,7 @@ $(function () {
         fields: block_transactions_fields,
 
     });
-    initializeGridWithHeadBox(block_transactions_fields,'jsGrid-block-transactions');
+    // initializeGridWithHeadBox(block_transactions_fields,'jsGrid-block-transactions');
 
 
     $("#jsGrid1").jsGrid({
@@ -844,7 +844,7 @@ $(function () {
         fields: transactions_jsGrid_fields,
 
     });
-    initializeGridWithHeadBox(transactions_jsGrid_fields,'jsGrid1');
+    // initializeGridWithHeadBox(transactions_jsGrid_fields,'jsGrid1');
 
 
     $("#jsGrid2").jsGrid({
@@ -881,7 +881,7 @@ $(function () {
 
         fields: block_list_fileds,
     });
-    initializeGridWithHeadBox(block_list_fileds, "jsGrid2");
+    // initializeGridWithHeadBox(block_list_fileds, "jsGrid2");
 
     $("#jsGrid3").jsGrid({
         height: "auto",
