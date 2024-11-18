@@ -84,15 +84,15 @@ function change_title(type) {
     search_str = "";
     page_size = 0;
     if (content_mode == 0) {
-        $("#transaction_title").html("Blocks");
-        $("#change_trans_btn").html("Transactions");
+        $("#transaction_title").html("区块");
+        $("#change_trans_btn").html("交易列表");
         content_mode = 1;
         $("#jsGrid1").hide();
         $("#jsGrid2").show();
         $("#jsGrid2").jsGrid("loadData");
     } else {
-        $("#transaction_title").html("Transactions");
-        $("#change_trans_btn").html("Blocks");
+        $("#transaction_title").html("交易列表");
+        $("#change_trans_btn").html("区块");
         content_mode = 0;
         $("#jsGrid2").hide();
         $("#jsGrid1").show();

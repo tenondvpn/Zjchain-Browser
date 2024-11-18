@@ -43,10 +43,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <ul class="navbar-nav">
 
                 <li class="nav-item d-none d-sm-inline-block  active bg-gray">
-                    <a href="/zjchain/" class="nav-link">Home</a>
+                    <a href="/zjchain/" class="nav-link">主页</a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
-                    <a href="/zjchain/contract" class="nav-link">Contract</a>
+                    <a href="/zjchain/contract" class="nav-link">合约</a>
                 </li>
             </ul>
 
@@ -94,7 +94,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <div class="col-md-8 offset-md-2">
                         <form>
                             <div class="input-group">
-                                <input type="search" id="id_search" class="form-control form-control-lg" onchange="search_change()" placeholder="Address/TransactionId/BlockHash">
+                                <input type="search" id="id_search" class="form-control form-control-lg" onchange="search_change()" placeholder="地址/交易ID/块哈希">
                                 <div class="input-group-append">
                                     <button type="button" onclick="search_data()" class="btn btn-lg btn-default">
                                         <i class="fa fa-search"></i>
@@ -102,7 +102,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 </div>
                                 <div class="input-group-append">
                                     <button type="button" class="btn btn-lg btn-default" data-toggle="modal" data-target="#modal-secondary">
-                                        Transaction
+                                        发起转账
                                     </button>
                                 </div>
                             </div>
@@ -120,14 +120,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             <div class="description-block">
                                                 <span class="description-percentage text-success" id="total_zjchain_grad"><i class="fas fa-caret-up"></i> 17%</span>
                                                 <h5 class="description-header" id="total_zjchain">--</h5>
-                                                <span class="description-text">Total Coin</span>
+                                                <span class="description-text">币总量</span>
                                             </div>
                                         </div>
                                         <div class="btn col-sm-2 col-6 border" style="border:1px solid #616161!important;color:white;">
                                             <div class="description-block">
                                                 <span class="description-percentage text-success" id="total_address_grad"><i class="fas fa-caret-up"></i> 17%</span>
                                                 <h5 class="description-header" id="total_address">--</h5>
-                                                <span class="description-text">Address</span>
+                                                <span class="description-text">地址数</span>
                                             </div>
                                             <!-- /.description-block -->
                                         </div>
@@ -135,7 +135,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             <div class="description-block">
                                                 <span class="description-percentage text-success" id="total_nodes_grad"><i class="fas fa-caret-up"></i> 17%</span>
                                                 <h5 class="description-header" id="total_nodes">--</h5>
-                                                <span class="description-text">Nodes</span>
+                                                <span class="description-text">节点数</span>
                                             </div>
                                         </div>
                                         <!-- /.col -->
@@ -143,7 +143,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             <div class="description-block">
                                                 <span class="description-percentage text-warning" id="total_transaction_count_grad"><i class="fas fa-caret-up"></i> 17%</span>
                                                 <h5 class="description-header" id="total_transaction_count">--</h5>
-                                                <span class="description-text">Transactions</span>
+                                                <span class="description-text">交易数</span>
                                             </div>
                                         </div>
                                         <!-- /.col -->
@@ -151,7 +151,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             <div class="description-block">
                                                 <span class="description-percentage text-danger" id="total_contracts_grad"><i class="fas fa-caret-up"></i> 17%</span>
                                                 <h5 class="description-header" id="total_contracts">--</h5>
-                                                <span class="description-text">Contracts</span>
+                                                <span class="description-text">合约数</span>
                                             </div>
                                         </div>
                                         <!-- /.col -->
@@ -159,7 +159,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                             <div class="description-block">
                                                 <span class="description-percentage text-muted" id="total_average_qps_grad"><i class="fas fa-caret-up"></i> 17%</span>
                                                 <h5 class="description-header" id="total_average_qps">--</h5>
-                                                <span class="description-text">Average QPS</span>
+                                                <span class="description-text">平均QPS</span>
                                             </div>
                                         </div>
                                     </div>
@@ -182,13 +182,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <div class="card-header" style="background-color: #343a40">
                                 <div class="btn-group btn-group-toggle" data-toggle="buttons">
                                     <label id='btn1'  class="btn btn-secondary active">
-                                        <input  type="radio" onclick="list_transactions()" name="options" id="option_a1" autocomplete="off" checked=""> Transactions
+                                        <input  type="radio" onclick="list_transactions()" name="options" id="option_a1" autocomplete="off" checked=""> 交易列表
                                     </label>
                                     <label id='btn2'  class="btn btn-secondary">
-                                        <input type="radio" onclick="list_blocks()" name="options" id="option_a2" autocomplete="off"> Blocks
+                                        <input type="radio" onclick="list_blocks()" name="options" id="option_a2" autocomplete="off"> 区块
                                     </label>
                                     <label id='btn3' class="btn btn-secondary">
-                                        <input type="radio" onclick="list_accounts()" name="options" id="option_a3" autocomplete="off"> Accounts
+                                        <input type="radio" onclick="list_accounts()" name="options" id="option_a3" autocomplete="off"> 地址
                                     </label>
                                 </div>
                                 <ul class="pagination pagination-sm m-0 float-right">
