@@ -650,12 +650,12 @@ transactions_jsGrid_controller = {
             }
         };
         transactions_jsGrid_fields = [
-            { name: "时间", type: "text", align: "center", width: 90 },
-            { name: "分片", type: "number", align: "center", width: 40, "title": "分片" },
-            { name: "交易池", type: "number", align: "center", width: 40 },
-            { name: "高度", type: "number", align: "center", width: 50 },
+            { name: "Time", type: "text", align: "center", width: 90 , "title": "时间"},
+            { name: "Shard", type: "number", align: "center", width: 40, "title": "分片" },
+            { name: "Pool", type: "number", align: "center", width: 40 , "title": "交易池"},
+            { name: "Height", type: "number", align: "center", width: 50 , "title": "高度"},
             {
-                name: "交易类型", type: "text", width: 60, align: "center", itemTemplate: function (value) {
+                name: "Type", type: "text", width: 60, align: "center", "title": "类型", itemTemplate: function (value) {
                     if (value == 16) {
                         return '<span class= "badge badge-warning">statistic</span>';
                     } else if (value == 8) {
@@ -684,27 +684,27 @@ transactions_jsGrid_controller = {
                 },
             },
             {
-                name: "Gid", type: "text", width: 75, align: "center", itemTemplate: function (value) {
+                name: "Gid", type: "text", width: 75, align: "center", "title": "Gid", itemTemplate: function (value) {
                     return '<a href="javascript:void(0);" onclick="auto_search_transactions(\'' + value + '\')">' + value.substring(0, 4) + "..." + value.substring(value.length - 4, value.length) + '</a>';
                 },
             },
             {
-                name: "源账户", type: "text", width: 75, align: "center", itemTemplate: function (value) {
+                name: "From", type: "text", width: 75, align: "center", "title": "源地址", itemTemplate: function (value) {
                     return '<a href="javascript:void(0);" onclick="auto_search_transactions(\'' + value + '\')">' + value.substring(0, 4) + "..." + value.substring(value.length - 4, value.length) + '</a>';
                 },
             },
             {
-                name: "目标账户", type: "text", width: 75, align: "center", itemTemplate: function (value) {
+                name: "To", type: "text", width: 75, align: "center", "title": "目标地址", itemTemplate: function (value) {
                     return '<a href="javascript:void(0);" onclick="auto_search_transactions(\'' + value + '\')">' + value.substring(0, 4) + "..." + value.substring(value.length - 4, value.length) + '</a>';
                 },
             },
             {
-                name: "交易额", type: "number", align: "center", width: 70, itemTemplate: function (value) {
+                name: "Amount", type: "number", align: "center", width: 70, "title": "交易额", itemTemplate: function (value) {
                     return Math.floor(value / 10000000) + '.' + FormatNum(value % 10000000, 7);
                 },
             },
             {
-                name: "交易费", type: "number", align: "center", width: 70, itemTemplate: function (value) {
+                name: "Gas", type: "number", align: "center", width: 70, "title": "交易费", itemTemplate: function (value) {
                     return Math.floor(value / 10000000) + '.' + FormatNum(value % 10000000, 7);
                 },
             },
@@ -712,7 +712,7 @@ transactions_jsGrid_controller = {
 
 block_transactions_fields =  [
             {
-                name: "块类型", type: "text", width: 60, align: "center", itemTemplate: function (value) {
+                name: "Type", type: "text", width: 60, align: "center", "title": "类型", itemTemplate: function (value) {
                     if (value == 16) {
                         return '<span class= "badge badge-warning">statistic</span>';
                     } else if (value == 8) {
@@ -741,51 +741,51 @@ block_transactions_fields =  [
                 },
             },
             {
-                name: "Gid", type: "text", width: 75, align: "center", itemTemplate: function (value) {
+                name: "Gid", type: "text", width: 75, align: "center", "title": "Gid", itemTemplate: function (value) {
                     return '<a href="javascript:void(0);" onclick="auto_search_transactions(\'' + value + '\')">' + value.substring(0, 4) + "..." + value.substring(value.length - 4, value.length) + '</a>';
                 },
             },
             {
-                name: "源地址", type: "text", width: 75, align: "center", itemTemplate: function (value) {
+                name: "From", type: "text", width: 75, align: "center", "title": "源地址", itemTemplate: function (value) {
                     return '<a href="javascript:void(0);" onclick="auto_search_transactions(\'' + value + '\')">' + value.substring(0, 4) + "..." + value.substring(value.length - 4, value.length) + '</a>';
                 },
             },
             {
-                name: "目标地址", type: "text", width: 75, align: "center", itemTemplate: function (value) {
+                name: "To", type: "text", width: 75, align: "center", "title": "目标地址", itemTemplate: function (value) {
                     return '<a href="javascript:void(0);" onclick="auto_search_transactions(\'' + value + '\')">' + value.substring(0, 4) + "..." + value.substring(value.length - 4, value.length) + '</a>';
                 },
             },
             {
-                name: "交易额", type: "number", align: "center", width: 70, itemTemplate: function (value) {
+                name: "Amount", type: "number", align: "center", width: 70, "title": "交易额", itemTemplate: function (value) {
                     return Math.floor(value / 10000000) + '.' + FormatNum(value % 10000000, 7);
                 },
             },
             {
-                name: "交易费", type: "number", align: "center", width: 70, itemTemplate: function (value) {
+                name: "Gas", type: "number", align: "center", width: 70, "title": "交易费", itemTemplate: function (value) {
                     return Math.floor(value / 10000000) + '.' + FormatNum(value % 10000000, 7);
                 },
             },
         ];
 
  block_list_fileds = [
-            { name: "时间", type: "text", width: 90 },
-            { name: "分片", type: "number", align: "center", width: 40, "title": "分片" },
-            { name: "交易池", type: "number", align: "center", width: 40 },
-            { name: "高度", type: "number", align: "center", width: 50 },
+            { name: "Time", type: "text", "title": "时间", width: 90 },
+            { name: "Shard", type: "number", align: "center", width: 40, "title": "分片" },
+            { name: "Pool", type: "number", align: "center","title": "交易池",  width: 40 },
+            { name: "Height", type: "number", align: "center", "title": "高度", width: 50 },
             {
-                name: "前置哈希", type: "text", width: 120, align: "center", itemTemplate: function (value) {
+                name: "PrevHash", type: "text", width: 120, align: "center", "title": "前置哈希", itemTemplate: function (value) {
                     return '<a href="javascript:void(0);" onclick="auto_search_data(\'' + value + '\')">' + value.substring(0, 6) + "..." + value.substring(value.length - 6, value.length) + '</a><span class="badge badge-warning " style="margin-left:5px;" onclick="show_block_detail(\'' + value + '\');">&nbsp;i&nbsp;</span>';
                 },
             },
             {
-                name: "块哈希", type: "text", width: 120, align: "center", itemTemplate: function (value) {
+                name: "Hash", type: "text", width: 120, align: "center", "title": "块哈希", itemTemplate: function (value) {
                     return '<a href="javascript:void(0);" onclick="auto_search_data(\'' + value + '\')">' + value.substring(0, 6) + "..." + value.substring(value.length - 6, value.length) + '</a><span class="badge badge-warning " style="margin-left:5px;" onclick="show_block_detail(\'' + value + '\');">&nbsp;i&nbsp;</span>';
                 },
             },
-            { name: "随机数", type: "number", align: "center", width: 130 },
-            { name: "选举高度", type: "number", align: "center", width: 50, "title": "选举高度" },
-            { name: "时间高度", type: "number", align: "center", width: 50, "title": "时间高度" },
-            { name: "交易数", type: "number", align: "center", width: 50 },
+            { name: "Vss", type: "number", align: "center", "title": "随机数", width: 130 },
+            { name: "ElectHeight", type: "number", align: "center", width: 50, "title": "选举高度" },
+            { name: "TimeHeight", type: "number", align: "center", width: 50, "title": "时间高度" },
+            { name: "TxSize", type: "number", align: "center", "title": "交易数", width: 50 },
         ];
 
 
@@ -915,10 +915,10 @@ $(function () {
         },
 
         fields: [
-            { name: "账户地址", type: "text", width: 90 },
-            { name: "分片", type: "number", align: "center", width: 40, "title": "分片" },
-            { name: "交易池", type: "number", align: "center", width: 40 },
-            { name: "余额", type: "number", align: "center", width: 50 },
+            { name: "address", type: "text", "title": "账户地址", width: 90 },
+            { name: "Shard", type: "number", align: "center", width: 40, "title": "分片" },
+            { name: "Pool", type: "number", align: "center", "title": "交易池", width: 40 },
+            { name: "Balance", type: "number", align: "center", "title": "余额", width: 50 },
         ]
     });
 
