@@ -382,7 +382,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <div class="modal-dialog modal-lg">
                 <div class="modal-content bg-secondary">
                     <div class="modal-header">
-                        <h4 class="modal-title">Transaction</h4>
+                        <h4 class="modal-title">发起交易</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -392,25 +392,25 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             <form class="form-horizontal" id="quickForm">
                                 <div class="card-body">
                                     <div class="form-group row">
-                                        <label for="inputEmail3" class="col-sm-2 col-form-label">To Address</label>
+                                        <label for="inputEmail3" class="col-sm-2 col-form-label">目标地址</label>
                                         <div class="col-sm-10">
-                                            <input type="text" name="toaddr" class="form-control" onchange="on_toaddresschange()" id="inputToAddress" placeholder="transport to address.">
+                                            <input type="text" name="toaddr" class="form-control" onchange="on_toaddresschange()" id="inputToAddress" placeholder="目标地址.">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="inputEmail3" class="col-sm-2 col-form-label">Amount</label>
+                                        <label for="inputEmail3" class="col-sm-2 col-form-label">转账金额</label>
                                         <div class="col-sm-10">
-                                            <input type="text" name="amount" class="form-control" onchange="on_toamountchange()" id="inputAmount" placeholder="amount to transfer.">
+                                            <input type="text" name="amount" class="form-control" onchange="on_toamountchange()" id="inputAmount" placeholder="转账金额.">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="inputEmail3" class="col-sm-2 col-form-label">Max Gas</label>
+                                        <label for="inputEmail3" class="col-sm-2 col-form-label">最大交易费</label>
                                         <div class="col-sm-5">
-                                            <input type="text" class="form-control" onchange="on_gaslimitchange()" id="input_gas_limit" placeholder="max gas.">
+                                            <input type="text" class="form-control" onchange="on_gaslimitchange()" id="input_gas_limit" placeholder="最大交易费.">
                                         </div>
-                                        <label for="inputEmail3" class="col-sm-2 col-form-label" style="margin-left:0px; text-align: right;">Gas Price</label>
+                                        <label for="inputEmail3" class="col-sm-2 col-form-label" style="margin-left:0px; text-align: right;">交易费价格</label>
                                         <div class="col-sm-3">
-                                            <input type="text" class="form-control" onchange="on_gaspricechange()" id="input_gas_price" placeholder="gas price.">
+                                            <input type="text" class="form-control" onchange="on_gaspricechange()" id="input_gas_price" placeholder="交易费价格.">
                                         </div>
                                     </div>
                                 </div>
@@ -419,7 +419,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     </div>
                     <div class="modal-footer justify-content-between">
                         <button type="button" class="btn btn-outline-light" style="border: 0px;" data-dismiss="modal"></button>
-                        <button type="button" class="btn btn-outline-light" onclick="do_transaction()">Transfer</button>
+                        <button type="button" class="btn btn-outline-light" onclick="do_transaction()">转账</button>
                     </div>
                 </div>
                 <!-- /.modal-content -->
