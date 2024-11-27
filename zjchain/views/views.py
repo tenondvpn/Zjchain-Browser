@@ -520,8 +520,33 @@ def get_contract_detail(request):
 
 def get_block_detail(request, block_hash):
     try:
-        blockDetail = ZjcCkBlockTable.objects_in(db).filter(ZjcCkBlockTable.hash == block_hash)[0]
-        tmpObj = blockDetail.dict()
+        cmd = "select id,shard_id,pool_index,height,prehash,hash,version,vss,elect_height,bitmap,timestamp,timeblock_height,bls_agg_sign_x,bls_agg_sign_y,commit_bitmap,tx_size,date from zjc_ck_block_table where hash='%s'" % block_hash
+        result = ck_client.execute(cmd)
+        if len(result) <= 0:
+            return JsonHttpResponse({'status': 1, 'msg': "failed"})
+
+        tmpObj = {
+            "id": result[0][0],
+            "shard_id": result[0][1],
+            "pool_index": result[0][2],
+            "height": result[0][3],
+            "prehash": result[0][4],
+            "hash": result[0][5],
+            "version": result[0][6],
+            "vss": result[0][7],
+            "elect_height": result[0][8],
+            "bitmap": result[0][9],
+            "timestamp": result[0][10],
+            "timeblock_height": result[0][11],
+            "bls_agg_sign_x": result[0][12],
+            "bls_agg_sign_y": result[0][13],
+            "commit_bitmap": result[0][14],
+            "tx_size": result[0][15],
+            "date": result[0][16]
+        }
+
+        # blockDetail = ZjcCkBlockTable.objects_in(db).filter(ZjcCkBlockTable.hash == block_hash)[0]
+        # tmpObj = blockDetail.dict()
         cmd = "select sum(gas_used) as value from zjc_ck_block_table a inner join zjc_ck_transaction_table b on a.hash = b.hash" \
               " and  b.hash ='" + str(block_hash) + "' "\
               " group by b.hash " \
