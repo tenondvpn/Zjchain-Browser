@@ -525,6 +525,8 @@ def get_block_detail(request, block_hash):
         if len(result) <= 0:
             return JsonHttpResponse({'status': 1, 'msg': "failed"})
 
+        print(cmd)
+        print(result)
         tmpObj = {
             "id": result[0][0],
             "shard_id": result[1][0],
