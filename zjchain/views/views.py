@@ -552,7 +552,10 @@ def get_block_detail(request, block_hash):
         result2 = ck_client.execute(cmd)
         logger.error('get_block_detail fail cmd = %s>' % cmd)
         logger.error(result2)
-        tmpObj['total_used_gas'] = result2[0][0]
+        if len(result2) <= 0:
+            tmpObj['total_used_gas'] = 0
+        else:
+            tmpObj['total_used_gas'] = result2[0][0]
         return JsonHttpResponse({'status': 0, 'value': tmpObj})
     except Exception as ex:
         logger.error('get_block_detail fail hash = %s>' % block_hash)
