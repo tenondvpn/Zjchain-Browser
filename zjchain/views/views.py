@@ -549,10 +549,10 @@ def get_block_detail(request, block_hash):
         cmd = "select sum(gas_used) as value from zjc_ck_block_table a inner join zjc_ck_transaction_table b on a.hash = b.hash" \
               " and  b.hash ='" + str(block_hash) + "' "\
               " group by b.hash " 
+        result2 = ck_client.execute(cmd)
         logger.error('get_block_detail fail cmd = %s>' % cmd)
-        logger.error(result)
-        result = ck_client.execute(cmd)
-        tmpObj['total_used_gas'] = result[0][0]
+        logger.error(result2)
+        tmpObj['total_used_gas'] = result2[0][0]
         return JsonHttpResponse({'status': 0, 'value': tmpObj})
     except Exception as ex:
         logger.error('get_block_detail fail hash = %s>' % block_hash)
