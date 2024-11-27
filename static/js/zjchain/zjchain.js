@@ -616,10 +616,10 @@ function initializeGridWithHeadBox(fields, name) {
          $("#"+name).before(configPanel);
      }
 
-    fields.forEach(function(field) {
-                const checkbox = $('<label><input id ='+field.name +' type="checkbox" checked /> ' + field.name + '</label>');
-                configPanel.append(checkbox);
-    });
+    // fields.forEach(function(field) {
+    //             const checkbox = $('<label><input id ='+field.name +' type="checkbox" checked /> ' + field.name + '</label>');
+    //             configPanel.append(checkbox);
+    // });
 
     $("."+name + "headbox input[type=checkbox]").on("click", function() {
                 var $cb = $(this);
@@ -829,7 +829,7 @@ $(function () {
         fields: block_transactions_fields,
 
     });
-    // initializeGridWithHeadBox(block_transactions_fields,'jsGrid-block-transactions');
+    initializeGridWithHeadBox(block_transactions_fields,'jsGrid-block-transactions');
 
 
     $("#jsGrid1").jsGrid({
