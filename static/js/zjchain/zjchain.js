@@ -880,7 +880,7 @@ $(function () {
 
         fields: block_list_fileds,
     });
-    // initializeGridWithHeadBox(block_list_fileds, "jsGrid2");
+    initializeGridWithHeadBox(block_list_fileds, "jsGrid2");
 
     $("#jsGrid3").jsGrid({
         height: "auto",
