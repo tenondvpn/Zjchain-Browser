@@ -829,7 +829,7 @@ $(function () {
         fields: block_transactions_fields,
 
     });
-    initializeGridWithHeadBox(block_transactions_fields,'jsGrid-block-transactions');
+    // initializeGridWithHeadBox(block_transactions_fields,'jsGrid-block-transactions');
 
 
     $("#jsGrid1").jsGrid({
