@@ -644,6 +644,75 @@ function do_test_url() {
             title: response.value
         })
     });
+
+    $.ajax({
+        type: 'post',
+        async: true,
+        url: '/zjchain/get_all_nodes_bls_info/',
+        data: {
+            'elect_height': 0,
+            'offset': 0,
+            'step': 2,
+        },
+        dataType: "json"
+    }).done(function (response) {
+        Toast.fire({
+            icon: 'info',
+            title: response.value
+        })
+    });
+
+    $.ajax({
+        type: 'post',
+        async: true,
+        url: '/zjchain/get_all_nodes_bls_info/',
+        data: {
+            'elect_height': 0,
+            'offset': 0,
+            'step': 3,
+        },
+        dataType: "json"
+    }).done(function (response) {
+        Toast.fire({
+            icon: 'info',
+            title: response.value
+        })
+    });
+
+    $.ajax({
+        type: 'post',
+        async: true,
+        url: '/zjchain/get_all_nodes_bls_info/',
+        data: {
+            'elect_height': 122,
+            'offset': 1,
+            'step': 1,
+        },
+        dataType: "json"
+    }).done(function (response) {
+        Toast.fire({
+            icon: 'info',
+            title: response.value
+        })
+    });
+
+    $.ajax({
+        type: 'post',
+        async: true,
+        url: '/zjchain/get_all_nodes_bls_info/',
+        data: {
+            'elect_height': 122,
+            'offset': -1,
+            'step': 1,
+        },
+        dataType: "json"
+    }).done(function (response) {
+        Toast.fire({
+            icon: 'info',
+            title: response.value
+        })
+    });
+
 }
 
 transactions_jsGrid_controller = {
