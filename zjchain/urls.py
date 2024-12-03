@@ -19,7 +19,25 @@ urlpatterns = (
     re_path(r'^get_prikey/(?P<seckey>.*)/$',views.get_prikey),
     re_path(r'^set_private_key/$',views.set_private_key),
     re_path(r'^get_all_videos/$',views.get_all_videos),
+
     re_path(r'^get_all_nodes_bls_info/$', views.get_all_nodes_bls_info),
+
+    # re_path(r'^ars_create_sec_keys/$', views.ars_create_sec_keys),
+    # re_path(r'^ars_get_contract_info/$', views.ars_get_contract_info),
+    # re_path(r'^ars_create_new_vote/$', views.ars_create_new_vote),
+    # re_path(r'^ars_vote/$', views.ars_vote),
+    # re_path(r'^ars_transactions/$', views.ars_transactions),
+    # re_path(r'^ars_blocks/$', views.ars_blocks),
+    # re_path(r'^ars_addresses/$', views.ars_addresses),
+
+    # re_path(r'^penc_create_sec_keys/$', views.penc_create_sec_keys),
+    # re_path(r'^penc_get_contract_info/$', views.penc_get_contract_info),
+    # re_path(r'^penc_share_new_data/$', views.penc_share_new_data),
+    # re_path(r'^penc_vote/$', views.penc_vote),
+    # re_path(r'^penc_get_share_data/$', views.penc_get_share_data),
+    # re_path(r'^penc_transactions/$', views.ars_transactions),
+    # re_path(r'^penc_blocks/$', views.ars_blocks),
+    # re_path(r'^penc_addresses/$', views.ars_addresses),
 
     re_path(r'^get_transaction/$', transactions_view.get_transaction),
     re_path(r'^transactions_list/$', transactions_view.transactions_list),
