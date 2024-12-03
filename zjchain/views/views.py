@@ -22,9 +22,6 @@ from zjchain.http_helper import JsonHttpResponse, logger
 ipreader = geoip2.database.Reader(
     'zjchain/resource/GeoLite2-Country.mmdb')
 
-ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
-
-
 def zjchain_index(request):
     return render(request, 'zjchain_index.html', {"pipe_id": -1})
 
@@ -44,6 +41,7 @@ def get_country(request):
 def get_balance(request, account_id):
     cmd = "select shard_id, pool_index, balance from zjc_ck_account_table where id='" + account_id + "'"
     logging.error('get balance ok: <%s, %s>' % ("", cmd))
+    ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
     result = ck_client.execute(cmd)
     if result is None or len(result) <= 0:
         return JsonHttpResponse({
@@ -143,6 +141,7 @@ def transactions(request):
 
         try:
 
+            ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
             result = ck_client.execute(cmd)
             tmp_result = []
             for item in result:
@@ -208,6 +207,7 @@ def vpn_transactions(request):
         try:
 
             print("cmd: " + cmd)
+            ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
             result = ck_client.execute(cmd)
             tmp_result = []
             for item in result:
@@ -279,6 +279,7 @@ def accounts(request):
 
         try:
 
+            ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
             result = ck_client.execute(cmd)
             tmp_result = []
             for item in result:
@@ -302,6 +303,7 @@ def get_statistics(request):
         tmp_result = None
         try:
 
+            ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
             tmp_result = ck_client.execute(cmd)
         except Exception as ex:
             logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
@@ -319,6 +321,7 @@ def get_statistics(request):
         res_result_prev = {}
         res_result = {}
         try:
+            ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
             result = ck_client.execute(cmd)
             if result is None or len(result) <= 0:
                 cmd = 'SELECT time, all_zjc, all_address, all_contracts, all_transactions, all_nodes FROM zjc_ck_statistic_table order by time asc limit 1'
@@ -391,6 +394,7 @@ def get_all_nodes_bls_info(request):
 
         try:
             res_arr = []
+            ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
             result = ck_client.execute(cmd)
             if len(result) < 0:
                 return JsonHttpResponse({'status': 1, 'msg': "no data"})
@@ -454,6 +458,7 @@ def get_all_contracts(request):
             cmd += " limit 100 "
         try:
 
+            ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
             result = ck_client.execute(cmd)
             contracts_dict = dict()
             for item in result:
@@ -517,6 +522,7 @@ def get_all_videos(request):
             cmd += " limit 30 "
         try:
 
+            ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
             result = ck_client.execute(cmd)
             res_arr = []
             print(result)
@@ -541,6 +547,7 @@ def get_contract_detail(request):
 
         try:
 
+            ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
             result = ck_client.execute(cmd)
             contracts_dict = dict()
             for item in result:
@@ -576,6 +583,7 @@ def get_contract_detail(request):
 def get_block_detail(request, block_hash):
     try:
         cmd = "select id,shard_id,pool_index,height,prehash,hash,version,vss,elect_height,bitmap,timestamp,timeblock_height,bls_agg_sign_x,bls_agg_sign_y,commit_bitmap,tx_size,date from zjc_ck_block_table where hash='%s'" % block_hash
+        ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
         result = ck_client.execute(cmd)
         if len(result) <= 0:
             return JsonHttpResponse({'status': 1, 'msg': "failed"})
@@ -620,6 +628,7 @@ def get_block_detail(request, block_hash):
 def get_prikey(request, seckey):
     cmd = "select ecn_prikey from private_key_table where seckey='" + seckey + "'"
 
+    ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
     result = ck_client.execute(cmd)
     if result is None or len(result) <= 0:
         return JsonHttpResponse({'status': 1, 'cmd': cmd, 'msg': 'account not exists.'})
@@ -635,6 +644,7 @@ def set_private_key(request):
         cmd = "insert into private_key_table values('" + seckkey + "', '" + prkey + "', 0, 0)"
         try:
 
+            ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
             ck_client.execute(cmd)
             return JsonHttpResponse({'status': 0, 'msg': 'ok'})
         except Exception as ex:
