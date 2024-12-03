@@ -10,6 +10,7 @@ import os
 import datetime
 import uuid
 import geoip2.database
+import json
 import urllib.request
 
 from django.shortcuts import render
@@ -424,7 +425,7 @@ def get_all_nodes_bls_info(request):
 
                     res_arr.append(json_item)
 
-            print(res_arr)
+            print(json.dumps(res_arr, ensure_ascii=False))
             return JsonHttpResponse({'status': 0, 'cmd': cmd, 'value': res_arr})
         except Exception as ex:
             logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
