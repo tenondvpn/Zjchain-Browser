@@ -424,6 +424,7 @@ def get_all_nodes_bls_info(request):
 
                     res_arr.append(json_item)
 
+            print(res_arr)
             return JsonHttpResponse({'status': 0, 'cmd': cmd, 'value': res_arr})
         except Exception as ex:
             logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
