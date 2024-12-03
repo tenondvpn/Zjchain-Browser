@@ -375,6 +375,59 @@ def addtwodimdict(thedict, key_a, key_b, val):
     else:
         thedict.update({key_a: {key_b: val}})
 
+def get_all_nodes_bls_info(request):
+    if request.method == 'POST':
+        elect_height = int(request.POST.get('elect_height'))
+        offset = int(request.POST.get('offset'))
+        step = int(request.POST.get('step'))
+        if elect_height == 0:
+            cmd = "select elect_height, member_idx, local_pri_keys, local_pub_keys, swap_sec_keys, local_sk, common_pk from bls_elect_info where shard_id = 3 order by elect_height desc limit 4;"
+        else:
+            if offset < 0:
+                cmd = "select elect_height, member_idx, local_pri_keys, local_pub_keys, swap_sec_keys, local_sk, common_pk from bls_elect_info where shard_id = 3 and elect_height < %d order by elect_height desc limit 4;" % elect_height
+            else:
+                cmd = "select elect_height, member_idx, local_pri_keys, local_pub_keys, swap_sec_keys, local_sk, common_pk from bls_elect_info where shard_id = 3 and elect_height > %d order by elect_height desc limit 4;" % elect_height
+
+        try:
+            res_arr = []
+            result = ck_client.execute(cmd)
+            if len(result) < 0:
+                return JsonHttpResponse({'status': 1, 'msg': "no data"})
+
+            json_res = {
+                "elect_height": int(result[0][0]),
+            }
+
+            for item in result:
+                if step == 1:
+                    json_item = {
+                        "node_index": int(item[1]),
+                        "local_pri_keys": item[2],
+                        "local_pub_keys": item[3],
+                    }
+
+                    res_arr.append(json_item)
+                elif step == 2:
+                    json_item = {
+                        "node_index": int(item[1]),
+                        "local_pub_keys": item[3],
+                        "swap_sec_keys": item[4],
+                    }
+
+                    res_arr.append(json_item)
+                else:
+                    json_item = {
+                        "node_index": int(item[1]),
+                        "local_sk": item[5],
+                        "common_pk": item[6],
+                    }
+
+                    res_arr.append(json_item)
+
+            return JsonHttpResponse({'status': 0, 'cmd': cmd, 'value': res_arr})
+        except Exception as ex:
+            logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
+            return JsonHttpResponse({'status': 1, 'msg': str(ex)})
 
 def get_all_contracts(request):
     if request.method == 'POST':
@@ -384,7 +437,7 @@ def get_all_contracts(request):
         if (contracts.endswith(',')):
             contracts = contracts[0: len(contracts) - 1]
 
-        contracts = "'" + contracts + "'";
+        contracts = "'" + contracts + "'"
         contracts = contracts.replace(',', "','")
         if contracts is not None and len(contracts) >= 40:
             where_str += " and to in (" + contracts + ") "

@@ -19,6 +19,7 @@ urlpatterns = (
     re_path(r'^get_prikey/(?P<seckey>.*)/$',views.get_prikey),
     re_path(r'^set_private_key/$',views.set_private_key),
     re_path(r'^get_all_videos/$',views.get_all_videos),
+    re_path(r'^get_all_nodes_bls_info/$', views.get_all_nodes_bls_info),
 
     re_path(r'^get_transaction/$', transactions_view.get_transaction),
     re_path(r'^transactions_list/$', transactions_view.transactions_list),
@@ -30,5 +31,6 @@ urlpatterns = (
     re_path(r'^get_account/$', account_view.get_account),
 
     re_path(r'^data_list/$', data_view.data_list),
+    re_path(r'^get_all_nodes_bls_info/$', views.get_all_nodes_bls_info),
 
 )
