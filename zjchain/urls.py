@@ -20,24 +20,35 @@ urlpatterns = (
     re_path(r'^set_private_key/$',views.set_private_key),
     re_path(r'^get_all_videos/$',views.get_all_videos),
 
+    # 分布式密钥协商
     re_path(r'^get_all_nodes_bls_info/$', views.get_all_nodes_bls_info),
 
-    # re_path(r'^ars_create_sec_keys/$', views.ars_create_sec_keys),
-    # re_path(r'^ars_get_contract_info/$', views.ars_get_contract_info),
-    # re_path(r'^ars_create_new_vote/$', views.ars_create_new_vote),
-    # re_path(r'^ars_vote/$', views.ars_vote),
-    # re_path(r'^ars_transactions/$', views.ars_transactions),
-    # re_path(r'^ars_blocks/$', views.ars_blocks),
-    # re_path(r'^ars_addresses/$', views.ars_addresses),
+    # 跨境交易
 
-    # re_path(r'^penc_create_sec_keys/$', views.penc_create_sec_keys),
-    # re_path(r'^penc_get_contract_info/$', views.penc_get_contract_info),
-    # re_path(r'^penc_share_new_data/$', views.penc_share_new_data),
-    # re_path(r'^penc_vote/$', views.penc_vote),
-    # re_path(r'^penc_get_share_data/$', views.penc_get_share_data),
-    # re_path(r'^penc_transactions/$', views.ars_transactions),
-    # re_path(r'^penc_blocks/$', views.ars_blocks),
-    # re_path(r'^penc_addresses/$', views.ars_addresses),
+    # 确权溯源
+    # re_path(r'^confirm_create_tx/$', views.confirm_create_tx),
+    re_path(r'^confirm_transactions/$', views.confirm_transactions),
+    re_path(r'^confirm_blocks/$', views.confirm_blocks),
+    re_path(r'^confirm_addresses/$', views.confirm_addresses),
+
+    # 银行信贷联盟
+    re_path(r'^ars_create_sec_keys/$', views.ars_create_sec_keys),
+    re_path(r'^ars_get_contract_info/$', views.ars_get_contract_info),
+    re_path(r'^ars_create_new_vote/$', views.ars_create_new_vote),
+    re_path(r'^ars_vote/$', views.ars_vote),
+    re_path(r'^ars_transactions/$', views.ars_transactions),
+    re_path(r'^ars_blocks/$', views.ars_blocks),
+    re_path(r'^ars_addresses/$', views.ars_addresses),
+
+    # 政务系统数据共享
+    re_path(r'^penc_create_sec_keys/$', views.penc_create_sec_keys),
+    re_path(r'^penc_get_contract_info/$', views.penc_get_contract_info),
+    re_path(r'^penc_share_new_data/$', views.penc_share_new_data),
+    re_path(r'^penc_vote/$', views.penc_vote),
+    re_path(r'^penc_get_share_data/$', views.penc_get_share_data),
+    re_path(r'^penc_transactions/$', views.penc_transactions),
+    re_path(r'^penc_blocks/$', views.penc_blocks),
+    re_path(r'^penc_addresses/$', views.penc_addresses),
 
     re_path(r'^get_transaction/$', transactions_view.get_transaction),
     re_path(r'^transactions_list/$', transactions_view.transactions_list),

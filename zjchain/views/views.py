@@ -434,6 +434,60 @@ def get_all_nodes_bls_info(request):
         except Exception as ex:
             logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
+        
+def confirm_transactions(request):
+    pass
+
+def confirm_blocks(request):
+    pass
+
+def confirm_addresses(request):
+    pass
+
+def ars_create_sec_keys(request):
+    pass
+
+def ars_get_contract_info(request):
+    pass
+
+def ars_create_new_vote(request):
+    pass
+
+def ars_vote(request):
+    pass
+
+def ars_transactions(request):
+    pass
+
+def ars_blocks(request):
+    pass
+
+def ars_addresses(request):
+    pass
+
+def penc_create_sec_keys(request):
+    pass
+
+def penc_get_contract_info(request):
+    pass
+
+def penc_share_new_data(request):
+    pass
+
+def penc_vote(request):
+    pass
+
+def penc_get_share_data(request):
+    pass
+
+def penc_transactions(request):
+    pass
+
+def penc_blocks(request):
+    pass
+
+def penc_addresses(request):
+    pass
 
 def get_all_contracts(request):
     if request.method == 'POST':

@@ -22,7 +22,7 @@ function GetValidHexString(uint256_bytes) {
     return str_res;
 }
 
-function create_tx(to, amount, gas_limit, gas_price) {
+function create_tx(to, amount, gas_limit, gas_price, key, value) {
     var gid = GetValidHexString(Secp256k1.uint256(randomBytes(32)));
     var tx_type = 0;
     var frompk = '04' + self_public_key.x.toString(16) + self_public_key.y.toString(16);
@@ -50,11 +50,18 @@ function create_tx(to, amount, gas_limit, gas_price) {
     step_buf.writeUInt32LE(big, 0)
     step_buf.writeUInt32LE(low, 0)
 
-    var message_buf = ethereumjs.Buffer.Buffer.concat(
-        [ethereumjs.Buffer.Buffer.from(gid, 'hex'),
-         ethereumjs.Buffer.Buffer.from(frompk, 'hex'),
-         ethereumjs.Buffer.Buffer.from(to, 'hex'),
-        amount_buf, gas_limit_buf, gas_price_buf, step_buf]);
+    var buffer_array = [ethereumjs.Buffer.Buffer.from(gid, 'hex'),
+        ethereumjs.Buffer.Buffer.from(frompk, 'hex'),
+        ethereumjs.Buffer.Buffer.from(to, 'hex'),
+       amount_buf, gas_limit_buf, gas_price_buf, step_buf];
+    if (key != null && key != "") {
+        buffer_array.push(ethereumjs.Buffer.Buffer.from(key));
+        if (value != null && value != "") {
+            buffer_array.push(ethereumjs.Buffer.Buffer.from(value));
+        }
+    }
+
+    var message_buf = ethereumjs.Buffer.Buffer.concat(buffer_array);
     var kechash = keccak256(message_buf)
     var digest = Secp256k1.uint256(kechash, 16)
     const sig = Secp256k1.ecsign(self_private_key, digest)
@@ -71,6 +78,8 @@ function create_tx(to, amount, gas_limit, gas_price) {
         'gas_price': gas_price,
         'type': tx_type,
         'shard_id': 3,
+        'key': key,
+        'val': value,
         'sign_r': sigR.toString(16),
         'sign_s': sigS.toString(16),
         'sign_v': sig.v,
