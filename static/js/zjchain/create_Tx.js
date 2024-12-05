@@ -86,12 +86,9 @@ function create_tx(to, amount, gas_limit, gas_price, key, value) {
     }
 }
 
-function do_transaction() {
-    var to_addr = "a0793c84fb3133c0df1b9a6d5b4bbfe5e7545138";
-    var to_amount = 100000000;
-    var gas_limit = 10000;
+function do_transaction(to_addr, amount, gas_limit) {
     var gas_price = 1;
-    var data = create_tx(to_addr, to_amount, gas_limit, gas_price);
+    var data = create_tx(to_addr, to_amount, gas_limit, gas_price, "", "");
     $.ajax({
         type: 'post',
         async: true,
@@ -106,4 +103,30 @@ function do_transaction() {
     });
 }
 
-do_transaction()
+function do_transaction_confirm(value) {
+    var to_addr = "a0793c84fb3133c0df1b9a6ccccbbfe5e7545138";
+    var to_amount = 1;
+    var gas_limit = 10000;
+    var gas_price = 1;
+    var data = create_tx(to_addr, to_amount, gas_limit, gas_price, "def", value);
+    $.ajax({
+        type: 'post',
+        async: true,
+        url: 'http://82.156.224.174:23001/transaction',
+        data: data,
+        dataType: "json"
+    }).done(function (response) {
+        Toast.fire({
+            icon: 'info',
+            title: 'success.'
+        })
+    });
+}
+
+
+var to_addr = "a0793c84fb3133c0df1b9a6d5b4bbfe5e7545138";
+var to_amount = 100000000;
+var gas_limit = 10000;
+do_transaction(to_addr, to_amount, gas_limit)
+
+do_transaction_confirm("data");

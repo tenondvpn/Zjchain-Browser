@@ -12,15 +12,32 @@ import uuid
 import geoip2.database
 import json
 import urllib.request
-
+import time
 from django.shortcuts import render
 from django.conf import settings
 import logging
 from clickhouse_driver import Client
 from zjchain.http_helper import JsonHttpResponse, logger
+import no_block_sys_cmd
+import linux_file_cmd
+import binascii
+import shardora_api
+from eth_utils import decode_hex, encode_hex
+from eth_abi import encode
+
+contarct_address = "48e1eab96c9e759daa3aff82b40e77cd615a41d0"
 
 ipreader = geoip2.database.Reader(
     'zjchain/resource/GeoLite2-Country.mmdb')
+
+def str_to_hex(string):
+    str_bin = string.encode('utf-8')
+    return binascii.hexlify(str_bin).decode('utf-8')
+
+def hex_to_str(hex_str):
+    hex = hex_str.encode('utf-8')
+    str_bin = binascii.unhexlify(hex)
+    return str_bin.decode('utf-8')
 
 def zjchain_index(request):
     return render(request, 'zjchain_index.html', {"pipe_id": -1})
@@ -36,7 +53,6 @@ def tbc(request):
 
 def get_country(request):
     return 'CN'
-
 
 def get_balance(request, account_id):
     cmd = "select shard_id, pool_index, balance from zjc_ck_account_table where id='" + account_id + "'"
@@ -120,7 +136,7 @@ def transactions(request):
                 if where_str != "":
                     where_str += " and "
 
-                where_str += " hash = '" + search_str + "' or prehash = '" + search_str + "' ";
+                where_str += " hash = '" + search_str + "' or prehash = '" + search_str + "' "
 
         cmd = 'SELECT shard_id, pool_index, height, type, timestamp, gid, from, to, amount, gas_limit, gas_used, gas_price FROM zjc_ck_transaction_table '
         if data_type == 1:
@@ -436,40 +452,304 @@ def get_all_nodes_bls_info(request):
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
         
 def confirm_transactions(request):
-    pass
+    if request.method == 'POST':
+        block_hash = request.POST.get('hash')
+        height = request.POST.get('height')
+        shard = request.POST.get('shard')
+        pool = request.POST.get('pool')
+        limit = request.POST.get('limit')
+        search_str = request.POST.get('search')
+        if search_str is None:
+            search_str = ""
 
-def confirm_blocks(request):
-    pass
+        order = request.POST.get('order')
+        where_str = " to = 'a0793c84fb3133c0df1b9a6ccccbbfe5e7545138' "
+        if int(shard) != -1:
+            if where_str != "":
+                where_str += " and shard_id = " + str(shard)
+            else:
+                where_str += " shard_id = " + str(shard)
 
-def confirm_addresses(request):
-    pass
+        if int(pool) != -1:
+            if where_str != "":
+                where_str += " and pool_index = " + str(pool)
+            else:
+                where_str += " pool_index = " + str(pool)
 
+        if height is None:
+            height = -1
+
+        if block_hash is None:
+            block_hash = ""
+
+        if int(height) != -1:
+            if where_str != "":
+                where_str += " and height = " + str(height)
+            else:
+                where_str += " height = " + str(height)
+
+        if block_hash != "":
+            if where_str != "":
+                where_str += " and hash = " + str2r(block_hash)
+            else:
+                where_str += " hash = " + str2r(block_hash)
+
+        if search_str != "":
+            if where_str != "":
+                where_str += " and "
+
+            where_str += "( gid = '" + search_str + "' or from = '" + search_str + "' or to = '" + search_str + "' or hash = '" + search_str + "' or prehash = '" + search_str + "' )"
+      
+        cmd = 'SELECT shard_id, pool_index, height, type, timestamp, gid, from, to, amount, gas_limit, gas_used, gas_price, storages FROM zjc_ck_transaction_table '
+
+        if where_str != "":
+            cmd += " where " + where_str
+
+        if order is not None:
+            cmd += " " + order + " "
+        else:
+            cmd += " order by timestamp desc "
+
+        if limit != "":
+            cmd += " limit " + limit
+        else:
+            cmd += " limit 100 "
+
+        try:
+
+            ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
+            result = ck_client.execute(cmd)
+            tmp_result = []
+            for item in result:
+                dt_object = ""
+                dt_object = datetime.datetime.fromtimestamp(int(item[4] / 1000) + 8 * 3600)
+                dt_object = dt_object.strftime("%Y/%m/%d %H:%M:%S") + "." + str(item[4] % 1000)
+                tmp_result.append({
+                    "Time": dt_object,
+                    "Shard": item[0],
+                    "Pool": item[1],
+                    "Height": item[2],
+                    "Type": item[3],
+                    "Gid": item[5],
+                    "From": item[6],
+                    "To": item[7],
+                    "Amount": item[8],
+                    "data": item[12],
+                    "Gas": item[10] * item[11]
+                })
+                
+            return JsonHttpResponse({'status': 0, 'cmd': cmd, 'value': tmp_result})
+        except Exception as ex:
+            logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
+            return JsonHttpResponse({'status': 1, 'msg': str(ex)})
+        return JsonHttpResponse({'status': 1, 'msg': 'msg'})
+    
 def ars_create_sec_keys(request):
-    pass
+    nodes = []
+    nodes.append({ 
+            "public_key": "public_key_0",
+            "private_key": "private_key_0"
+        })
+    nodes.append({ 
+        "public_key": "public_key_1",
+        "private_key": "private_key_1"
+        })
+    nodes.append({ 
+            "public_key": "public_key_2",
+            "private_key": "private_key_2"
+        })
+    return JsonHttpResponse({'status': 0, 'nodes': nodes})
 
 def ars_get_contract_info(request):
-    pass
+    sol_cotent = linux_file_cmd.LinuxFileCommand().read_file("/root/shardora/src/contract/tests/contracts/ars.sol")
+    if sol_cotent is None:
+        return JsonHttpResponse({'status': 1, 'msg': "read solidity file failed!"})
+    
+    return JsonHttpResponse({'status': 0, 'msg': 'ok', 'solidity': sol_cotent, 'desc': '多方共建用户信誉系统'})
 
 def ars_create_new_vote(request):
-    pass
+    if request.method == 'POST':
+        content = str_to_hex(request.POST.get('content'))
+        no_block_cmd = no_block_sys_cmd.NoBlockSysCommand()
+        millis = int(round(time.time() * 1000))
+        cmd = f"cd /root/shardora/src/contract/tests/contracts && node ars.js 1 {millis} {content}"
+        stdcout, stderr, ret = no_block_cmd.run_once(cmd)
+        if ret == 0:
+            return JsonHttpResponse({'status': 0, 'cmd': cmd, 'id': stdcout, 'msg': stderr})
+        else:
+            return JsonHttpResponse({'status': 1, 'cmd': cmd, 'id': stdcout, 'msg': stderr})
 
 def ars_vote(request):
-    pass
-
+    if request.method == 'POST':
+        id = request.POST.get('id')
+        addr = request.POST.get('addr')
+        data = request.POST.get('data')
+        index = request.POST.get('index')
+        content = str_to_hex(request.POST.get('content'))
+        no_block_cmd = no_block_sys_cmd.NoBlockSysCommand()
+        cmd = f"cd /root/shardora/src/contract/tests/contracts && node ars.js 2 {id} {index},{data},{addr} {content}"
+        stdcout, stderr, ret = no_block_cmd.run_once(cmd)
+        if ret == 0:
+            return JsonHttpResponse({'status': 0, 'cmd': cmd, 'id': stdcout, 'msg': stderr})
+        else:
+            return JsonHttpResponse({'status': 1, 'cmd': cmd, 'id': stdcout, 'msg': stderr})
+        
 def ars_transactions(request):
-    pass
+    if request.method == 'POST':
+        block_hash = request.POST.get('hash')
+        height = request.POST.get('height')
+        shard = request.POST.get('shard')
+        pool = request.POST.get('pool')
+        limit = request.POST.get('limit')
+        search_str = request.POST.get('search')
+        if search_str is None:
+            search_str = ""
 
-def ars_blocks(request):
-    pass
+        order = request.POST.get('order')
+        where_str = " to = '08e1eab96c9e759daa3aff82b40e77cd615a41d5' "
+        if int(shard) != -1:
+            if where_str != "":
+                where_str += " and shard_id = " + str(shard)
+            else:
+                where_str += " shard_id = " + str(shard)
 
-def ars_addresses(request):
-    pass
+        if int(pool) != -1:
+            if where_str != "":
+                where_str += " and pool_index = " + str(pool)
+            else:
+                where_str += " pool_index = " + str(pool)
+
+        if height is None:
+            height = -1
+
+        if block_hash is None:
+            block_hash = ""
+
+        if int(height) != -1:
+            if where_str != "":
+                where_str += " and height = " + str(height)
+            else:
+                where_str += " height = " + str(height)
+
+        if block_hash != "":
+            if where_str != "":
+                where_str += " and hash = " + str2r(block_hash)
+            else:
+                where_str += " hash = " + str2r(block_hash)
+
+        if search_str != "":
+            if where_str != "":
+                where_str += " and "
+
+            where_str += "( gid = '" + search_str + "' or from = '" + search_str + "' or to = '" + search_str + "' or hash = '" + search_str + "' or prehash = '" + search_str + "' )"
+      
+        cmd = 'SELECT shard_id, pool_index, height, type, timestamp, gid, from, to, amount, gas_limit, gas_used, gas_price, storages FROM zjc_ck_transaction_table '
+
+        if where_str != "":
+            cmd += " where " + where_str
+
+        if order is not None:
+            cmd += " " + order + " "
+        else:
+            cmd += " order by timestamp desc "
+
+        if limit != "":
+            cmd += " limit " + limit
+        else:
+            cmd += " limit 100 "
+
+        try:
+
+            ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
+            result = ck_client.execute(cmd)
+            tmp_result = []
+            for item in result:
+                dt_object = ""
+                dt_object = datetime.datetime.fromtimestamp(int(item[4] / 1000) + 8 * 3600)
+                dt_object = dt_object.strftime("%Y/%m/%d %H:%M:%S") + "." + str(item[4] % 1000)
+                tmp_result.append({
+                    "Time": dt_object,
+                    "Shard": item[0],
+                    "Pool": item[1],
+                    "Height": item[2],
+                    "Type": item[3],
+                    "Gid": item[5],
+                    "From": item[6],
+                    "To": item[7],
+                    "Amount": item[8],
+                    "data": item[12],
+                    "Gas": item[10] * item[11]
+                })
+                
+            return JsonHttpResponse({'status': 0, 'cmd': cmd, 'value': tmp_result})
+        except Exception as ex:
+            logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
+            return JsonHttpResponse({'status': 1, 'msg': str(ex)})
+        return JsonHttpResponse({'status': 1, 'msg': 'msg'})
+
+
+def do_transaction():
+    res = shardora_api.transfer(
+        '373a3165ec09edea6e7a1c8cff21b06f5fb074386ece283927aef730c6d44596',
+        'ce7acc2cfbfdeddc7c033fc157f3854cc4e72d7b',
+        amount=1000)
+    print(res)
+
+def CreatePrivateAndPublicKeys(id, content):
+    key = "tpinit"
+    value = id+";29eb86b7292ce572e46c6bdf8d8639dc6918991b,5b88d2cc46b94f199d12ff3c050c2db337871051,792e703d820ee43e5014803297208e7a774ceaa5,713b6605d93f07badf314cafe941ba2c4c6ad4bc,52a888b6437f8ebde99ec8929ff3f0f1fa533ad5,01a9a0ad9d65bcf47bb3326da7fd2aef8c18ea88,55c6b8dd50c1430969022788787d972848158c46,19b65ddc3cafa7942e5ac54394f09f1990ca2ac7,19d981de4f615ab95e61553421c358b96e997a2c,7bdc787d0aaddf760eab83de971028712123f1ca"
+    key_len = len(key)
+    if key_len <= 9:
+        key_len = "0" + str(key_len)
+    else:
+        key_len = str(key_len)
+    
+    param = key + key_len + key + value
+    hexparam = encode_hex(param)
+    content = encode_hex(content)
+    gid = shardora_api.gen_gid()
+    print(id)
+    print(gid)
+    print(content)
+    print(hexparam)
+    func_param = shardora_api.keccak256_str(
+        "CreatePrivateAndPublicKeys(bytes32,bytes32,bytes,bytes)")[:8] + encode_hex(encode(['bytes32', 'bytes32', 'bytes', 'bytes'], ['0x' + id, '0x' + gid, content, hexparam]))[2:]
+    res = shardora_api.transfer(
+        'cefc2c33064ea7691aee3e5e4f7842935d26f3ad790d81cf015e79b78958e848',
+        contarct_address,
+        0,
+        gid,
+        "",
+        func_param)
+    return res
 
 def penc_create_sec_keys(request):
-    pass
+    id = shardora_api.gen_gid()
+    content = ""
+    res = CreatePrivateAndPublicKeys(id, content)
+    print(res)
+    nodes = []
+    nodes.append({ 
+            "public_key": "public_key_0",
+            "private_key": "private_key_0"
+        })
+    nodes.append({ 
+        "public_key": "public_key_1",
+        "private_key": "private_key_1"
+        })
+    nodes.append({ 
+            "public_key": "public_key_2",
+            "private_key": "private_key_2"
+        })
+    return JsonHttpResponse({'status': 0, 'nodes': nodes})
 
 def penc_get_contract_info(request):
-    pass
+    sol_cotent = linux_file_cmd.LinuxFileCommand().read_file("/root/shardora/src/contract/tests/contracts/proxy_reencyption.sol")
+    if sol_cotent is None:
+        return JsonHttpResponse({'status': 1, 'msg': "read solidity file failed!"})
+    
+    return JsonHttpResponse({'status': 0, 'msg': 'ok', 'solidity': sol_cotent, 'desc': '基于区块链的数据安全共享'})
+
 
 def penc_share_new_data(request):
     pass
@@ -483,11 +763,6 @@ def penc_get_share_data(request):
 def penc_transactions(request):
     pass
 
-def penc_blocks(request):
-    pass
-
-def penc_addresses(request):
-    pass
 
 def get_all_contracts(request):
     if request.method == 'POST':
