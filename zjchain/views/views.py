@@ -850,12 +850,13 @@ def penc_create_sec_keys(request):
         content = request.POST.get('content')
         if content is None:
             content = ""
-            
+
         id = shardora_api.gen_gid()
         res = CreatePrivateAndPublicKeys(id, content)
         if res.status_code != 200:
             return JsonHttpResponse({'status': 1, 'msg': res.data})
         
+        time.sleep(2)
         res = CreateReEncryptionKeys(id, content)
         if res.status_code != 200:
             return JsonHttpResponse({'status': 1, 'msg': res.data})
