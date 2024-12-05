@@ -721,60 +721,76 @@ function do_test_url() {
     //         title: response.value
     //     })
     // });
-    var test_id = "";
+    // var test_id = "";
+    // $.ajax({
+    //     type: 'post',
+    //     async: true,
+    //     url: '/zjchain/penc_create_sec_keys/',
+    //     data: {
+    //         "content": "content"
+    //     },
+    //     dataType: "json"
+    // }).done(function (response) {
+    //     console.log(response.id)
+    //     Toast.fire({
+    //         icon: 'info',
+    //         title: response.id
+    //     })
+
+    //     test_id = response.id;
+    //     $.ajax({
+    //         type: 'post',
+    //         async: true,
+    //         url: '/zjchain/penc_share_new_data/',
+    //         data: {
+    //             "content": "penc_share_new_data",
+    //             "id": test_id
+    //         },
+    //         dataType: "json"
+    //     }).done(function (response) {
+    //         $.ajax({
+    //             type: 'post',
+    //             async: true,
+    //             url: '/zjchain/penc_vote/',
+    //             data: {
+    //                 "content": "penc_vote",
+    //                 "id": test_id
+    //             },
+    //             dataType: "json"
+    //         }).done(function (response) {
+    //             $.ajax({
+    //                 type: 'post',
+    //                 async: true,
+    //                 url: '/zjchain/penc_get_share_data/',
+    //                 data: {
+    //                     "content": "penc_get_share_data",
+    //                     "id": test_id
+    //                 },
+    //                 dataType: "json"
+    //             }).done(function (response) {
+    //                 Toast.fire({
+    //                     icon: 'info',
+    //                     title: "final success"
+    //                 })
+    //             });
+    //         });
+    //     });
+    // });
+
     $.ajax({
         type: 'post',
         async: true,
-        url: '/zjchain/penc_create_sec_keys/',
+        url: '/zjchain/penc_get_share_data/',
         data: {
-            "content": "content"
+            "content": "penc_get_share_data",
+            "id": "8e9cf6c9be2f18443ed814e52986d6feb08175961bf66e3741af0154833be166"
         },
         dataType: "json"
     }).done(function (response) {
-        console.log(response.id)
         Toast.fire({
             icon: 'info',
-            title: response.id
+            title: "final success"
         })
-
-        test_id = response.id;
-        $.ajax({
-            type: 'post',
-            async: true,
-            url: '/zjchain/penc_share_new_data/',
-            data: {
-                "content": "penc_share_new_data",
-                "id": test_id
-            },
-            dataType: "json"
-        }).done(function (response) {
-            $.ajax({
-                type: 'post',
-                async: true,
-                url: '/zjchain/penc_vote/',
-                data: {
-                    "content": "penc_vote",
-                    "id": test_id
-                },
-                dataType: "json"
-            }).done(function (response) {
-                $.ajax({
-                    type: 'post',
-                    async: true,
-                    url: '/zjchain/penc_get_share_data/',
-                    data: {
-                        "content": "penc_get_share_data",
-                        "id": "8e9cf6c9be2f18443ed814e52986d6feb08175961bf66e3741af0154833be166"
-                    },
-                    dataType: "json"
-                }).done(function (response) {
-                    Toast.fire({
-                        icon: 'info',
-                        title: "final success"
-                    })
-                });
-            });
-        });
     });
 }
 
