@@ -41,7 +41,7 @@ def gen_gid() -> str:
     return _gen_gid()
 
 def keccak256_str(s: str) -> str:
-    return _keccak256_str
+    return _keccak256_str(s)
 
 def get_transfer_params(
         gid: str, 
