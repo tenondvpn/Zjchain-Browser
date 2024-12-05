@@ -226,8 +226,11 @@ def _call_tx(post_data: dict):
 
 def _post_data(path: str, data: dict):
     querystr = urlencode(data)
+    print(path)
+    print(data)
     res = requests.post(path, data=data, headers={
         'Content-Type': 'application/x-www-form-urlencoded',
         'Content-Length': str(len(bytes(querystr, 'utf-8'))),
     })
+    print(res)
     return res
