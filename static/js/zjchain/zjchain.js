@@ -730,11 +730,28 @@ function do_test_url() {
         },
         dataType: "json"
     }).done(function (response) {
-        console.log(response.value)
+        console.log(response.id)
         Toast.fire({
             icon: 'info',
-            title: response.value
+            title: response.id
         })
+
+        $.ajax({
+            type: 'post',
+            async: true,
+            url: '/zjchain/penc_share_new_data/',
+            data: {
+                "content": "penc_share_new_data",
+                "id": response.id
+            },
+            dataType: "json"
+        }).done(function (response) {
+            console.log(response.id)
+            Toast.fire({
+                icon: 'info',
+                title: response.id
+            })
+        });
     });
 }
 
