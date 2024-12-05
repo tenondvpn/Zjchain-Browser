@@ -725,12 +725,15 @@ function do_test_url() {
         type: 'post',
         async: true,
         url: '/zjchain/penc_create_sec_keys/',
-        data: {},
+        data: {
+            "content": "content"
+        },
         dataType: "json"
     }).done(function (response) {
+        console.log(response.value.id)
         Toast.fire({
             icon: 'info',
-            title: response.value
+            title: response.value.id
         })
     });
 }

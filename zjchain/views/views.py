@@ -870,7 +870,7 @@ def penc_create_sec_keys(request):
                 "public_key": "public_key_2",
                 "private_key": "private_key_2"
             })
-        return JsonHttpResponse({'status': 0, 'nodes': nodes})
+        return JsonHttpResponse({'status': 0, 'nodes': nodes, 'id': id})
 
 def penc_get_contract_info(request):
     sol_cotent = linux_file_cmd.LinuxFileCommand().read_file("/root/shardora/src/contract/tests/contracts/proxy_reencyption.sol")
