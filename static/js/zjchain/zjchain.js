@@ -730,10 +730,10 @@ function do_test_url() {
         },
         dataType: "json"
     }).done(function (response) {
-        console.log(response.value.id)
+        console.log(response.value)
         Toast.fire({
             icon: 'info',
-            title: response.value.id
+            title: response.value
         })
     });
 }

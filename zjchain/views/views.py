@@ -848,6 +848,9 @@ def Decryption(id, content):
 def penc_create_sec_keys(request):
     if request.method == 'POST':
         content = request.POST.get('content')
+        if content is None:
+            content = ""
+            
         id = shardora_api.gen_gid()
         res = CreatePrivateAndPublicKeys(id, content)
         if res.status_code != 200:
