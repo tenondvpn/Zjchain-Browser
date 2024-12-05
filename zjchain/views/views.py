@@ -610,6 +610,9 @@ def ars_transactions(request):
 
         if pool is None:
             pool = -1
+
+        if limit is None:
+            limit = ""
             
         order = request.POST.get('order')
         where_str = " to = '08e1eab96c9e759daa3aff82b40e77cd615a41d5' "
@@ -934,6 +937,9 @@ def penc_transactions(request):
 
         if pool is None:
             pool = -1
+
+        if limit is None:
+            limit = ""
 
         order = request.POST.get('order')
         where_str = f" to = '{penc_contarct_address}' "
