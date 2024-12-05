@@ -706,9 +706,9 @@ def CreatePrivateAndPublicKeys(id, content):
     
     param = key + key_len + key + value
     hexparam = bytes(encode_hex(param), 'utf-8')
-    content = bytes(encode_hex(content), 'utf-8')
-    gid = bytes(shardora_api.gen_gid(), 'utf-8')
-    id = bytes(id, 'utf-8')
+    content = bytes(content, 'utf-8')
+    gid = bytes(decode_hex(shardora_api.gen_gid()), 'utf-8')
+    id = bytes(decode_hex(id), 'utf-8')
     print(id)
     print(gid)
     print(content)
