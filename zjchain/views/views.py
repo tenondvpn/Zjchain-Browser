@@ -18,10 +18,10 @@ from django.conf import settings
 import logging
 from clickhouse_driver import Client
 from zjchain.http_helper import JsonHttpResponse, logger
-import no_block_sys_cmd
-import linux_file_cmd
+from zjchain.views import no_block_sys_cmd
+from zjchain.views import linux_file_cmd
 import binascii
-import shardora_api
+from zjchain.views import shardora_api
 from eth_utils import decode_hex, encode_hex
 from eth_abi import encode
 
