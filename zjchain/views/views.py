@@ -25,7 +25,7 @@ from zjchain.views import shardora_api
 from eth_utils import decode_hex, encode_hex
 from eth_abi import encode
 
-contarct_address = "48e1eab96c9e759daa3aff82b40e77cd615a41d0"
+penc_contarct_address = "48e1eab96c9e759daa3aff82b40e77cd615a41d0"
 
 ipreader = geoip2.database.Reader(
     'zjchain/resource/GeoLite2-Country.mmdb')
@@ -712,7 +712,7 @@ def CreatePrivateAndPublicKeys(id, content):
         "CreatePrivateAndPublicKeys(bytes32,bytes32,bytes,bytes)")[:8] + encode_hex(encode(['bytes32', 'bytes32', 'bytes', 'bytes'], [decode_hex(id), decode_hex(gid), decode_hex(content), decode_hex(hexparam)]))[2:]
     res = shardora_api.transfer(
         'cefc2c33064ea7691aee3e5e4f7842935d26f3ad790d81cf015e79b78958e848',
-        contarct_address,
+        penc_contarct_address,
         0,
         8,
         gid,
@@ -737,7 +737,7 @@ def CreateReEncryptionKeys(id, content):
         "CreateReEncryptionKeys(bytes32,bytes32,bytes,bytes)")[:8] + encode_hex(encode(['bytes32', 'bytes32', 'bytes', 'bytes'], [decode_hex(id), decode_hex(gid), decode_hex(content), decode_hex(hexparam)]))[2:]
     res = shardora_api.transfer(
         'cefc2c33064ea7691aee3e5e4f7842935d26f3ad790d81cf015e79b78958e848',
-        contarct_address,
+        penc_contarct_address,
         0,
         8,
         gid,
@@ -762,7 +762,7 @@ def EncryptUserMessage(id, content):
         "EncryptUserMessage(bytes32,bytes32,bytes,bytes)")[:8] + encode_hex(encode(['bytes32', 'bytes32', 'bytes', 'bytes'], [decode_hex(id), decode_hex(gid), decode_hex(content), decode_hex(hexparam)]))[2:]
     res = shardora_api.transfer(
         'cefc2c33064ea7691aee3e5e4f7842935d26f3ad790d81cf015e79b78958e848',
-        contarct_address,
+        penc_contarct_address,
         0,
         8,
         gid,
@@ -787,7 +787,7 @@ def ReEncryptUserMessage(id, content):
         "ReEncryptUserMessage(bytes32,bytes32,bytes,bytes)")[:8] + encode_hex(encode(['bytes32', 'bytes32', 'bytes', 'bytes'], [decode_hex(id), decode_hex(gid), decode_hex(content), decode_hex(hexparam)]))[2:]
     res = shardora_api.transfer(
         'cefc2c33064ea7691aee3e5e4f7842935d26f3ad790d81cf015e79b78958e848',
-        contarct_address,
+        penc_contarct_address,
         0,
         8,
         gid,
@@ -812,7 +812,7 @@ def ReEncryptUserMessageWithMember(id, index, content):
         "ReEncryptUserMessageWithMember(bytes32,bytes32,bytes,bytes)")[:8] + encode_hex(encode(['bytes32', 'bytes32', 'bytes', 'bytes'], [decode_hex(id), decode_hex(gid), decode_hex(content), decode_hex(hexparam)]))[2:]
     res = shardora_api.transfer(
         'cefc2c33064ea7691aee3e5e4f7842935d26f3ad790d81cf015e79b78958e848',
-        contarct_address,
+        penc_contarct_address,
         0,
         8,
         gid,
@@ -836,7 +836,7 @@ def Decryption(id, content):
         "JustCallRipemd160(bytes)")[:8] + encode_hex(encode(['bytes'], [decode_hex(hexparam)]))[2:]
     res = shardora_api.transfer(
         'cefc2c33064ea7691aee3e5e4f7842935d26f3ad790d81cf015e79b78958e848',
-        contarct_address,
+        penc_contarct_address,
         0,
         8,
         gid,
@@ -913,8 +913,97 @@ def penc_get_share_data(request):
         return JsonHttpResponse({'status': 0, 'msg': "ok"})
     
 def penc_transactions(request):
-    pass
+    if request.method == 'POST':
+        block_hash = request.POST.get('hash')
+        height = request.POST.get('height')
+        shard = request.POST.get('shard')
+        pool = request.POST.get('pool')
+        limit = request.POST.get('limit')
+        search_str = request.POST.get('search')
+        if search_str is None:
+            search_str = ""
 
+        order = request.POST.get('order')
+        where_str = f" to = '{penc_contarct_address}' "
+        if int(shard) != -1:
+            if where_str != "":
+                where_str += " and shard_id = " + str(shard)
+            else:
+                where_str += " shard_id = " + str(shard)
+
+        if int(pool) != -1:
+            if where_str != "":
+                where_str += " and pool_index = " + str(pool)
+            else:
+                where_str += " pool_index = " + str(pool)
+
+        if height is None:
+            height = -1
+
+        if block_hash is None:
+            block_hash = ""
+
+        if int(height) != -1:
+            if where_str != "":
+                where_str += " and height = " + str(height)
+            else:
+                where_str += " height = " + str(height)
+
+        if block_hash != "":
+            if where_str != "":
+                where_str += " and hash = " + str2r(block_hash)
+            else:
+                where_str += " hash = " + str2r(block_hash)
+
+        if search_str != "":
+            if where_str != "":
+                where_str += " and "
+
+            where_str += "( gid = '" + search_str + "' or from = '" + search_str + "' or to = '" + search_str + "' or hash = '" + search_str + "' or prehash = '" + search_str + "' )"
+      
+        cmd = 'SELECT shard_id, pool_index, height, type, timestamp, gid, from, to, amount, gas_limit, gas_used, gas_price, storages FROM zjc_ck_transaction_table '
+
+        if where_str != "":
+            cmd += " where " + where_str
+
+        if order is not None:
+            cmd += " " + order + " "
+        else:
+            cmd += " order by timestamp desc "
+
+        if limit != "":
+            cmd += " limit " + limit
+        else:
+            cmd += " limit 100 "
+
+        try:
+
+            ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
+            result = ck_client.execute(cmd)
+            tmp_result = []
+            for item in result:
+                dt_object = ""
+                dt_object = datetime.datetime.fromtimestamp(int(item[4] / 1000) + 8 * 3600)
+                dt_object = dt_object.strftime("%Y/%m/%d %H:%M:%S") + "." + str(item[4] % 1000)
+                tmp_result.append({
+                    "Time": dt_object,
+                    "Shard": item[0],
+                    "Pool": item[1],
+                    "Height": item[2],
+                    "Type": item[3],
+                    "Gid": item[5],
+                    "From": item[6],
+                    "To": item[7],
+                    "Amount": item[8],
+                    "data": item[12],
+                    "Gas": item[10] * item[11]
+                })
+                
+            return JsonHttpResponse({'status': 0, 'cmd': cmd, 'value': tmp_result})
+        except Exception as ex:
+            logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
+            return JsonHttpResponse({'status': 1, 'msg': str(ex)})
+        return JsonHttpResponse({'status': 1, 'msg': 'msg'})
 
 def get_all_contracts(request):
     if request.method == 'POST':

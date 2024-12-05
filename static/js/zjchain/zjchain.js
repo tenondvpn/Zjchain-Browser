@@ -777,13 +777,27 @@ function do_test_url() {
     //     });
     // });
 
+    // $.ajax({
+    //     type: 'post',
+    //     async: true,
+    //     url: '/zjchain/penc_get_share_data/',
+    //     data: {
+    //         "content": "penc_get_share_data",
+    //         "id": "8e9cf6c9be2f18443ed814e52986d6feb08175961bf66e3741af0154833be166"
+    //     },
+    //     dataType: "json"
+    // }).done(function (response) {
+    //     Toast.fire({
+    //         icon: 'info',
+    //         title: "final success"
+    //     })
+    // });
+
     $.ajax({
         type: 'post',
         async: true,
-        url: '/zjchain/penc_get_share_data/',
+        url: '/zjchain/penc_transactions/',
         data: {
-            "content": "penc_get_share_data",
-            "id": "8e9cf6c9be2f18443ed814e52986d6feb08175961bf66e3741af0154833be166"
         },
         dataType: "json"
     }).done(function (response) {
