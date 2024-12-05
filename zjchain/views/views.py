@@ -1008,6 +1008,11 @@ def penc_transactions(request):
                 dt_object = ""
                 dt_object = datetime.datetime.fromtimestamp(int(item[4] / 1000) + 8 * 3600)
                 dt_object = dt_object.strftime("%Y/%m/%d %H:%M:%S") + "." + str(item[4] % 1000)
+                data = item[12]
+                try:
+                    data = hex_to_str(data)
+                except:
+                    pass
                 tmp_result.append({
                     "Time": dt_object,
                     "Shard": item[0],
@@ -1018,7 +1023,7 @@ def penc_transactions(request):
                     "From": item[6],
                     "To": item[7],
                     "Amount": item[8],
-                    "data": item[12],
+                    "data": data,
                     "Gas": item[10] * item[11]
                 })
                 
