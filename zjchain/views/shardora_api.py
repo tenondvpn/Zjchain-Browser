@@ -29,12 +29,12 @@ Sign = namedtuple('Sign', ['r', 's', 'v'])
 
 STEP_FROM = 0
 
-def transfer(str_prikey: str, to: str, amount: int, gid="", contract_bytes="", input=""):
+def transfer(str_prikey: str, to: str, amount: int, step=0, gid="", contract_bytes="", input=""):
     if gid == "":
         gid = _gen_gid()
 
     keypair = get_keypair(bytes.fromhex(str_prikey))
-    param = get_transfer_params(gid, to, amount, 90000000000, 1, keypair, 3, contract_bytes, input, 0)
+    param = get_transfer_params(gid, to, amount, 90000000000, 1, keypair, 3, contract_bytes, input, 0, step)
     return _call_tx(param)
 
 def gen_gid() -> str:
@@ -53,7 +53,8 @@ def get_transfer_params(
         des_shard_id: int,
         contract_bytes: str,
         input: str,
-        prepay: int):
+        prepay: int,
+        step: 0):
     if gid == '':
         gid = _gen_gid()
     sign = _sign_message(keypair=keypair,
@@ -62,7 +63,7 @@ def get_transfer_params(
                         amount=amount,
                         gas_limit=gas_limit,
                         gas_price=gas_price,
-                        step=STEP_FROM,
+                        step=step,
                         contract_bytes=contract_bytes,
                         input=input,
                         prepay=prepay)
@@ -77,7 +78,7 @@ def get_transfer_params(
                             contract_bytes=contract_bytes,
                             input=input,
                             des_shard_id=des_shard_id,
-                            step=STEP_FROM)
+                            step=step)
     return params
 
 

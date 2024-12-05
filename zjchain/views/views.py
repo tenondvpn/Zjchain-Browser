@@ -718,6 +718,7 @@ def CreatePrivateAndPublicKeys(id, content):
         'cefc2c33064ea7691aee3e5e4f7842935d26f3ad790d81cf015e79b78958e848',
         contarct_address,
         0,
+        6,
         gid,
         "",
         func_param)
