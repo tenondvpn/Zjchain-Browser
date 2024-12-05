@@ -705,16 +705,15 @@ def CreatePrivateAndPublicKeys(id, content):
         key_len = str(key_len)
     
     param = key + key_len + key + value
-    hexparam = bytes(encode_hex(param), 'utf-8')
-    content = bytes(content, 'utf-8')
-    gid = bytes(decode_hex(shardora_api.gen_gid()), 'utf-8')
-    id = bytes(decode_hex(id), 'utf-8')
+    hexparam = encode_hex(param)
+    content = encode_hex(content)
+    gid = shardora_api.gen_gid()
     print(id)
     print(gid)
     print(content)
     print(hexparam)
     func_param = shardora_api.keccak256_str(
-        "CreatePrivateAndPublicKeys(bytes32,bytes32,bytes,bytes)")[:8] + encode_hex(encode(['bytes32', 'bytes32', 'bytes', 'bytes'], [id, gid, content, hexparam]))[2:]
+        "CreatePrivateAndPublicKeys(bytes32,bytes32,bytes,bytes)")[:8] + encode_hex(encode(['bytes32', 'bytes32', 'bytes', 'bytes'], [decode_hex(id), decode_hex(gid), decode_hex(content), decode_hex(hexparam)]))[2:]
     res = shardora_api.transfer(
         'cefc2c33064ea7691aee3e5e4f7842935d26f3ad790d81cf015e79b78958e848',
         contarct_address,
