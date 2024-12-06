@@ -734,8 +734,9 @@ def ars_transactions(request):
                 data = item[12]
                 try:
                     data = hex_to_str(data)
-                except:
-                    pass
+                except Exception as ex:
+                    logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
+
                 tmp_result.append({
                     "Time": dt_object,
                     "Shard": item[0],
@@ -1087,8 +1088,9 @@ def penc_transactions(request):
                 data = item[12]
                 try:
                     data = hex_to_str(data)
-                except:
-                    pass
+                except Exception as ex:
+                    logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
+                    
                 tmp_result.append({
                     "Time": dt_object,
                     "Shard": item[0],
