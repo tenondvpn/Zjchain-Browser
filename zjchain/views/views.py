@@ -463,6 +463,15 @@ def confirm_transactions(request):
         if search_str is None:
             search_str = ""
 
+        if shard is None:
+            shard = -1
+
+        if pool is None:
+            pool = -1
+
+        if limit is None:
+            limit = ""
+
         order = request.POST.get('order')
         where_str = " to = 'a0793c84fb3133c0df1b9a6ccccbbfe5e7545138' "
         if int(shard) != -1:
@@ -525,6 +534,12 @@ def confirm_transactions(request):
                 dt_object = ""
                 dt_object = datetime.datetime.fromtimestamp(int(item[4] / 1000) + 8 * 3600)
                 dt_object = dt_object.strftime("%Y/%m/%d %H:%M:%S") + "." + str(item[4] % 1000)
+                data = item[12]
+                try:
+                    data = hex_to_str(data)
+                except Exception as ex:
+                    logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
+
                 tmp_result.append({
                     "Time": dt_object,
                     "Shard": item[0],
@@ -535,7 +550,7 @@ def confirm_transactions(request):
                     "From": item[6],
                     "To": item[7],
                     "Amount": item[8],
-                    "data": item[12],
+                    "data": data,
                     "Gas": item[10] * item[11]
                 })
                 
