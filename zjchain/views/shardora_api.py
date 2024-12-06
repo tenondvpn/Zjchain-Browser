@@ -159,9 +159,9 @@ def _sign_message(
         b += decode_hex(input)
     b += _long_to_bytes(prepay)
     if key != "":
-        b += key
+        b += bytes(key, 'utf-8')
         if val != "":
-            b += val
+            b += bytes(val, 'utf-8')
 
     h = _keccak256_bytes(b)
     sign_bytes = cPrivateKey(keypair.skbytes).sign_recoverable(bytes.fromhex(h), hasher=None)
