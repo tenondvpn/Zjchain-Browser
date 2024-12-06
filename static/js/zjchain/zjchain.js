@@ -794,10 +794,24 @@ function do_test_url() {
     //     })
     // });
 
+    // $.ajax({
+    //     type: 'post',
+    //     async: true,
+    //     url: '/zjchain/penc_transactions/',
+    //     data: {
+    //     },
+    //     dataType: "json"
+    // }).done(function (response) {
+    //     Toast.fire({
+    //         icon: 'info',
+    //         title: "final success"
+    //     })
+    // });
+
     $.ajax({
         type: 'post',
         async: true,
-        url: '/zjchain/penc_transactions/',
+        url: '/zjchain/ars_create_sec_keys/',
         data: {
         },
         dataType: "json"
@@ -806,6 +820,46 @@ function do_test_url() {
             icon: 'info',
             title: "final success"
         })
+    });
+
+    $.ajax({
+        type: 'post',
+        async: true,
+        url: '/zjchain/ars_get_contract_info/',
+        data: {
+        },
+        dataType: "json"
+    }).done(function (response) {
+        Toast.fire({
+            icon: 'info',
+            title: "final success"
+        })
+    });
+
+    $.ajax({
+        type: 'post',
+        async: true,
+        url: '/zjchain/ars_create_new_vote/',
+        data: {
+            "content": "ars_create_new_vote"
+        },
+        dataType: "json"
+    }).done(function (response) {
+        $.ajax({
+            type: 'post',
+            async: true,
+            url: '/zjchain/ars_vote/',
+            data: {
+                "content": "ars_vote",
+                "id": response.id
+            },
+            dataType: "json"
+        }).done(function (response) {
+            Toast.fire({
+                icon: 'info',
+                title: "final success"
+            })
+        });
     });
 }
 
