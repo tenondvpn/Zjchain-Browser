@@ -642,7 +642,7 @@ def ars_vote(request):
         if content is None:
              content = ""
 
-        val =f"{index},{data},{addr} {content}-{id}"
+        val =f"{index},{data},{addr}-{id}"
         res = ArsVote(id, content, val)
         if res.status_code != 200:
             return JsonHttpResponse({'status': 1, 'msg': "error"})
