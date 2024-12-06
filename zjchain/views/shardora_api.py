@@ -29,12 +29,12 @@ Sign = namedtuple('Sign', ['r', 's', 'v'])
 
 STEP_FROM = 0
 
-def transfer(str_prikey: str, to: str, amount: int, step=0, gid="", contract_bytes="", input=""):
+def transfer(str_prikey: str, to: str, amount: int, step=0, gid="", contract_bytes="", input="", key="", val=""):
     if gid == "":
         gid = _gen_gid()
 
     keypair = get_keypair(bytes.fromhex(str_prikey))
-    param = get_transfer_params(gid, to, amount, 90000000000, 1, keypair, 3, contract_bytes, input, 0, step)
+    param = get_transfer_params(gid, to, amount, 90000000000, 1, keypair, 3, contract_bytes, input, 0, step, key, val)
     return _call_tx(param)
 
 def gen_gid() -> str:
@@ -54,7 +54,9 @@ def get_transfer_params(
         contract_bytes: str,
         input: str,
         prepay: int,
-        step: 0):
+        step: 0,
+        key: str,
+        val: str):
     if gid == '':
         gid = _gen_gid()
     sign = _sign_message(keypair=keypair,
@@ -66,7 +68,9 @@ def get_transfer_params(
                         step=step,
                         contract_bytes=contract_bytes,
                         input=input,
-                        prepay=prepay)
+                        prepay=prepay,
+                        key=key,
+                        val=val)
     params = _get_tx_params(sign=sign,
                             pkbytes=keypair.pkbytes,
                             gid=gid,
@@ -78,7 +82,9 @@ def get_transfer_params(
                             contract_bytes=contract_bytes,
                             input=input,
                             des_shard_id=des_shard_id,
-                            step=step)
+                            step=step,
+                            key=key,
+                            val=val)
     return params
 
 
@@ -116,15 +122,6 @@ def get_keypair(skbytes: bytes) -> Keypair:
     account_id = addr[len(addr)-40:len(addr)]
     return Keypair(skbytes=skbytes, pkbytes=decode_hex('04'+pkbytes.hex()), account_id=account_id)
 
-
-def _encode_func_signature(func_str: str) -> str:
-    return _keccak256_str(func_str)[:8]
-
-
-def _encode_func_param(param_types: list, param_values: list) -> str:
-    return encode_hex(encode(param_types, param_values))[2:]
-
-
 def _keccak256_bytes(b: bytes) -> str:
     k = sha3.keccak_256()
     k.update(b)
@@ -145,7 +142,9 @@ def _sign_message(
         step: int, 
         contract_bytes: str, 
         input: str, 
-        prepay: int):
+        prepay: int,
+        key:str,
+        val:str):
     frompk = keypair.pkbytes
     b = decode_hex(gid) + \
          frompk + \
@@ -159,6 +158,10 @@ def _sign_message(
     if input != '':
         b += decode_hex(input)
     b += _long_to_bytes(prepay)
+    if key != "":
+        b += key
+        if val != "":
+            b += val
 
     h = _keccak256_bytes(b)
     sign_bytes = cPrivateKey(keypair.skbytes).sign_recoverable(bytes.fromhex(h), hasher=None)
@@ -196,7 +199,7 @@ def _gen_gid() -> str:
 
 def _get_tx_params(sign, pkbytes: bytes, gid: str, gas_limit: int, gas_price: int,
                    to: str, amount: int, prepay: int, contract_bytes: str, des_shard_id: int,
-                   input: str, step: int):
+                   input: str, step: int, key: str, val: str):
     ret = {
         'gid': gid,
         'pubkey': encode_hex(pkbytes)[2:],
@@ -206,6 +209,8 @@ def _get_tx_params(sign, pkbytes: bytes, gid: str, gas_limit: int, gas_price: in
         'gas_limit': gas_limit,
         'gas_price': gas_price,
         'shard_id': des_shard_id,
+        'key': key,
+        'val': val,
         "pepay": prepay,
         'sign_r': sign.r,
         'sign_s': sign.s,

@@ -731,7 +731,9 @@ def CreatePrivateAndPublicKeys(id, content):
         8,
         gid,
         "",
-        func_param)
+        func_param,
+        "def",
+        content)
     return res
 
 def CreateReEncryptionKeys(id, content):
@@ -756,7 +758,9 @@ def CreateReEncryptionKeys(id, content):
         8,
         gid,
         "",
-        func_param)
+        func_param,
+        "def",
+        content)
     return res
 
 def EncryptUserMessage(id, content):
@@ -781,7 +785,9 @@ def EncryptUserMessage(id, content):
         8,
         gid,
         "",
-        func_param)
+        func_param,
+        "def",
+        content)
     return res
 
 def ReEncryptUserMessage(id, content):
@@ -806,7 +812,9 @@ def ReEncryptUserMessage(id, content):
         8,
         gid,
         "",
-        func_param)
+        func_param,
+        "def",
+        content)
     return res
 
 def ReEncryptUserMessageWithMember(id, index, content):
@@ -831,7 +839,9 @@ def ReEncryptUserMessageWithMember(id, index, content):
         8,
         gid,
         "",
-        func_param)
+        func_param,
+        "def",
+        content)
     return res
 
 def Decryption(id, content):
@@ -855,7 +865,9 @@ def Decryption(id, content):
         8,
         gid,
         "",
-        func_param)
+        func_param,
+        "def",
+        content)
     return res
 
 def penc_create_sec_keys(request):
@@ -900,6 +912,9 @@ def penc_share_new_data(request):
     if request.method == 'POST':
         id = request.POST.get('id')
         content = request.POST.get('content')
+        if content is None:
+            content = ""
+            
         res = EncryptUserMessage(id, content)
         if res.status_code != 200:
             return JsonHttpResponse({'status': 1, 'msg': res.data})
@@ -910,6 +925,9 @@ def penc_vote(request):
     if request.method == 'POST':
         id = request.POST.get('id')
         content = request.POST.get('content')
+        if content is None:
+            content = ""
+            
         res = ReEncryptUserMessage(id, content)
         if res.status_code != 200:
             return JsonHttpResponse({'status': 1, 'msg': res.data})
@@ -920,6 +938,9 @@ def penc_get_share_data(request):
     if request.method == 'POST':
         id = request.POST.get('id')
         content = request.POST.get('content')
+        if content is None:
+            content = ""
+
         res = Decryption(id, content)
         if res.status_code != 200:
             return JsonHttpResponse({'status': 1, 'msg': res.data})
