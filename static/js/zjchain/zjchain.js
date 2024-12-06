@@ -722,77 +722,77 @@ function do_test_url() {
     //     })
     // });
 
-    // var test_id = "";
-    // $.ajax({
-    //     type: 'post',
-    //     async: true,
-    //     url: '/zjchain/penc_create_sec_keys/',
-    //     data: {
-    //         "content": "content"
-    //     },
-    //     dataType: "json"
-    // }).done(function (response) {
-    //     console.log(response.id)
-    //     Toast.fire({
-    //         icon: 'info',
-    //         title: response.id
-    //     })
+    var test_id = "";
+    $.ajax({
+        type: 'post',
+        async: true,
+        url: '/zjchain/penc_create_sec_keys/',
+        data: {
+            "content": "content"
+        },
+        dataType: "json"
+    }).done(function (response) {
+        console.log(response.id)
+        Toast.fire({
+            icon: 'info',
+            title: response.id
+        })
 
-    //     test_id = response.id;
-    //     $.ajax({
-    //         type: 'post',
-    //         async: true,
-    //         url: '/zjchain/penc_share_new_data/',
-    //         data: {
-    //             "content": "penc_share_new_data",
-    //             "id": test_id
-    //         },
-    //         dataType: "json"
-    //     }).done(function (response) {
-    //         $.ajax({
-    //             type: 'post',
-    //             async: true,
-    //             url: '/zjchain/penc_vote/',
-    //             data: {
-    //                 "content": "penc_vote",
-    //                 "id": test_id
-    //             },
-    //             dataType: "json"
-    //         }).done(function (response) {
-    //             $.ajax({
-    //                 type: 'post',
-    //                 async: true,
-    //                 url: '/zjchain/penc_get_share_data/',
-    //                 data: {
-    //                     "content": "penc_get_share_data",
-    //                     "id": test_id
-    //                 },
-    //                 dataType: "json"
-    //             }).done(function (response) {
-    //                 Toast.fire({
-    //                     icon: 'info',
-    //                     title: "final success"
-    //                 })
-    //             });
-    //         });
-    //     });
-    // });
+        test_id = response.id;
+        $.ajax({
+            type: 'post',
+            async: true,
+            url: '/zjchain/penc_share_new_data/',
+            data: {
+                "content": "penc_share_new_data",
+                "id": test_id
+            },
+            dataType: "json"
+        }).done(function (response) {
+            $.ajax({
+                type: 'post',
+                async: true,
+                url: '/zjchain/penc_vote/',
+                data: {
+                    "content": "penc_vote",
+                    "id": test_id
+                },
+                dataType: "json"
+            }).done(function (response) {
+                $.ajax({
+                    type: 'post',
+                    async: true,
+                    url: '/zjchain/penc_get_share_data/',
+                    data: {
+                        "content": "penc_get_share_data",
+                        "id": test_id
+                    },
+                    dataType: "json"
+                }).done(function (response) {
+                    Toast.fire({
+                        icon: 'info',
+                        title: "final success"
+                    })
+                });
+            });
+        });
+    });
 
-    // $.ajax({
-    //     type: 'post',
-    //     async: true,
-    //     url: '/zjchain/penc_get_share_data/',
-    //     data: {
-    //         "content": "penc_get_share_data",
-    //         "id": "8e9cf6c9be2f18443ed814e52986d6feb08175961bf66e3741af0154833be166"
-    //     },
-    //     dataType: "json"
-    // }).done(function (response) {
-    //     Toast.fire({
-    //         icon: 'info',
-    //         title: "final success"
-    //     })
-    // });
+    $.ajax({
+        type: 'post',
+        async: true,
+        url: '/zjchain/penc_get_share_data/',
+        data: {
+            "content": "penc_get_share_data",
+            "id": "8e9cf6c9be2f18443ed814e52986d6feb08175961bf66e3741af0154833be166"
+        },
+        dataType: "json"
+    }).done(function (response) {
+        Toast.fire({
+            icon: 'info',
+            title: "final success"
+        })
+    });
 
     $.ajax({
         type: 'post',
@@ -808,76 +808,76 @@ function do_test_url() {
         })
     });
 
-    $.ajax({
-        type: 'post',
-        async: true,
-        url: '/zjchain/ars_create_sec_keys/',
-        data: {
-        },
-        dataType: "json"
-    }).done(function (response) {
-        Toast.fire({
-            icon: 'info',
-            title: "final success"
-        })
-    });
+    // $.ajax({
+    //     type: 'post',
+    //     async: true,
+    //     url: '/zjchain/ars_create_sec_keys/',
+    //     data: {
+    //     },
+    //     dataType: "json"
+    // }).done(function (response) {
+    //     Toast.fire({
+    //         icon: 'info',
+    //         title: "final success"
+    //     })
+    // });
 
-    $.ajax({
-        type: 'post',
-        async: true,
-        url: '/zjchain/ars_get_contract_info/',
-        data: {
-        },
-        dataType: "json"
-    }).done(function (response) {
-        Toast.fire({
-            icon: 'info',
-            title: "final success"
-        })
-    });
+    // $.ajax({
+    //     type: 'post',
+    //     async: true,
+    //     url: '/zjchain/ars_get_contract_info/',
+    //     data: {
+    //     },
+    //     dataType: "json"
+    // }).done(function (response) {
+    //     Toast.fire({
+    //         icon: 'info',
+    //         title: "final success"
+    //     })
+    // });
 
-    $.ajax({
-        type: 'post',
-        async: true,
-        url: '/zjchain/ars_create_new_vote/',
-        data: {
-            "content": "ars_create_new_vote"
-        },
-        dataType: "json"
-    }).done(function (response) {
-        $.ajax({
-            type: 'post',
-            async: true,
-            url: '/zjchain/ars_vote/',
-            data: {
-                "content": "ars_vote",
-                "id": response.id,
-                "index": 0,
-                "data": "00",
-                "addr": "27e5ab858583f1d19ef272856859658246cd388f"
-            },
-            dataType: "json"
-        }).done(function (response) {
-            Toast.fire({
-                icon: 'info',
-                title: "final success"
-            })
-        });
-    });
+    // $.ajax({
+    //     type: 'post',
+    //     async: true,
+    //     url: '/zjchain/ars_create_new_vote/',
+    //     data: {
+    //         "content": "ars_create_new_vote"
+    //     },
+    //     dataType: "json"
+    // }).done(function (response) {
+    //     $.ajax({
+    //         type: 'post',
+    //         async: true,
+    //         url: '/zjchain/ars_vote/',
+    //         data: {
+    //             "content": "ars_vote",
+    //             "id": response.id,
+    //             "index": 0,
+    //             "data": "00",
+    //             "addr": "27e5ab858583f1d19ef272856859658246cd388f"
+    //         },
+    //         dataType: "json"
+    //     }).done(function (response) {
+    //         Toast.fire({
+    //             icon: 'info',
+    //             title: "final success"
+    //         })
+    //     });
+    // });
 
-    $.ajax({
-        type: 'post',
-        async: true,
-        url: '/zjchain/ars_transactions/',
-        data: {
-        },
-        dataType: "json"
-    }).done(function (response) {
-        Toast.fire({
-            icon: 'info',
-            title: "final success"
-        })
-    });
+    // $.ajax({
+    //     type: 'post',
+    //     async: true,
+    //     url: '/zjchain/ars_transactions/',
+    //     data: {
+    //     },
+    //     dataType: "json"
+    // }).done(function (response) {
+    //     Toast.fire({
+    //         icon: 'info',
+    //         title: "final success"
+    //     })
+    // });
 }
 
 transactions_jsGrid_controller = {
