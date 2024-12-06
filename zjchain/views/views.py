@@ -621,7 +621,7 @@ def ars_get_contract_info(request):
 
 def ars_create_new_vote(request):
     if request.method == 'POST':
-        content = str_to_hex(request.POST.get('content'))
+        content = request.POST.get('content')
         if content is None:
              content = ""
 
@@ -638,7 +638,7 @@ def ars_vote(request):
         addr = request.POST.get('addr')
         data = request.POST.get('data')
         index = request.POST.get('index')
-        content = str_to_hex(request.POST.get('content'))
+        content = request.POST.get('content')
         if content is None:
              content = ""
 
@@ -1090,7 +1090,7 @@ def penc_transactions(request):
                     data = hex_to_str(data)
                 except Exception as ex:
                     logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
-                    
+
                 tmp_result.append({
                     "Time": dt_object,
                     "Shard": item[0],
