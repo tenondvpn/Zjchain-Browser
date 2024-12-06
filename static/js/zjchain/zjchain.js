@@ -836,34 +836,34 @@ function do_test_url() {
     //     })
     // });
 
-    // $.ajax({
-    //     type: 'post',
-    //     async: true,
-    //     url: '/zjchain/ars_create_new_vote/',
-    //     data: {
-    //         "content": "ars_create_new_vote"
-    //     },
-    //     dataType: "json"
-    // }).done(function (response) {
-    //     $.ajax({
-    //         type: 'post',
-    //         async: true,
-    //         url: '/zjchain/ars_vote/',
-    //         data: {
-    //             "content": "ars_vote",
-    //             "id": response.id,
-    //             "index": 0,
-    //             "data": "00",
-    //             "addr": "27e5ab858583f1d19ef272856859658246cd388f"
-    //         },
-    //         dataType: "json"
-    //     }).done(function (response) {
-    //         Toast.fire({
-    //             icon: 'info',
-    //             title: "final success"
-    //         })
-    //     });
-    // });
+    $.ajax({
+        type: 'post',
+        async: true,
+        url: '/zjchain/ars_create_new_vote/',
+        data: {
+            "content": "ars_create_new_vote"
+        },
+        dataType: "json"
+    }).done(function (response) {
+        $.ajax({
+            type: 'post',
+            async: true,
+            url: '/zjchain/ars_vote/',
+            data: {
+                "content": "ars_vote",
+                "id": response.id,
+                "index": 0,
+                "data": "00",
+                "addr": "27e5ab858583f1d19ef272856859658246cd388f"
+            },
+            dataType: "json"
+        }).done(function (response) {
+            Toast.fire({
+                icon: 'info',
+                title: "final success"
+            })
+        });
+    });
 
     $.ajax({
         type: 'post',
