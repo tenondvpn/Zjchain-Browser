@@ -26,6 +26,7 @@ from eth_utils import decode_hex, encode_hex
 from eth_abi import encode
 
 penc_contarct_address = "48e1eab96c9e759daa3aff82b40e77cd615a41d0"
+ars_contarct_address = "08e1eab96c9e759daa3aff82b40e77cd615a41d5"
 
 ipreader = geoip2.database.Reader(
     'zjchain/resource/GeoLite2-Country.mmdb')
@@ -544,6 +545,57 @@ def confirm_transactions(request):
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
         return JsonHttpResponse({'status': 1, 'msg': 'msg'})
     
+def ArsCreateNewVote(id, src_content):
+    key = "tarscr"
+    value = "27e5ab858583f1d19ef272856859658246cd388f,1a31f75df2fba7607ae8566646a553451a1b8c14,5bc3423d99bcc823769fe36f3281739e3d022290-2," + id
+    key_len = len(key)
+    if key_len <= 9:
+        key_len = "0" + str(key_len)
+    else:
+        key_len = str(key_len)
+    
+    param = key + key_len + key + value
+    hexparam = encode_hex(param)
+    gid = shardora_api.gen_gid()
+    func_param = shardora_api.keccak256_str(
+        "CreateNewArs(uint256,uint256,bytes32,bytes)")[:8] + encode_hex(encode(['uint256', 'uint256', 'bytes32', 'bytes'], [3, 2, decode_hex(id), decode_hex(hexparam)]))[2:]
+    res = shardora_api.transfer(
+        'cefc2c33064ea7691aee3e5e4f7842935d26f3ad790d81cf015e79b78958e848',
+        ars_contarct_address,
+        0,
+        8,
+        gid,
+        "",
+        func_param,
+        "def",
+        src_content)
+    return res
+
+def ArsVote(id, src_content, value):
+    key = "tarsps"
+    key_len = len(key)
+    if key_len <= 9:
+        key_len = "0" + str(key_len)
+    else:
+        key_len = str(key_len)
+    
+    param = key + key_len + key + value
+    hexparam = encode_hex(param)
+    gid = shardora_api.gen_gid()
+    func_param = shardora_api.keccak256_str(
+        "SingleSign(bytes32,bytes)")[:8] + encode_hex(encode(['bytes32', 'bytes'], [decode_hex(id), decode_hex(hexparam)]))[2:]
+    res = shardora_api.transfer(
+        'cefc2c33064ea7691aee3e5e4f7842935d26f3ad790d81cf015e79b78958e848',
+        ars_contarct_address,
+        0,
+        8,
+        gid,
+        "",
+        func_param,
+        "def",
+        src_content)
+    return res
+
 def ars_create_sec_keys(request):
     nodes = []
     nodes.append({ 
@@ -570,14 +622,15 @@ def ars_get_contract_info(request):
 def ars_create_new_vote(request):
     if request.method == 'POST':
         content = str_to_hex(request.POST.get('content'))
-        no_block_cmd = no_block_sys_cmd.NoBlockSysCommand()
-        millis = int(round(time.time() * 1000))
-        cmd = f"cd /root/shardora/src/contract/tests/contracts && node ars.js 1 {millis} {content}"
-        stdcout, stderr, ret = no_block_cmd.run_once(cmd)
-        if ret == 0:
-            return JsonHttpResponse({'status': 0, 'cmd': cmd, 'id': stdcout, 'msg': stderr})
+        if content is None:
+             content = ""
+
+        id = request.POST.get('id')
+        res = ArsVote(id, content)
+        if res.status_code != 200:
+            return JsonHttpResponse({'status': 1, 'msg': "error"})
         else:
-            return JsonHttpResponse({'status': 1, 'cmd': cmd, 'id': stdcout, 'msg': stderr})
+            return JsonHttpResponse({'status': 0, 'id': id, 'msg': "ok"})
 
 def ars_vote(request):
     if request.method == 'POST':
@@ -586,13 +639,15 @@ def ars_vote(request):
         data = request.POST.get('data')
         index = request.POST.get('index')
         content = str_to_hex(request.POST.get('content'))
-        no_block_cmd = no_block_sys_cmd.NoBlockSysCommand()
-        cmd = f"cd /root/shardora/src/contract/tests/contracts && node ars.js 2 {id} {index},{data},{addr} {content}"
-        stdcout, stderr, ret = no_block_cmd.run_once(cmd)
-        if ret == 0:
-            return JsonHttpResponse({'status': 0, 'cmd': cmd, 'id': stdcout, 'msg': stderr})
+        if content is None:
+             content = ""
+
+        val =f"{index},{data},{addr} {content}-{id}"
+        res = ArsVote(id, content, val)
+        if res.status_code != 200:
+            return JsonHttpResponse({'status': 1, 'msg': "error"})
         else:
-            return JsonHttpResponse({'status': 1, 'cmd': cmd, 'id': stdcout, 'msg': stderr})
+            return JsonHttpResponse({'status': 0, 'id': id, 'msg': "ok"})
         
 def ars_transactions(request):
     if request.method == 'POST':
