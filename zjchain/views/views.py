@@ -625,8 +625,8 @@ def ars_create_new_vote(request):
         if content is None:
              content = ""
 
-        id = request.POST.get('id')
-        res = ArsVote(id, content)
+        id = shardora_api.gen_gid()
+        res = ArsCreateNewVote(id, content)
         if res.status_code != 200:
             return JsonHttpResponse({'status': 1, 'msg': "error"})
         else:
