@@ -721,62 +721,62 @@ function do_test_url() {
     //         title: response.value
     //     })
     // });
-    
-    var test_id = "";
-    $.ajax({
-        type: 'post',
-        async: true,
-        url: '/zjchain/penc_create_sec_keys/',
-        data: {
-            "content": "content"
-        },
-        dataType: "json"
-    }).done(function (response) {
-        console.log(response.id)
-        Toast.fire({
-            icon: 'info',
-            title: response.id
-        })
 
-        test_id = response.id;
-        $.ajax({
-            type: 'post',
-            async: true,
-            url: '/zjchain/penc_share_new_data/',
-            data: {
-                "content": "penc_share_new_data",
-                "id": test_id
-            },
-            dataType: "json"
-        }).done(function (response) {
-            $.ajax({
-                type: 'post',
-                async: true,
-                url: '/zjchain/penc_vote/',
-                data: {
-                    "content": "penc_vote",
-                    "id": test_id
-                },
-                dataType: "json"
-            }).done(function (response) {
-                $.ajax({
-                    type: 'post',
-                    async: true,
-                    url: '/zjchain/penc_get_share_data/',
-                    data: {
-                        "content": "penc_get_share_data",
-                        "id": test_id
-                    },
-                    dataType: "json"
-                }).done(function (response) {
-                    Toast.fire({
-                        icon: 'info',
-                        title: "final success"
-                    })
-                });
-            });
-        });
-    });
+    // var test_id = "";
+    // $.ajax({
+    //     type: 'post',
+    //     async: true,
+    //     url: '/zjchain/penc_create_sec_keys/',
+    //     data: {
+    //         "content": "content"
+    //     },
+    //     dataType: "json"
+    // }).done(function (response) {
+    //     console.log(response.id)
+    //     Toast.fire({
+    //         icon: 'info',
+    //         title: response.id
+    //     })
+
+    //     test_id = response.id;
+    //     $.ajax({
+    //         type: 'post',
+    //         async: true,
+    //         url: '/zjchain/penc_share_new_data/',
+    //         data: {
+    //             "content": "penc_share_new_data",
+    //             "id": test_id
+    //         },
+    //         dataType: "json"
+    //     }).done(function (response) {
+    //         $.ajax({
+    //             type: 'post',
+    //             async: true,
+    //             url: '/zjchain/penc_vote/',
+    //             data: {
+    //                 "content": "penc_vote",
+    //                 "id": test_id
+    //             },
+    //             dataType: "json"
+    //         }).done(function (response) {
+    //             $.ajax({
+    //                 type: 'post',
+    //                 async: true,
+    //                 url: '/zjchain/penc_get_share_data/',
+    //                 data: {
+    //                     "content": "penc_get_share_data",
+    //                     "id": test_id
+    //                 },
+    //                 dataType: "json"
+    //             }).done(function (response) {
+    //                 Toast.fire({
+    //                     icon: 'info',
+    //                     title: "final success"
+    //                 })
+    //             });
+    //         });
+    //     });
+    // });
 
     // $.ajax({
     //     type: 'post',
@@ -794,19 +794,19 @@ function do_test_url() {
     //     })
     // });
 
-    // $.ajax({
-    //     type: 'post',
-    //     async: true,
-    //     url: '/zjchain/penc_transactions/',
-    //     data: {
-    //     },
-    //     dataType: "json"
-    // }).done(function (response) {
-    //     Toast.fire({
-    //         icon: 'info',
-    //         title: "final success"
-    //     })
-    // });
+    $.ajax({
+        type: 'post',
+        async: true,
+        url: '/zjchain/penc_transactions/',
+        data: {
+        },
+        dataType: "json"
+    }).done(function (response) {
+        Toast.fire({
+            icon: 'info',
+            title: "final success"
+        })
+    });
 }
 
 transactions_jsGrid_controller = {
