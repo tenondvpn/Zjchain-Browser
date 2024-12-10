@@ -959,9 +959,6 @@ def _post_data(path: str, data: dict):
     print(res)
     return res
 
-def penc_get_id_info(id):
-    pass
-
 def penc_create_sec_keys(request):
     if request.method == 'POST':
         content = request.POST.get('content')
@@ -981,7 +978,7 @@ def penc_create_sec_keys(request):
         time.sleep(2)
         post_data = {
             "id": id,
-            "contract": shardora_api.skbytes2account("cefc2c33064ea7691aee3e5e4f7842935d26f3ad790d81cf015e79b78958e848"),
+            "contract": shardora_api.skbytes2account(bytes.fromhex("cefc2c33064ea7691aee3e5e4f7842935d26f3ad790d81cf015e79b78958e848").decode('utf-8')),
             "count": 10,
         }
 
