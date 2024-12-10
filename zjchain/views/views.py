@@ -139,7 +139,7 @@ def transactions(request):
 
                 where_str += " hash = '" + search_str + "' or prehash = '" + search_str + "' "
 
-        cmd = 'SELECT shard_id, pool_index, height, type, timestamp, gid, from, to, amount, gas_limit, gas_used, gas_price FROM zjc_ck_transaction_table '
+        cmd = 'SELECT shard_id, pool_index, height, type, timestamp, gid, from, to, amount, gas_limit, gas_used, gas_price, storages FROM zjc_ck_transaction_table '
         if data_type == 1:
             cmd = 'SELECT shard_id, pool_index, height, timestamp, prehash, hash, vss, elect_height, timeblock_height, tx_size FROM zjc_ck_block_table '
 
@@ -150,11 +150,6 @@ def transactions(request):
             cmd += " " + order + " "
         else:
             cmd += " order by timestamp desc "
-
-        if limit != "":
-            cmd += " limit " + limit
-        else:
-            cmd += " limit 100 "
 
         try:
 
@@ -171,6 +166,12 @@ def transactions(request):
                     dt_object = dt_object.strftime("%Y/%m/%d %H:%M:%S") + "." + str(item[3] % 1000)
 
                 if data_type == 0:
+                    data = item[12]
+                    try:
+                        data = hex_to_str(data)
+                    except Exception as ex:
+                        logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
+
                     tmp_result.append({
                         "Time": dt_object,
                         "Shard": item[0],
@@ -181,6 +182,7 @@ def transactions(request):
                         "From": item[6],
                         "To": item[7],
                         "Amount": item[8],
+                        "data": data,
                         "Gas": item[10] * item[11]
                     })
                 else:
