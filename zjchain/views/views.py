@@ -976,9 +976,11 @@ def penc_create_sec_keys(request):
             return JsonHttpResponse({'status': 1, 'msg': res.data})
         
         time.sleep(2)
+        sk_bytes = bytes.fromhex("cefc2c33064ea7691aee3e5e4f7842935d26f3ad790d81cf015e79b78958e848")
+        from_id = shardora_api.skbytes2account(sk_bytes)
         post_data = {
             "id": id,
-            "contract": shardora_api.skbytes2account(bytes.fromhex(b"cefc2c33064ea7691aee3e5e4f7842935d26f3ad790d81cf015e79b78958e848")),
+            "contract": from_id,
             "count": 10,
         }
 
