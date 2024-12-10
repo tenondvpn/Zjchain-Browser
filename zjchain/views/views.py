@@ -24,6 +24,8 @@ import binascii
 from zjchain.views import shardora_api
 from eth_utils import decode_hex, encode_hex
 from eth_abi import encode
+from urllib.parse import urlencode
+import requests
 
 penc_contarct_address = "48e1eab96c9e759daa3aff82b40e77cd615a41d0"
 ars_contarct_address = "08e1eab96c9e759daa3aff82b40e77cd615a41d5"
@@ -944,6 +946,22 @@ def Decryption(id, src_content):
         src_content)
     return res
 
+
+
+def _post_data(path: str, data: dict):
+    querystr = urlencode(data)
+    print(path)
+    print(data)
+    res = requests.post(path, data=data, headers={
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Length': str(len(bytes(querystr, 'utf-8'))),
+    })
+    print(res)
+    return res
+
+def penc_get_id_info(id):
+    pass
+
 def penc_create_sec_keys(request):
     if request.method == 'POST':
         content = request.POST.get('content')
@@ -960,20 +978,17 @@ def penc_create_sec_keys(request):
         if res.status_code != 200:
             return JsonHttpResponse({'status': 1, 'msg': res.data})
         
-        nodes = []
-        nodes.append({ 
-                "public_key": "public_key_0",
-                "private_key": "private_key_0"
-            })
-        nodes.append({ 
-            "public_key": "public_key_1",
-            "private_key": "private_key_1"
-            })
-        nodes.append({ 
-                "public_key": "public_key_2",
-                "private_key": "private_key_2"
-            })
-        return JsonHttpResponse({'status': 0, 'nodes': nodes, 'id': id})
+        time.sleep(2)
+        post_data = {
+            "id": id,
+            "contract": shardora_api.skbytes2account("cefc2c33064ea7691aee3e5e4f7842935d26f3ad790d81cf015e79b78958e848"),
+            "count": 10,
+        }
+
+        nodes_res = _post_data("http://{}:{}/get_proxy_reenc_info".format("127.0.0.1", 23001), post_data)
+        res_json = json.loads(nodes_res)
+        res_json['id'] = id
+        return JsonHttpResponse(res_json)
 
 def penc_get_contract_info(request):
     sol_cotent = linux_file_cmd.LinuxFileCommand().read_file("/root/shardora/src/contract/tests/contracts/proxy_reencyption.sol")
