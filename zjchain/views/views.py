@@ -131,7 +131,7 @@ def transactions(request):
                 if where_str != "":
                     where_str += " and "
 
-                where_str += "( gid = '" + search_str + "' or from = '" + search_str + "' or to = '" + search_str + "' or hash = '" + search_str + "' or prehash = '" + search_str + "' )";
+                where_str += "( gid = '" + search_str + "' or from = '" + search_str + "' or to = '" + search_str + "' or hash = '" + search_str + "' or prehash = '" + search_str + "' )"
         else:
             if search_str != "":
                 if where_str != "":
@@ -150,6 +150,11 @@ def transactions(request):
             cmd += " " + order + " "
         else:
             cmd += " order by timestamp desc "
+
+        if limit != "":
+            cmd += " limit " + limit
+        else:
+            cmd += " limit 100 "
 
         try:
 
