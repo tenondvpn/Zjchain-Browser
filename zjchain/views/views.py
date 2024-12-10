@@ -416,10 +416,6 @@ def get_all_nodes_bls_info(request):
             if len(result) < 0:
                 return JsonHttpResponse({'status': 1, 'msg': "no data"})
 
-            json_res = {
-                "elect_height": int(result[0][0]),
-            }
-
             for item in result:
                 if step == 1:
                     json_item = {
@@ -446,8 +442,8 @@ def get_all_nodes_bls_info(request):
 
                     res_arr.append(json_item)
 
-            print(json.dumps({'status': 0, 'cmd': cmd, 'value': res_arr}, ensure_ascii=False))
-            return JsonHttpResponse({'status': 0, 'cmd': cmd, 'value': res_arr})
+            print(json.dumps({'status': 0, 'cmd': cmd, 'value': res_arr, "elect_height": int(result[0][0])}, ensure_ascii=False))
+            return JsonHttpResponse({'status': 0, 'cmd': cmd, 'value': res_arr, "elect_height": int(result[0][0])})
         except Exception as ex:
             logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
@@ -1016,7 +1012,7 @@ def penc_get_share_data(request):
         if res.status_code != 200:
             return JsonHttpResponse({'status': 1, 'msg': res.data})
         
-        return JsonHttpResponse({'status': 0, 'msg': "ok"})
+        return JsonHttpResponse({'status': 0, 'msg': "ok", "password": "password", "cotnent": "content"})
     
 def penc_transactions(request):
     if request.method == 'POST':
