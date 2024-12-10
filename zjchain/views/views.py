@@ -985,7 +985,7 @@ def penc_create_sec_keys(request):
         }
 
         nodes_res = _post_data("http://{}:{}/get_proxy_reenc_info".format("127.0.0.1", 23001), post_data)
-        print(nodes_res)
+        print(f"get node res {nodes_res}")
         res_json = json.loads(nodes_res)
         res_json['id'] = id
         return JsonHttpResponse(res_json)
