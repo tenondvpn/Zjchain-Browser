@@ -37,6 +37,7 @@ urlpatterns = (
 
     # 政务系统数据共享
     re_path(r'^penc_create_sec_keys/$', views.penc_create_sec_keys),
+    re_path(r'^penc_get_sec_keys/$', views.penc_get_sec_keys),
     re_path(r'^penc_get_contract_info/$', views.penc_get_contract_info),
     re_path(r'^penc_share_new_data/$', views.penc_share_new_data),
     re_path(r'^penc_vote/$', views.penc_vote),

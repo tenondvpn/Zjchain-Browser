@@ -959,6 +959,22 @@ def _post_data(path: str, data: dict):
     print(res)
     return res
 
+def penc_get_sec_keys(request):
+    id = request.POST.get('id')
+    sk_bytes = bytes.fromhex("cefc2c33064ea7691aee3e5e4f7842935d26f3ad790d81cf015e79b78958e848")
+    key_pair = shardora_api.get_keypair(sk_bytes)
+    post_data = {
+        "id": id,
+        "contract": key_pair.account_id,
+        "count": 10,
+    }
+
+    nodes_res = _post_data("http://{}:{}/get_proxy_reenc_info".format("127.0.0.1", 23001), post_data)
+    print(f"get node res {nodes_res.text}")
+    res_json = json.loads(nodes_res.text)
+    res_json['id'] = id
+    return JsonHttpResponse(res_json)
+
 def penc_create_sec_keys(request):
     if request.method == 'POST':
         content = request.POST.get('content')
@@ -969,27 +985,8 @@ def penc_create_sec_keys(request):
         res = CreatePrivateAndPublicKeys(id, content)
         if res.status_code != 200:
             return JsonHttpResponse({'status': 1, 'msg': res.data})
-        
-        time.sleep(2)
-        res = CreateReEncryptionKeys(id, content)
-        if res.status_code != 200:
-            return JsonHttpResponse({'status': 1, 'msg': res.data})
-        
-        for i in range(0, 10):
-            time.sleep(2)
-            sk_bytes = bytes.fromhex("cefc2c33064ea7691aee3e5e4f7842935d26f3ad790d81cf015e79b78958e848")
-            key_pair = shardora_api.get_keypair(sk_bytes)
-            post_data = {
-                "id": id,
-                "contract": key_pair.account_id,
-                "count": 10,
-            }
-
-            nodes_res = _post_data("http://{}:{}/get_proxy_reenc_info".format("127.0.0.1", 23001), post_data)
-            print(f"get node res {nodes_res.text}")
-        res_json = json.loads(nodes_res.text)
-        res_json['id'] = id
-        return JsonHttpResponse(res_json)
+    
+        return JsonHttpResponse({'status': 0, 'msg': "ok", "id": id})
 
 def penc_get_contract_info(request):
     sol_cotent = linux_file_cmd.LinuxFileCommand().read_file("/root/shardora/src/contract/tests/contracts/proxy_reencyption.sol")
