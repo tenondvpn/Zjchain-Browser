@@ -965,7 +965,7 @@ def penc_get_sec_keys(request):
     key_pair = shardora_api.get_keypair(sk_bytes)
     post_data = {
         "id": id,
-        "contract": "48e1eab96c9e759daa3aff82b40e77cd615a41d0",
+        "contract": "",
         "count": 10,
     }
 
