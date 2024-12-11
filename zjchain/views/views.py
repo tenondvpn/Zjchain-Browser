@@ -975,17 +975,18 @@ def penc_create_sec_keys(request):
         if res.status_code != 200:
             return JsonHttpResponse({'status': 1, 'msg': res.data})
         
-        time.sleep(2)
-        sk_bytes = bytes.fromhex("cefc2c33064ea7691aee3e5e4f7842935d26f3ad790d81cf015e79b78958e848")
-        key_pair = shardora_api.get_keypair(sk_bytes)
-        post_data = {
-            "id": id,
-            "contract": key_pair.account_id,
-            "count": 10,
-        }
+        for i in range(0, 10):
+            time.sleep(2)
+            sk_bytes = bytes.fromhex("cefc2c33064ea7691aee3e5e4f7842935d26f3ad790d81cf015e79b78958e848")
+            key_pair = shardora_api.get_keypair(sk_bytes)
+            post_data = {
+                "id": id,
+                "contract": key_pair.account_id,
+                "count": 10,
+            }
 
-        nodes_res = _post_data("http://{}:{}/get_proxy_reenc_info".format("127.0.0.1", 23001), post_data)
-        print(f"get node res {nodes_res.text}")
+            nodes_res = _post_data("http://{}:{}/get_proxy_reenc_info".format("127.0.0.1", 23001), post_data)
+            print(f"get node res {nodes_res.text}")
         res_json = json.loads(nodes_res.text)
         res_json['id'] = id
         return JsonHttpResponse(res_json)
