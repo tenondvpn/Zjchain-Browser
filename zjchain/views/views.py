@@ -1003,7 +1003,7 @@ def penc_share_new_data(request):
             content = ""
             
         post_data = {
-            "contract": content,
+            "data": content,
         }
 
         encrypt_res = _post_data("http://{}:{}/get_seckey_and_encrypt_data".format("127.0.0.1", 23001), post_data)
