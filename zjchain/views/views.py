@@ -1044,8 +1044,9 @@ def penc_get_share_data(request):
         logger.info("ok")
         logger.info(dec_res)
         logger.info(f"get decrypt res {dec_res.text}")
-        dec_res_json = json.loads(dec_res.text)
-        return JsonHttpResponse({'status': 0, 'msg': "ok", "seckey": dec_res_json["seckey"], "hash_seckey": dec_res_json["hash_seckey"], "decdata": dec_res_json["decdata"]})
+        return JsonHttpResponse({'status': 0, 'msg': "ok"})
+        # dec_res_json = json.loads(dec_res.text)
+        # return JsonHttpResponse({'status': 0, 'msg': "ok", "seckey": dec_res_json["seckey"], "hash_seckey": dec_res_json["hash_seckey"], "decdata": dec_res_json["decdata"]})
     
 def penc_transactions(request):
     if request.method == 'POST':
