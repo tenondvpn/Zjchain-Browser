@@ -1034,10 +1034,10 @@ def penc_get_share_data(request):
     if request.method == 'POST':
         id = request.POST.get('id')
         seckey = request.POST.get('seckey')
-        encdata = request.POST.get('encdata')
+        enc_data = request.POST.get('encdata')
         post_data = {
             "data": id + ";" + seckey,
-            "encdata": encdata,
+            "enc_data": enc_data,
         }
 
         dec_res = _post_data("http://{}:{}/proxy_decrypt".format("127.0.0.1", 23001), post_data)
