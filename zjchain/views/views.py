@@ -1010,13 +1010,12 @@ def penc_share_new_data(request):
         logger.info("ok")
         logger.info(encrypt_res)
         logger.info(f"get encrypt res {encrypt_res.text}")
-        return JsonHttpResponse({'status': 1, 'msg': "error"})
-        # encrypt_res_json = json.loads(encrypt_res.text)
-        # res = EncryptUserMessage(id, encrypt_res_json["hash_seckey"], encrypt_res_json["secdata"])
-        # if res.status_code != 200:
-        #     return JsonHttpResponse({'status': 1, 'msg': res.data})
+        encrypt_res_json = json.loads(encrypt_res.text)
+        res = EncryptUserMessage(id, encrypt_res_json["hash_seckey"], encrypt_res_json["secdata"])
+        if res.status_code != 200:
+            return JsonHttpResponse({'status': 1, 'msg': res.data})
         
-        # return JsonHttpResponse({'status': 0, 'msg': "ok", "sec": encrypt_res_json["hash_seckey"], "sec_data": encrypt_res_json["secdata"]})
+        return JsonHttpResponse({'status': 0, 'msg': "ok", "sec": encrypt_res_json["hash_seckey"], "sec_data": encrypt_res_json["secdata"]})
 
 def penc_vote(request):
     if request.method == 'POST':
