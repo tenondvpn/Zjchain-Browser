@@ -839,9 +839,9 @@ def CreateReEncryptionKeys(id, src_content):
         src_content)
     return res
 
-def EncryptUserMessage(id, src_content):
+def EncryptUserMessage(id, seckey, src_content):
     key = "tpencu"
-    value = id+";"
+    value = id+";"+seckey
     key_len = len(key)
     if key_len <= 9:
         key_len = "0" + str(key_len)
@@ -922,7 +922,7 @@ def ReEncryptUserMessageWithMember(id, index, src_content):
 
 def Decryption(id, src_content):
     key = "tprdec"
-    value = id+";"
+    value = id+";hello"
     key_len = len(key)
     if key_len <= 9:
         key_len = "0" + str(key_len)
@@ -1002,7 +1002,15 @@ def penc_share_new_data(request):
         if content is None:
             content = ""
             
-        res = EncryptUserMessage(id, content)
+        post_data = {
+            "contract": content,
+        }
+
+        encrypt_res = _post_data("http://{}:{}/get_seckey_and_encrypt_data".format("127.0.0.1", 23001), post_data)
+        print(f"get encrypt res {encrypt_res.text}")
+        encrypt_res_json = json.loads(encrypt_res.text)
+        
+        res = EncryptUserMessage(id, encrypt_res_json["hash_seckey"], content)
         if res.status_code != 200:
             return JsonHttpResponse({'status': 1, 'msg': res.data})
         
