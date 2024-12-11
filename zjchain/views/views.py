@@ -1007,9 +1007,9 @@ def penc_share_new_data(request):
         }
 
         encrypt_res = _post_data("http://{}:{}/get_seckey_and_encrypt_data".format("127.0.0.1", 23001), post_data)
-        print("ok")
-        print(encrypt_res)
-        print(f"get encrypt res {encrypt_res.text}")
+        logger.info("ok")
+        logger.info(encrypt_res)
+        logger.info(f"get encrypt res {encrypt_res.text}")
         return JsonHttpResponse({'status': 1, 'msg': "error"})
         # encrypt_res_json = json.loads(encrypt_res.text)
         # res = EncryptUserMessage(id, encrypt_res_json["hash_seckey"], encrypt_res_json["secdata"])
