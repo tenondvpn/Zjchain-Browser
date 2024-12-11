@@ -920,9 +920,9 @@ def ReEncryptUserMessageWithMember(id, index, src_content):
         src_content)
     return res
 
-def Decryption(id, src_content):
+def Decryption(id, seckey, src_content):
     key = "tprdec"
-    value = id+";hello"
+    value = id+";"+seckey
     key_len = len(key)
     if key_len <= 9:
         key_len = "0" + str(key_len)
@@ -1033,15 +1033,19 @@ def penc_vote(request):
 def penc_get_share_data(request):
     if request.method == 'POST':
         id = request.POST.get('id')
-        content = request.POST.get('content')
-        if content is None:
-            content = ""
+        seckey = request.POST.get('seckey')
+        encdata = request.POST.get('encdata')
+        post_data = {
+            "data": id + ";" + seckey,
+            "encdata": encdata,
+        }
 
-        res = Decryption(id, content)
-        if res.status_code != 200:
-            return JsonHttpResponse({'status': 1, 'msg': res.data})
-        
-        return JsonHttpResponse({'status': 0, 'msg': "ok", "password": "password", "cotnent": "content"})
+        dec_res = _post_data("http://{}:{}/proxy_decrypt".format("127.0.0.1", 23001), post_data)
+        logger.info("ok")
+        logger.info(dec_res)
+        logger.info(f"get decrypt res {dec_res.text}")
+        dec_res_json = json.loads(dec_res.text)
+        return JsonHttpResponse({'status': 0, 'msg': "ok", "seckey": dec_res_json["seckey"], "hash_seckey": dec_res_json["hash_seckey"], "decdata": dec_res_json["decdata"]})
     
 def penc_transactions(request):
     if request.method == 'POST':
