@@ -809,7 +809,7 @@ def CreatePrivateAndPublicKeys(id, src_content):
         "",
         func_param,
         "def",
-        src_content)
+        id+src_content)
     return res
 
 def CreateReEncryptionKeys(id, src_content):
@@ -836,7 +836,7 @@ def CreateReEncryptionKeys(id, src_content):
         "",
         func_param,
         "def",
-        src_content)
+        id+src_content)
     return res
 
 def EncryptUserMessage(id, seckey, src_content):
@@ -863,7 +863,7 @@ def EncryptUserMessage(id, seckey, src_content):
         "",
         func_param,
         "def",
-        src_content)
+        id+src_content)
     return res
 
 def ReEncryptUserMessage(id, src_content):
@@ -890,7 +890,7 @@ def ReEncryptUserMessage(id, src_content):
         "",
         func_param,
         "def",
-        src_content)
+        id+src_content)
     return res
 
 def ReEncryptUserMessageWithMember(id, index, src_content):
@@ -917,7 +917,7 @@ def ReEncryptUserMessageWithMember(id, index, src_content):
         "",
         func_param,
         "def",
-        src_content)
+        id+src_content)
     return res
 
 def Decryption(id, seckey, src_content):
@@ -1024,7 +1024,7 @@ def penc_vote(request):
         if content is None:
             content = ""
             
-        content = id + content
+        content = content
         res = ReEncryptUserMessage(id, content)
         if res.status_code != 200:
             return JsonHttpResponse({'status': 1, 'msg': res.data})
