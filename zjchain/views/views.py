@@ -1024,6 +1024,7 @@ def penc_vote(request):
         if content is None:
             content = ""
             
+        content = id + "," + content
         res = ReEncryptUserMessage(id, content)
         if res.status_code != 200:
             return JsonHttpResponse({'status': 1, 'msg': res.data})
