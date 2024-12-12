@@ -1140,8 +1140,10 @@ def penc_transactions(request):
                 except Exception as ex:
                     logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
 
+                print(data)
                 if len(data) > 65:
                     id = data[0: 64],
+                    print(data + ":" + id)
                     data_type = data[64: 65],
                     data = data[65:]
 
