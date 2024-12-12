@@ -1142,9 +1142,9 @@ def penc_transactions(request):
 
                 print(data)
                 if len(data) > 65:
-                    id = data[0: 64],
+                    id = data[0: 64]
                     print(data + ":" + id)
-                    data_type = data[64: 65],
+                    data_type = data[64: 65]
                     data = data[65:]
 
                     if id not in id_map:
@@ -1176,8 +1176,8 @@ def penc_transactions(request):
                 vote_count = 0
                 prxoy_reenc_id = ""
                 if len(data) > 65:
-                    id = data[0: 64],
-                    data_type = data[64: 65],
+                    id = data[0: 64]
+                    data_type = data[64: 65]
                     data = data[65:]
                     prxoy_reenc_id = id
                     if 2 in id_map[id]:
