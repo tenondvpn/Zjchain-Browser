@@ -809,7 +809,7 @@ def CreatePrivateAndPublicKeys(id, src_content):
         "",
         func_param,
         "def",
-        id+src_content)
+        id+"0"+src_content)
     return res
 
 def CreateReEncryptionKeys(id, src_content):
@@ -836,7 +836,7 @@ def CreateReEncryptionKeys(id, src_content):
         "",
         func_param,
         "def",
-        id+src_content)
+        id+"1"+src_content)
     return res
 
 def EncryptUserMessage(id, seckey, src_content):
@@ -863,7 +863,7 @@ def EncryptUserMessage(id, seckey, src_content):
         "",
         func_param,
         "def",
-        id+src_content)
+        id+"2"+src_content)
     return res
 
 def ReEncryptUserMessage(id, src_content):
@@ -890,7 +890,7 @@ def ReEncryptUserMessage(id, src_content):
         "",
         func_param,
         "def",
-        id+src_content)
+        id+"3"+src_content)
     return res
 
 def ReEncryptUserMessageWithMember(id, index, src_content):
@@ -917,7 +917,7 @@ def ReEncryptUserMessageWithMember(id, index, src_content):
         "",
         func_param,
         "def",
-        id+src_content)
+        id+"4"+src_content)
     return res
 
 def Decryption(id, seckey, src_content):
