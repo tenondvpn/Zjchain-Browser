@@ -1132,6 +1132,34 @@ def penc_transactions(request):
             ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
             result = ck_client.execute(cmd)
             tmp_result = []
+            id_map = {}
+            for item in result:
+                data = item[12]
+                try:
+                    data = hex_to_str(data)
+                except Exception as ex:
+                    logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
+
+                if len(data) > 65:
+                    id = data[0: 64],
+                    data_type = data[64: 65],
+                    data = data[65:]
+
+                    if id not in id_map:
+                        id_map[id] = {}
+
+                    if data_type == 0:
+                        id_map[id][data_type] = data
+
+                    if data_type == 2:
+                        id_map[id][data_type] = data
+
+                    if data_type == 3:
+                        if data_type not in id_map[id]:
+                            id_map[id][data_type] = 1
+                        else:
+                            id_map[id][data_type] += 1
+                
             for item in result:
                 dt_object = ""
                 dt_object = datetime.datetime.fromtimestamp(int(item[4] / 1000) + 8 * 3600)
@@ -1141,6 +1169,21 @@ def penc_transactions(request):
                     data = hex_to_str(data)
                 except Exception as ex:
                     logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
+
+                share_data = ""
+                vote_count = 0
+                prxoy_reenc_id = ""
+                if len(data) > 65:
+                    id = data[0: 64],
+                    data_type = data[64: 65],
+                    data = data[65:]
+                    prxoy_reenc_id = id
+                    if 2 in id_map[id]:
+                        share_data = id_map[id][2]
+
+                    if 3 in id_map[id]:
+                        vote_count = id_map[id][3]
+                
 
                 tmp_result.append({
                     "Time": dt_object,
@@ -1152,10 +1195,12 @@ def penc_transactions(request):
                     "From": item[6],
                     "To": item[7],
                     "Amount": item[8],
+                    "prxoy_reenc_id": prxoy_reenc_id,
                     "data": data,
+                    "share_data": share_data,
+                    "vote_count": vote_count,
                     "Gas": item[10] * item[11]
                 })
-                
             return JsonHttpResponse({'status': 0, 'cmd': cmd, 'value': tmp_result})
         except Exception as ex:
             logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
