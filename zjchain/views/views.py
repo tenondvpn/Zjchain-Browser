@@ -1050,7 +1050,7 @@ def penc_get_share_data(request):
             'status': 0, 'msg': "ok", 
             "seckey": dec_res_json["seckey"], 
             "hash_seckey": dec_res_json["hash_seckey"], 
-            "secdata": dec_res_json["secdata"], 
+            "encdata": dec_res_json["encdata"], 
             "decdata": dec_res_json["decdata"]})
     
 def penc_transactions(request):
