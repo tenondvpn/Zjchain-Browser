@@ -617,20 +617,16 @@ def ArsVote(id, src_content, value):
     return res
 
 def ars_create_sec_keys(request):
-    nodes = []
-    nodes.append({ 
-            "public_key": "public_key_0",
-            "private_key": "private_key_0"
-        })
-    nodes.append({ 
-        "public_key": "public_key_1",
-        "private_key": "private_key_1"
-        })
-    nodes.append({ 
-            "public_key": "public_key_2",
-            "private_key": "private_key_2"
-        })
-    return JsonHttpResponse({'status': 0, 'nodes': nodes})
+    post_data = {
+        "keys": "27e5ab858583f1d19ef272856859658246cd388f,1a31f75df2fba7607ae8566646a553451a1b8c14,5bc3423d99bcc823769fe36f3281739e3d022290",
+        "signer_count": 2,
+    }
+
+    nodes_res = _post_data("http://{}:{}/ars_create_sec_keys".format("127.0.0.1", 23001), post_data)
+    print(f"get node res {nodes_res.text}")
+    res_json = json.loads(nodes_res.text)
+    res_json['id'] = id
+    return JsonHttpResponse(res_json)
 
 def ars_get_contract_info(request):
     sol_cotent = linux_file_cmd.LinuxFileCommand().read_file("/root/shardora/src/contract/tests/contracts/ars.sol")
@@ -945,8 +941,6 @@ def Decryption(id, seckey, src_content):
         "def",
         src_content)
     return res
-
-
 
 def _post_data(path: str, data: dict):
     querystr = urlencode(data)
