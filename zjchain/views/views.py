@@ -775,7 +775,6 @@ def ars_transactions(request):
                         if 1 in id_map[id]:
                             if id_map[id][1] >= 2:
                                 id_map[id][0]["now_credit"] += id_map[id][0]["add_credit"]
-                                id_map[id][0]["add_credit"] = 0
 
                     if data_type == 1:
                         if data_type not in id_map[id]:
