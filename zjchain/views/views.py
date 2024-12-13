@@ -641,7 +641,7 @@ def ars_create_new_vote(request):
              content = ""
 
         id = shardora_api.gen_gid()
-        res = ArsCreateNewVote(id, content)
+        res = ArsCreateNewVote(id, id+"0"+content)
         if res.status_code != 200:
             return JsonHttpResponse({'status': 1, 'msg': "error"})
         else:
@@ -658,7 +658,7 @@ def ars_vote(request):
              content = ""
 
         val =f"{index},{data},{addr}-{id}"
-        res = ArsVote(id, content, val)
+        res = ArsVote(id, id+"1"+content, val)
         if res.status_code != 200:
             return JsonHttpResponse({'status': 1, 'msg': "error"})
         else:
