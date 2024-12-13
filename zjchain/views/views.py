@@ -207,7 +207,6 @@ def transactions(request):
                     })
             return JsonHttpResponse({'status': 0, 'cmd': cmd, 'value': tmp_result})
         except Exception as ex:
-            logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
         return JsonHttpResponse({'status': 1, 'msg': 'msg'})
 
@@ -263,7 +262,6 @@ def vpn_transactions(request):
                     })
             return JsonHttpResponse({'status': 0, 'cmd': cmd, 'value': tmp_result})
         except Exception as ex:
-            logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
         return JsonHttpResponse({'status': 1, 'msg': 'msg'})
 
@@ -317,7 +315,6 @@ def accounts(request):
                 })
             return JsonHttpResponse({'status': 0, 'cmd': cmd, 'value': tmp_result})
         except Exception as ex:
-            logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
         return JsonHttpResponse({'status': 1, 'msg': 'msg'})
 
@@ -332,7 +329,6 @@ def get_statistics(request):
             ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
             tmp_result = ck_client.execute(cmd)
         except Exception as ex:
-            logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
 
         if limit is not None and limit != "":
@@ -374,7 +370,6 @@ def get_statistics(request):
                 "all_nodes": tmp_result[0][5]
             }
         except Exception as ex:
-            logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
         block_num = ZjcCkBlockTable.objects.count()
         res_result['block_num'] = block_num
@@ -454,7 +449,6 @@ def get_all_nodes_bls_info(request):
             print(json.dumps({'status': 0, 'cmd': cmd, 'value': res_arr, "elect_height": int(result[0][0])}, ensure_ascii=False))
             return JsonHttpResponse({'status': 0, 'cmd': cmd, 'value': res_arr, "elect_height": int(result[0][0])})
         except Exception as ex:
-            logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
         
 def confirm_transactions(request):
@@ -561,7 +555,6 @@ def confirm_transactions(request):
                 
             return JsonHttpResponse({'status': 0, 'cmd': cmd, 'value': tmp_result})
         except Exception as ex:
-            logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
         return JsonHttpResponse({'status': 1, 'msg': 'msg'})
     
@@ -842,7 +835,6 @@ def ars_transactions(request):
                 
             return JsonHttpResponse({'status': 0, 'cmd': cmd, 'value': tmp_result})
         except Exception as ex:
-            logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
         return JsonHttpResponse({'status': 1, 'msg': 'msg'})
 
@@ -1289,7 +1281,6 @@ def penc_transactions(request):
                 })
             return JsonHttpResponse({'status': 0, 'cmd': cmd, 'value': tmp_result})
         except Exception as ex:
-            logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
         return JsonHttpResponse({'status': 1, 'msg': 'msg'})
 
@@ -1344,7 +1335,6 @@ def get_all_contracts(request):
 
             return JsonHttpResponse({'status': 0, 'cmd': cmd, 'value': res_arr})
         except Exception as ex:
-            logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
         return JsonHttpResponse({'status': 1, 'cmd': cmd, 'msg': 'msg'})
 
@@ -1390,7 +1380,6 @@ def get_all_videos(request):
             print(res_arr)
             return JsonHttpResponse({'status': 0, 'cmd': cmd, 'value': res_arr})
         except Exception as ex:
-            logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
         return JsonHttpResponse({'status': 1, 'cmd': cmd, 'msg': 'msg'})
 
@@ -1433,7 +1422,6 @@ def get_contract_detail(request):
 
             return JsonHttpResponse({'status': 0, 'cmd': cmd, 'value': res_arr[0]})
         except Exception as ex:
-            logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
         return JsonHttpResponse({'status': 1, 'cmd': cmd, 'msg': 'msg'})
 
@@ -1506,5 +1494,4 @@ def set_private_key(request):
             ck_client.execute(cmd)
             return JsonHttpResponse({'status': 0, 'msg': 'ok'})
         except Exception as ex:
-            logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
