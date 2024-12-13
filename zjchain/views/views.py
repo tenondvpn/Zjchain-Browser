@@ -645,8 +645,8 @@ def ars_create_new_vote(request):
         json_content = {
             "username": request.POST.get('username'),
             "addr": request.POST.get('addr'),
-            "now_credit": request.POST.get('now_credit'),
-            "add_credit": request.POST.get('add_credit'),
+            "now_credit": int(request.POST.get('now_credit')),
+            "add_credit": int(request.POST.get('add_credit')),
         }
         id = shardora_api.gen_gid()
         res = ArsCreateNewVote(id, id+"0"+json.dumps(json_content))
