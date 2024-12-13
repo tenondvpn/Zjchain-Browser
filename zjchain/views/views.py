@@ -565,9 +565,15 @@ def confirm_transactions(request):
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
         return JsonHttpResponse({'status': 1, 'msg': 'msg'})
     
+ars_addrs = [
+    "27e5ab858583f1d19ef272856859658246cd388f",
+    "1a31f75df2fba7607ae8566646a553451a1b8c14",
+    "5bc3423d99bcc823769fe36f3281739e3d022290",
+]
+
 def ArsCreateNewVote(id, src_content):
     key = "tarscr"
-    value = "27e5ab858583f1d19ef272856859658246cd388f,1a31f75df2fba7607ae8566646a553451a1b8c14,5bc3423d99bcc823769fe36f3281739e3d022290-2," + id
+    value = ",".join(ars_addrs) + "-2," + id
     key_len = len(key)
     if key_len <= 9:
         key_len = "0" + str(key_len)
@@ -618,7 +624,7 @@ def ArsVote(id, src_content, value):
 
 def ars_create_sec_keys(request):
     post_data = {
-        "keys": "27e5ab858583f1d19ef272856859658246cd388f-1a31f75df2fba7607ae8566646a553451a1b8c14-5bc3423d99bcc823769fe36f3281739e3d022290",
+        "keys": "-".join(ars_addrs),
         "signer_count": 2,
     }
 
@@ -650,14 +656,13 @@ def ars_create_new_vote(request):
 def ars_vote(request):
     if request.method == 'POST':
         id = request.POST.get('id')
-        addr = request.POST.get('addr')
         data = request.POST.get('data')
         index = request.POST.get('index')
         content = request.POST.get('content')
         if content is None:
              content = ""
 
-        val =f"{index},{data},{addr}-{id}"
+        val =f"{index},{data},{ars_addrs[index]}-{id}"
         res = ArsVote(id, id+"1"+content, val)
         if res.status_code != 200:
             return JsonHttpResponse({'status': 1, 'msg': "error"})
