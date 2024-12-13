@@ -772,16 +772,16 @@ def ars_transactions(request):
                     if data_type == 0:
                         user_info = json.loads(hex_to_str(data))
                         id_map[id][data_type] = user_info
+                        if 1 in id_map[id]:
+                            if id_map[id][1] >= 2:
+                                id_map[id][0]["now_credit"] += id_map[id][0]["add_credit"]
+                                id_map[id][0]["add_credit"] = 0
 
                     if data_type == 1:
                         if data_type not in id_map[id]:
                             id_map[id][data_type] = 1
                         else:
                             id_map[id][data_type] += 1
-                            if id_map[id][data_type] >= 2:
-                                if 0 in id_map[id]:
-                                    id_map[id][0]["now_credit"] += id_map[id][0]["add_credit"]
-                                    id_map[id][0]["add_credit"] = 0
 
             for item in result:
                 dt_object = ""
