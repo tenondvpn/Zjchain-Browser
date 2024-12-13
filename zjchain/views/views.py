@@ -649,7 +649,7 @@ def ars_create_new_vote(request):
             "add_credit": int(request.POST.get('add_credit')),
         }
         id = shardora_api.gen_gid()
-        res = ArsCreateNewVote(id, id+"0"+json.dumps(json_content))
+        res = ArsCreateNewVote(id, id+"0"+str_to_hex(json.dumps(json_content)))
         if res.status_code != 200:
             return JsonHttpResponse({'status': 1, 'msg': "error"})
         else:
