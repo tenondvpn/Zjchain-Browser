@@ -642,12 +642,14 @@ def ars_get_contract_info(request):
 
 def ars_create_new_vote(request):
     if request.method == 'POST':
-        content = request.POST.get('content')
-        if content is None:
-             content = ""
-
+        json_content = {
+            "username": request.POST.get('username'),
+            "addr": request.POST.get('addr'),
+            "now_credit": request.POST.get('now_credit'),
+            "add_credit": request.POST.get('add_credit'),
+        }
         id = shardora_api.gen_gid()
-        res = ArsCreateNewVote(id, id+"0"+content)
+        res = ArsCreateNewVote(id, id+"0"+json.dumps(json_content))
         if res.status_code != 200:
             return JsonHttpResponse({'status': 1, 'msg': "error"})
         else:
@@ -656,18 +658,18 @@ def ars_create_new_vote(request):
 def ars_vote(request):
     if request.method == 'POST':
         id = request.POST.get('id')
-        data = request.POST.get('data')
+        data = "00"
         index = int(request.POST.get('index'))
         if index > len(ars_addrs):
             return JsonHttpResponse({'status': 1, 'msg': f"index {index} error"})
 
         addr = ars_addrs[index]
-        content = request.POST.get('content')
-        if content is None:
-             content = ""
+        group_info = request.POST.get('group_info')
+        if group_info is None:
+             group_info = ""
 
         val =f"{index},{data},{addr}-{id}"
-        res = ArsVote(id, id+"1"+content, val)
+        res = ArsVote(id, id+"1"+group_info, val)
         if res.status_code != 200:
             return JsonHttpResponse({'status': 1, 'msg': "error"})
         else:
