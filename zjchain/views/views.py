@@ -763,9 +763,9 @@ def ars_transactions(request):
 
                 if len(data) > 65:
                     id = data[0: 64]
-                    print(data + ":" + id)
                     data_type = int(data[64: 65])
                     data = data[65:]
+                    print(f"get tx info id: {id}, data type: {data_type} data: {data}")
                     if id not in id_map:
                         id_map[id] = {}
 
