@@ -625,7 +625,6 @@ def ars_create_sec_keys(request):
     nodes_res = _post_data("http://{}:{}/ars_create_sec_keys".format("127.0.0.1", 23001), post_data)
     print(f"get node res {nodes_res.text}")
     res_json = json.loads(nodes_res.text)
-    res_json['id'] = id
     return JsonHttpResponse(res_json)
 
 def ars_get_contract_info(request):
