@@ -618,7 +618,7 @@ def ArsVote(id, src_content, value):
 
 def ars_create_sec_keys(request):
     post_data = {
-        "keys": "27e5ab858583f1d19ef272856859658246cd388f,1a31f75df2fba7607ae8566646a553451a1b8c14,5bc3423d99bcc823769fe36f3281739e3d022290",
+        "keys": "27e5ab858583f1d19ef272856859658246cd388f-1a31f75df2fba7607ae8566646a553451a1b8c14-5bc3423d99bcc823769fe36f3281739e3d022290",
         "signer_count": 2,
     }
 
