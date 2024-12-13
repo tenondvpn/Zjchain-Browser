@@ -661,11 +661,12 @@ def ars_vote(request):
         if index > len(ars_addrs):
             return JsonHttpResponse({'status': 1, 'msg': f"index {index} error"})
 
+        addr = ars_addrs[index]
         content = request.POST.get('content')
         if content is None:
              content = ""
 
-        val =f"{index},{data},{ars_addrs[index]}-{id}"
+        val =f"{index},{data},{addr}-{id}"
         res = ArsVote(id, id+"1"+content, val)
         if res.status_code != 200:
             return JsonHttpResponse({'status': 1, 'msg': "error"})
