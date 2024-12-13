@@ -778,7 +778,7 @@ def ars_transactions(request):
                             id_map[id][data_type] = 1
                         else:
                             id_map[id][data_type] += 1
-                            if id_map[id][data_type] > 2:
+                            if id_map[id][data_type] >= 2:
                                 if 0 in id_map[id]:
                                     id_map[id][0]["now_credit"] += id_map[id][0]["add_credit"]
                                     id_map[id][0]["add_credit"] = 0
@@ -800,7 +800,7 @@ def ars_transactions(request):
                     "now_credit": 0,
                     "add_credit": 0,
                 }
-                
+
                 if len(data) > 65:
                     id = data[0: 64]
                     print(data + ":" + id)
