@@ -657,7 +657,10 @@ def ars_vote(request):
     if request.method == 'POST':
         id = request.POST.get('id')
         data = request.POST.get('data')
-        index = request.POST.get('index')
+        index = int(request.POST.get('index'))
+        if index > len(ars_addrs):
+            return JsonHttpResponse({'status': 1, 'msg': f"index {index} error"})
+
         content = request.POST.get('content')
         if content is None:
              content = ""
