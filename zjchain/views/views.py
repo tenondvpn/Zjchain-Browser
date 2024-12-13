@@ -407,18 +407,18 @@ def addtwodimdict(thedict, key_a, key_b, val):
 
 def get_all_nodes_bls_info(request):
     if request.method == 'POST':
-        elect_height = int(request.POST.get('elect_height'))
-        offset = int(request.POST.get('offset'))
-        step = int(request.POST.get('step'))
-        if elect_height == 0:
-            cmd = "select elect_height, member_idx, local_pri_keys, local_pub_keys, swap_sec_keys, local_sk, common_pk from bls_elect_info where shard_id = 3 order by elect_height desc limit 4;"
-        else:
-            if offset < 0:
-                cmd = "select elect_height, member_idx, local_pri_keys, local_pub_keys, swap_sec_keys, local_sk, common_pk from bls_elect_info where shard_id = 3 and elect_height < %d order by elect_height desc limit 4;" % elect_height
-            else:
-                cmd = "select elect_height, member_idx, local_pri_keys, local_pub_keys, swap_sec_keys, local_sk, common_pk from bls_elect_info where shard_id = 3 and elect_height > %d order by elect_height desc limit 4;" % elect_height
-
         try:
+            elect_height = int(request.POST.get('elect_height'))
+            offset = int(request.POST.get('offset'))
+            step = int(request.POST.get('step'))
+            if elect_height == 0:
+                cmd = "select elect_height, member_idx, local_pri_keys, local_pub_keys, swap_sec_keys, local_sk, common_pk from bls_elect_info where shard_id = 3 order by elect_height desc limit 4;"
+            else:
+                if offset < 0:
+                    cmd = "select elect_height, member_idx, local_pri_keys, local_pub_keys, swap_sec_keys, local_sk, common_pk from bls_elect_info where shard_id = 3 and elect_height < %d order by elect_height desc limit 4;" % elect_height
+                else:
+                    cmd = "select elect_height, member_idx, local_pri_keys, local_pub_keys, swap_sec_keys, local_sk, common_pk from bls_elect_info where shard_id = 3 and elect_height > %d order by elect_height desc limit 4;" % elect_height
+
             res_arr = []
             ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
             result = ck_client.execute(cmd)
@@ -459,78 +459,78 @@ def get_all_nodes_bls_info(request):
         
 def confirm_transactions(request):
     if request.method == 'POST':
-        block_hash = request.POST.get('hash')
-        height = request.POST.get('height')
-        shard = request.POST.get('shard')
-        pool = request.POST.get('pool')
-        limit = request.POST.get('limit')
-        search_str = request.POST.get('search')
-        if search_str is None:
-            search_str = ""
-
-        if shard is None:
-            shard = -1
-
-        if pool is None:
-            pool = -1
-
-        if limit is None:
-            limit = ""
-
-        order = request.POST.get('order')
-        where_str = " to = 'a0793c84fb3133c0df1b9a6ccccbbfe5e7545138' "
-        if int(shard) != -1:
-            if where_str != "":
-                where_str += " and shard_id = " + str(shard)
-            else:
-                where_str += " shard_id = " + str(shard)
-
-        if int(pool) != -1:
-            if where_str != "":
-                where_str += " and pool_index = " + str(pool)
-            else:
-                where_str += " pool_index = " + str(pool)
-
-        if height is None:
-            height = -1
-
-        if block_hash is None:
-            block_hash = ""
-
-        if int(height) != -1:
-            if where_str != "":
-                where_str += " and height = " + str(height)
-            else:
-                where_str += " height = " + str(height)
-
-        if block_hash != "":
-            if where_str != "":
-                where_str += " and hash = " + str2r(block_hash)
-            else:
-                where_str += " hash = " + str2r(block_hash)
-
-        if search_str != "":
-            if where_str != "":
-                where_str += " and "
-
-            where_str += "( gid = '" + search_str + "' or from = '" + search_str + "' or to = '" + search_str + "' or hash = '" + search_str + "' or prehash = '" + search_str + "' )"
-      
-        cmd = 'SELECT shard_id, pool_index, height, type, timestamp, gid, from, to, amount, gas_limit, gas_used, gas_price, storages FROM zjc_ck_transaction_table '
-
-        if where_str != "":
-            cmd += " where " + where_str
-
-        if order is not None:
-            cmd += " " + order + " "
-        else:
-            cmd += " order by timestamp desc "
-
-        if limit != "":
-            cmd += " limit " + limit
-        else:
-            cmd += " limit 100 "
-
         try:
+            block_hash = request.POST.get('hash')
+            height = request.POST.get('height')
+            shard = request.POST.get('shard')
+            pool = request.POST.get('pool')
+            limit = request.POST.get('limit')
+            search_str = request.POST.get('search')
+            if search_str is None:
+                search_str = ""
+
+            if shard is None:
+                shard = -1
+
+            if pool is None:
+                pool = -1
+
+            if limit is None:
+                limit = ""
+
+            order = request.POST.get('order')
+            where_str = " to = 'a0793c84fb3133c0df1b9a6ccccbbfe5e7545138' "
+            if int(shard) != -1:
+                if where_str != "":
+                    where_str += " and shard_id = " + str(shard)
+                else:
+                    where_str += " shard_id = " + str(shard)
+
+            if int(pool) != -1:
+                if where_str != "":
+                    where_str += " and pool_index = " + str(pool)
+                else:
+                    where_str += " pool_index = " + str(pool)
+
+            if height is None:
+                height = -1
+
+            if block_hash is None:
+                block_hash = ""
+
+            if int(height) != -1:
+                if where_str != "":
+                    where_str += " and height = " + str(height)
+                else:
+                    where_str += " height = " + str(height)
+
+            if block_hash != "":
+                if where_str != "":
+                    where_str += " and hash = " + str2r(block_hash)
+                else:
+                    where_str += " hash = " + str2r(block_hash)
+
+            if search_str != "":
+                if where_str != "":
+                    where_str += " and "
+
+                where_str += "( gid = '" + search_str + "' or from = '" + search_str + "' or to = '" + search_str + "' or hash = '" + search_str + "' or prehash = '" + search_str + "' )"
+        
+            cmd = 'SELECT shard_id, pool_index, height, type, timestamp, gid, from, to, amount, gas_limit, gas_used, gas_price, storages FROM zjc_ck_transaction_table '
+
+            if where_str != "":
+                cmd += " where " + where_str
+
+            if order is not None:
+                cmd += " " + order + " "
+            else:
+                cmd += " order by timestamp desc "
+
+            if limit != "":
+                cmd += " limit " + limit
+            else:
+                cmd += " limit 100 "
+
 
             ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
             result = ck_client.execute(cmd)
@@ -623,15 +623,19 @@ def ArsVote(id, src_content, value):
     return res
 
 def ars_create_sec_keys(request):
-    post_data = {
-        "keys": "-".join(ars_addrs),
-        "signer_count": 2,
-    }
+    try:
+        post_data = {
+            "keys": "-".join(ars_addrs),
+            "signer_count": 2,
+        }
 
-    nodes_res = _post_data("http://{}:{}/ars_create_sec_keys".format("127.0.0.1", 23001), post_data)
-    print(f"get node res {nodes_res.text}")
-    res_json = json.loads(nodes_res.text)
-    return JsonHttpResponse(res_json)
+        nodes_res = _post_data("http://{}:{}/ars_create_sec_keys".format("127.0.0.1", 23001), post_data)
+        print(f"get node res {nodes_res.text}")
+        res_json = json.loads(nodes_res.text)
+        return JsonHttpResponse(res_json)
+    except Exception as ex:
+        return JsonHttpResponse({'status': 1, 'msg': str(ex)})
+
 
 def ars_get_contract_info(request):
     sol_cotent = linux_file_cmd.LinuxFileCommand().read_file("/root/shardora/src/contract/tests/contracts/ars.sol")
@@ -642,113 +646,119 @@ def ars_get_contract_info(request):
 
 def ars_create_new_vote(request):
     if request.method == 'POST':
-        json_content = {
-            "username": request.POST.get('username'),
-            "addr": request.POST.get('addr'),
-            "now_credit": int(request.POST.get('now_credit')),
-            "add_credit": int(request.POST.get('add_credit')),
-        }
-        id = shardora_api.gen_gid()
-        res = ArsCreateNewVote(id, id+"0"+str_to_hex(json.dumps(json_content)))
-        if res.status_code != 200:
-            return JsonHttpResponse({'status': 1, 'msg': "error"})
-        else:
-            return JsonHttpResponse({'status': 0, 'id': id, 'msg': "ok"})
+        try:
+            json_content = {
+                "username": request.POST.get('username'),
+                "addr": request.POST.get('addr'),
+                "now_credit": int(request.POST.get('now_credit')),
+                "add_credit": int(request.POST.get('add_credit')),
+            }
+            id = shardora_api.gen_gid()
+            res = ArsCreateNewVote(id, id+"0"+str_to_hex(json.dumps(json_content)))
+            if res.status_code != 200:
+                return JsonHttpResponse({'status': 1, 'msg': "error"})
+            else:
+                return JsonHttpResponse({'status': 0, 'id': id, 'msg': "ok"})
+        except Exception as ex:
+            return JsonHttpResponse({'status': 1, 'msg': str(ex)})
+
 
 def ars_vote(request):
     if request.method == 'POST':
-        id = request.POST.get('id')
-        data = "00"
-        index = int(request.POST.get('index'))
-        if index > len(ars_addrs):
-            return JsonHttpResponse({'status': 1, 'msg': f"index {index} error"})
+        try:
+            id = request.POST.get('id')
+            data = "00"
+            index = int(request.POST.get('index'))
+            if index > len(ars_addrs):
+                return JsonHttpResponse({'status': 1, 'msg': f"index {index} error"})
 
-        addr = ars_addrs[index]
-        group_info = request.POST.get('group_info')
-        if group_info is None:
-             group_info = ""
+            addr = ars_addrs[index]
+            group_info = request.POST.get('group_info')
+            if group_info is None:
+                group_info = ""
 
-        val =f"{index},{data},{addr}-{id}"
-        res = ArsVote(id, id+"1"+group_info, val)
-        if res.status_code != 200:
-            return JsonHttpResponse({'status': 1, 'msg': "error"})
-        else:
-            return JsonHttpResponse({'status': 0, 'id': id, 'msg': "ok"})
+            val =f"{index},{data},{addr}-{id}"
+            res = ArsVote(id, id+"1"+group_info, val)
+            if res.status_code != 200:
+                return JsonHttpResponse({'status': 1, 'msg': "error"})
+            else:
+                return JsonHttpResponse({'status': 0, 'id': id, 'msg': "ok"})
+        except Exception as ex:
+            return JsonHttpResponse({'status': 1, 'msg': str(ex)})
         
 def ars_transactions(request):
     if request.method == 'POST':
-        block_hash = request.POST.get('hash')
-        height = request.POST.get('height')
-        shard = request.POST.get('shard')
-        pool = request.POST.get('pool')
-        limit = request.POST.get('limit')
-        search_str = request.POST.get('search')
-        if search_str is None:
-            search_str = ""
-
-        if shard is None:
-            shard = -1
-
-        if pool is None:
-            pool = -1
-
-        if limit is None:
-            limit = ""
-            
-        order = request.POST.get('order')
-        where_str = " to = '08e1eab96c9e759daa3aff82b40e77cd615a41d5' "
-        if int(shard) != -1:
-            if where_str != "":
-                where_str += " and shard_id = " + str(shard)
-            else:
-                where_str += " shard_id = " + str(shard)
-
-        if int(pool) != -1:
-            if where_str != "":
-                where_str += " and pool_index = " + str(pool)
-            else:
-                where_str += " pool_index = " + str(pool)
-
-        if height is None:
-            height = -1
-
-        if block_hash is None:
-            block_hash = ""
-
-        if int(height) != -1:
-            if where_str != "":
-                where_str += " and height = " + str(height)
-            else:
-                where_str += " height = " + str(height)
-
-        if block_hash != "":
-            if where_str != "":
-                where_str += " and hash = " + str2r(block_hash)
-            else:
-                where_str += " hash = " + str2r(block_hash)
-
-        if search_str != "":
-            if where_str != "":
-                where_str += " and "
-
-            where_str += "( gid = '" + search_str + "' or from = '" + search_str + "' or to = '" + search_str + "' or hash = '" + search_str + "' or prehash = '" + search_str + "' )"
-      
-        cmd = 'SELECT shard_id, pool_index, height, type, timestamp, gid, from, to, amount, gas_limit, gas_used, gas_price, storages FROM zjc_ck_transaction_table '
-
-        if where_str != "":
-            cmd += " where " + where_str
-
-        if order is not None:
-            cmd += " " + order + " "
-        else:
-            cmd += " order by timestamp desc "
-
-        if limit != "":
-            cmd += " limit " + limit
-        else:
-            cmd += " limit 100 "
-
         try:
+            block_hash = request.POST.get('hash')
+            height = request.POST.get('height')
+            shard = request.POST.get('shard')
+            pool = request.POST.get('pool')
+            limit = request.POST.get('limit')
+            search_str = request.POST.get('search')
+            if search_str is None:
+                search_str = ""
+
+            if shard is None:
+                shard = -1
+
+            if pool is None:
+                pool = -1
+
+            if limit is None:
+                limit = ""
+                
+            order = request.POST.get('order')
+            where_str = " to = '08e1eab96c9e759daa3aff82b40e77cd615a41d5' "
+            if int(shard) != -1:
+                if where_str != "":
+                    where_str += " and shard_id = " + str(shard)
+                else:
+                    where_str += " shard_id = " + str(shard)
+
+            if int(pool) != -1:
+                if where_str != "":
+                    where_str += " and pool_index = " + str(pool)
+                else:
+                    where_str += " pool_index = " + str(pool)
+
+            if height is None:
+                height = -1
+
+            if block_hash is None:
+                block_hash = ""
+
+            if int(height) != -1:
+                if where_str != "":
+                    where_str += " and height = " + str(height)
+                else:
+                    where_str += " height = " + str(height)
+
+            if block_hash != "":
+                if where_str != "":
+                    where_str += " and hash = " + str2r(block_hash)
+                else:
+                    where_str += " hash = " + str2r(block_hash)
+
+            if search_str != "":
+                if where_str != "":
+                    where_str += " and "
+
+                where_str += "( gid = '" + search_str + "' or from = '" + search_str + "' or to = '" + search_str + "' or hash = '" + search_str + "' or prehash = '" + search_str + "' )"
+        
+            cmd = 'SELECT shard_id, pool_index, height, type, timestamp, gid, from, to, amount, gas_limit, gas_used, gas_price, storages FROM zjc_ck_transaction_table '
+
+            if where_str != "":
+                cmd += " where " + where_str
+
+            if order is not None:
+                cmd += " " + order + " "
+            else:
+                cmd += " order by timestamp desc "
+
+            if limit != "":
+                cmd += " limit " + limit
+            else:
+                cmd += " limit 100 "
 
             ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
             result = ck_client.execute(cmd)
@@ -1017,174 +1027,192 @@ def _post_data(path: str, data: dict):
     return res
 
 def penc_get_sec_keys(request):
-    id = request.POST.get('id')
-    sk_bytes = bytes.fromhex("cefc2c33064ea7691aee3e5e4f7842935d26f3ad790d81cf015e79b78958e848")
-    key_pair = shardora_api.get_keypair(sk_bytes)
-    post_data = {
-        "id": id,
-        "contract": "48e1eab96c9e759daa3aff82b40e77cd615a41d0",
-        "count": 10,
-    }
+    try:
+        id = request.POST.get('id')
+        sk_bytes = bytes.fromhex("cefc2c33064ea7691aee3e5e4f7842935d26f3ad790d81cf015e79b78958e848")
+        key_pair = shardora_api.get_keypair(sk_bytes)
+        post_data = {
+            "id": id,
+            "contract": "48e1eab96c9e759daa3aff82b40e77cd615a41d0",
+            "count": 10,
+        }
 
-    nodes_res = _post_data("http://{}:{}/get_proxy_reenc_info".format("127.0.0.1", 23001), post_data)
-    print(f"get node res {nodes_res.text}")
-    res_json = json.loads(nodes_res.text)
-    res_json['id'] = id
-    return JsonHttpResponse(res_json)
+        nodes_res = _post_data("http://{}:{}/get_proxy_reenc_info".format("127.0.0.1", 23001), post_data)
+        print(f"get node res {nodes_res.text}")
+        res_json = json.loads(nodes_res.text)
+        res_json['id'] = id
+        return JsonHttpResponse(res_json)
+    except Exception as ex:
+        return JsonHttpResponse({'status': 1, 'msg': str(ex)})
 
 def penc_create_sec_keys(request):
     if request.method == 'POST':
-        content = request.POST.get('content')
-        if content is None:
-            content = ""
+        try:
+            content = request.POST.get('content')
+            if content is None:
+                content = ""
 
-        id = shardora_api.gen_gid()
-        res = CreatePrivateAndPublicKeys(id, content)
-        if res.status_code != 200:
-            return JsonHttpResponse({'status': 1, 'msg': res.data})
-    
-        return JsonHttpResponse({'status': 0, 'msg': "ok", "id": id})
+            id = shardora_api.gen_gid()
+            res = CreatePrivateAndPublicKeys(id, content)
+            if res.status_code != 200:
+                return JsonHttpResponse({'status': 1, 'msg': res.data})
+        
+            return JsonHttpResponse({'status': 0, 'msg': "ok", "id": id})
+        except Exception as ex:
+            return JsonHttpResponse({'status': 1, 'msg': str(ex)})
 
 def penc_get_contract_info(request):
-    sol_cotent = linux_file_cmd.LinuxFileCommand().read_file("/root/shardora/src/contract/tests/contracts/proxy_reencyption.sol")
-    if sol_cotent is None:
-        return JsonHttpResponse({'status': 1, 'msg': "read solidity file failed!"})
-    
-    return JsonHttpResponse({'status': 0, 'msg': 'ok', 'solidity': sol_cotent, 'desc': '基于区块链的数据安全共享'})
+    try:
+        sol_cotent = linux_file_cmd.LinuxFileCommand().read_file("/root/shardora/src/contract/tests/contracts/proxy_reencyption.sol")
+        if sol_cotent is None:
+            return JsonHttpResponse({'status': 1, 'msg': "read solidity file failed!"})
+        
+        return JsonHttpResponse({'status': 0, 'msg': 'ok', 'solidity': sol_cotent, 'desc': '基于区块链的数据安全共享'})
+    except Exception as ex:
+        return JsonHttpResponse({'status': 1, 'msg': str(ex)})
+
 
 def penc_share_new_data(request):
     if request.method == 'POST':
-        id = request.POST.get('id')
-        content = request.POST.get('content')
-        if content is None:
-            content = ""
+        try:
+            id = request.POST.get('id')
+            content = request.POST.get('content')
+            if content is None:
+                content = ""
+                
+            post_data = {
+                "data": content,
+            }
+
+            encrypt_res = _post_data("http://{}:{}/get_seckey_and_encrypt_data".format("127.0.0.1", 23001), post_data)
+            logger.info("ok")
+            logger.info(encrypt_res)
+            logger.info(f"get encrypt res {encrypt_res.text}")
+            encrypt_res_json = json.loads(encrypt_res.text)
+            res = EncryptUserMessage(id, encrypt_res_json["hash_seckey"], encrypt_res_json["secdata"])
+            if res.status_code != 200:
+                return JsonHttpResponse({'status': 1, 'msg': res.data})
             
-        post_data = {
-            "data": content,
-        }
-
-        encrypt_res = _post_data("http://{}:{}/get_seckey_and_encrypt_data".format("127.0.0.1", 23001), post_data)
-        logger.info("ok")
-        logger.info(encrypt_res)
-        logger.info(f"get encrypt res {encrypt_res.text}")
-        encrypt_res_json = json.loads(encrypt_res.text)
-        res = EncryptUserMessage(id, encrypt_res_json["hash_seckey"], encrypt_res_json["secdata"])
-        if res.status_code != 200:
-            return JsonHttpResponse({'status': 1, 'msg': res.data})
-        
-        return JsonHttpResponse({'status': 0, 'msg': "ok", "sec": encrypt_res_json["hash_seckey"], "sec_data": encrypt_res_json["secdata"]})
-
+            return JsonHttpResponse({'status': 0, 'msg': "ok", "sec": encrypt_res_json["hash_seckey"], "sec_data": encrypt_res_json["secdata"]})
+        except Exception as ex:
+            return JsonHttpResponse({'status': 1, 'msg': str(ex)})
+    
 def penc_vote(request):
     if request.method == 'POST':
-        id = request.POST.get('id')
-        content = request.POST.get('content')
-        if content is None:
-            content = ""
+        try:
+            id = request.POST.get('id')
+            content = request.POST.get('content')
+            if content is None:
+                content = ""
+                
+            content = content
+            res = ReEncryptUserMessage(id, content)
+            if res.status_code != 200:
+                return JsonHttpResponse({'status': 1, 'msg': res.data})
             
-        content = content
-        res = ReEncryptUserMessage(id, content)
-        if res.status_code != 200:
-            return JsonHttpResponse({'status': 1, 'msg': res.data})
+            return JsonHttpResponse({'status': 0, 'msg': "ok"})
+        except Exception as ex:
+            return JsonHttpResponse({'status': 1, 'msg': str(ex)})
         
-        return JsonHttpResponse({'status': 0, 'msg': "ok"})
-
 def penc_get_share_data(request):
     if request.method == 'POST':
-        id = request.POST.get('id')
-        seckey = request.POST.get('seckey')
-        enc_data = request.POST.get('encdata')
-        post_data = {
-            "id": id,
-            "enc_data": enc_data,
-        }
+        try:
+            id = request.POST.get('id')
+            seckey = request.POST.get('seckey')
+            enc_data = request.POST.get('encdata')
+            post_data = {
+                "id": id,
+                "enc_data": enc_data,
+            }
 
-        dec_res = _post_data("http://{}:{}/proxy_decrypt".format("127.0.0.1", 23001), post_data)
-        logger.info("ok")
-        logger.info(dec_res)
-        logger.info(f"get decrypt res {dec_res.text}")
-        # return JsonHttpResponse({'status': 0, 'msg': "ok"})
-        dec_res_json = json.loads(dec_res.text)
-        return JsonHttpResponse({
-            'status': 0, 'msg': "ok", 
-            "seckey": dec_res_json["seckey"], 
-            "hash_seckey": dec_res_json["hash_seckey"], 
-            "encdata": dec_res_json["encdata"], 
-            "decdata": dec_res_json["decdata"]})
-    
+            dec_res = _post_data("http://{}:{}/proxy_decrypt".format("127.0.0.1", 23001), post_data)
+            logger.info("ok")
+            logger.info(dec_res)
+            logger.info(f"get decrypt res {dec_res.text}")
+            # return JsonHttpResponse({'status': 0, 'msg': "ok"})
+            dec_res_json = json.loads(dec_res.text)
+            return JsonHttpResponse({
+                'status': 0, 'msg': "ok", 
+                "seckey": dec_res_json["seckey"], 
+                "hash_seckey": dec_res_json["hash_seckey"], 
+                "encdata": dec_res_json["encdata"], 
+                "decdata": dec_res_json["decdata"]})
+        except Exception as ex:
+            return JsonHttpResponse({'status': 1, 'msg': str(ex)})
+
 def penc_transactions(request):
     if request.method == 'POST':
-        block_hash = request.POST.get('hash')
-        height = request.POST.get('height')
-        shard = request.POST.get('shard')
-        pool = request.POST.get('pool')
-        limit = request.POST.get('limit')
-        search_str = request.POST.get('search')
-        if search_str is None:
-            search_str = ""
-
-        if shard is None:
-            shard = -1
-
-        if pool is None:
-            pool = -1
-
-        if limit is None:
-            limit = ""
-
-        order = request.POST.get('order')
-        where_str = f" to = '{penc_contarct_address}' "
-        if int(shard) != -1:
-            if where_str != "":
-                where_str += " and shard_id = " + str(shard)
-            else:
-                where_str += " shard_id = " + str(shard)
-
-        if int(pool) != -1:
-            if where_str != "":
-                where_str += " and pool_index = " + str(pool)
-            else:
-                where_str += " pool_index = " + str(pool)
-
-        if height is None:
-            height = -1
-
-        if block_hash is None:
-            block_hash = ""
-
-        if int(height) != -1:
-            if where_str != "":
-                where_str += " and height = " + str(height)
-            else:
-                where_str += " height = " + str(height)
-
-        if block_hash != "":
-            if where_str != "":
-                where_str += " and hash = " + str2r(block_hash)
-            else:
-                where_str += " hash = " + str2r(block_hash)
-
-        if search_str != "":
-            if where_str != "":
-                where_str += " and "
-
-            where_str += "( gid = '" + search_str + "' or from = '" + search_str + "' or to = '" + search_str + "' or hash = '" + search_str + "' or prehash = '" + search_str + "' )"
-      
-        cmd = 'SELECT shard_id, pool_index, height, type, timestamp, gid, from, to, amount, gas_limit, gas_used, gas_price, storages FROM zjc_ck_transaction_table '
-
-        if where_str != "":
-            cmd += " where " + where_str
-
-        if order is not None:
-            cmd += " " + order + " "
-        else:
-            cmd += " order by timestamp desc "
-
-        if limit != "":
-            cmd += " limit " + limit
-        else:
-            cmd += " limit 100 "
-
         try:
+            block_hash = request.POST.get('hash')
+            height = request.POST.get('height')
+            shard = request.POST.get('shard')
+            pool = request.POST.get('pool')
+            limit = request.POST.get('limit')
+            search_str = request.POST.get('search')
+            if search_str is None:
+                search_str = ""
+
+            if shard is None:
+                shard = -1
+
+            if pool is None:
+                pool = -1
+
+            if limit is None:
+                limit = ""
+
+            order = request.POST.get('order')
+            where_str = f" to = '{penc_contarct_address}' "
+            if int(shard) != -1:
+                if where_str != "":
+                    where_str += " and shard_id = " + str(shard)
+                else:
+                    where_str += " shard_id = " + str(shard)
+
+            if int(pool) != -1:
+                if where_str != "":
+                    where_str += " and pool_index = " + str(pool)
+                else:
+                    where_str += " pool_index = " + str(pool)
+
+            if height is None:
+                height = -1
+
+            if block_hash is None:
+                block_hash = ""
+
+            if int(height) != -1:
+                if where_str != "":
+                    where_str += " and height = " + str(height)
+                else:
+                    where_str += " height = " + str(height)
+
+            if block_hash != "":
+                if where_str != "":
+                    where_str += " and hash = " + str2r(block_hash)
+                else:
+                    where_str += " hash = " + str2r(block_hash)
+
+            if search_str != "":
+                if where_str != "":
+                    where_str += " and "
+
+                where_str += "( gid = '" + search_str + "' or from = '" + search_str + "' or to = '" + search_str + "' or hash = '" + search_str + "' or prehash = '" + search_str + "' )"
+        
+            cmd = 'SELECT shard_id, pool_index, height, type, timestamp, gid, from, to, amount, gas_limit, gas_used, gas_price, storages FROM zjc_ck_transaction_table '
+
+            if where_str != "":
+                cmd += " where " + where_str
+
+            if order is not None:
+                cmd += " " + order + " "
+            else:
+                cmd += " order by timestamp desc "
+
+            if limit != "":
+                cmd += " limit " + limit
+            else:
+                cmd += " limit 100 "
 
             ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
             result = ck_client.execute(cmd)
