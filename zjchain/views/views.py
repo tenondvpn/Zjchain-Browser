@@ -177,7 +177,7 @@ def transactions(request):
                     try:
                         data = hex_to_str(data)
                     except Exception as ex:
-                        logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
+                        pass
 
                     tmp_result.append({
                         "Time": dt_object,
@@ -537,7 +537,7 @@ def confirm_transactions(request):
                 try:
                     data = hex_to_str(data)
                 except Exception as ex:
-                    logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
+                    pass
 
                 tmp_result.append({
                     "Time": dt_object,
@@ -762,7 +762,7 @@ def ars_transactions(request):
                 try:
                     data = hex_to_str(data)
                 except Exception as ex:
-                    logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
+                    pass
 
                 if len(data) > 65:
                     id = data[0: 64]
@@ -793,7 +793,7 @@ def ars_transactions(request):
                 try:
                     data = hex_to_str(data)
                 except Exception as ex:
-                    logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
+                    pass
 
                 group_info = ""
                 user_info = {
@@ -1215,7 +1215,7 @@ def penc_transactions(request):
                 try:
                     data = hex_to_str(data)
                 except Exception as ex:
-                    logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
+                    pass
 
                 print(data)
                 if len(data) > 65:
@@ -1247,7 +1247,7 @@ def penc_transactions(request):
                 try:
                     data = hex_to_str(data)
                 except Exception as ex:
-                    logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
+                    pass
 
                 share_data = ""
                 vote_count = 0
