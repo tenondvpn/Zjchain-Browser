@@ -753,6 +753,36 @@ def ars_transactions(request):
             ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
             result = ck_client.execute(cmd)
             tmp_result = []
+            id_map = {}
+            for item in result:
+                data = item[12]
+                try:
+                    data = hex_to_str(data)
+                except Exception as ex:
+                    logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
+
+                if len(data) > 65:
+                    id = data[0: 64]
+                    print(data + ":" + id)
+                    data_type = int(data[64: 65])
+                    data = data[65:]
+                    if id not in id_map:
+                        id_map[id] = {}
+
+                    if data_type == 0:
+                        user_info = json.loads(hex_to_str(data))
+                        id_map[id][data_type] = user_info
+
+                    if data_type == 1:
+                        if data_type not in id_map[id]:
+                            id_map[id][data_type] = 1
+                        else:
+                            id_map[id][data_type] += 1
+                            if id_map[id][data_type] > 2:
+                                if 0 in id_map[id]:
+                                    id_map[id][0]["now_credit"] += id_map[id][0]["add_credit"]
+                                    id_map[id][0]["add_credit"] = 0
+
             for item in result:
                 dt_object = ""
                 dt_object = datetime.datetime.fromtimestamp(int(item[4] / 1000) + 8 * 3600)
@@ -762,6 +792,25 @@ def ars_transactions(request):
                     data = hex_to_str(data)
                 except Exception as ex:
                     logger.error('select fail: <%s, %s>' % (cmd, str(ex)))
+
+                group_info = ""
+                user_info = {
+                    "username": "",
+                    "addr": "",
+                    "now_credit": 0,
+                    "add_credit": 0,
+                }
+                
+                if len(data) > 65:
+                    id = data[0: 64]
+                    print(data + ":" + id)
+                    data_type = int(data[64: 65])
+                    data = data[65:]
+                    if data_type == 1:
+                        group_info = data
+
+                    if 0 in id_map[id]:
+                        user_info = id_map[id][0]
 
                 tmp_result.append({
                     "Time": dt_object,
@@ -774,6 +823,11 @@ def ars_transactions(request):
                     "To": item[7],
                     "Amount": item[8],
                     "data": data,
+                    "group_info": group_info,
+                    "username": user_info["username"],
+                    "useraddr": user_info["addr"],
+                    "user_now_credit": user_info["now_credit"],
+                    "user_add_credit": user_info["add_credit"],
                     "Gas": item[10] * item[11]
                 })
                 
