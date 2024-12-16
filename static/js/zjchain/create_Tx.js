@@ -12,6 +12,10 @@ if (!isHexadecimal(private_key_base16_str)) {
 const privateKeyBuf = Secp256k1.uint256(private_key_base16_str, 16)
 var self_private_key = Secp256k1.uint256(privateKeyBuf, 16)
 var self_public_key = Secp256k1.generatePublicKeyFromPrivateKeyData(self_private_key)
+var pk_bytes = hexToBytes(self_public_key.x.toString(16) + self_public_key.y.toString(16))
+var address = keccak256(pk_bytes).toString('hex')
+var address = address.slice(address.length - 40, address.length)
+
 
 function GetValidHexString(uint256_bytes) {
     var str_res = uint256_bytes.toString(16)

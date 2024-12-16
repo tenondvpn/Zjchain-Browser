@@ -91,6 +91,15 @@ def transactions(request):
         if search_str is None:
             search_str = ""
 
+        if shard is None:
+            shard = -1
+
+        if pool is None:
+            pool = -1
+
+        if limit is None:
+            limit = ""
+
         order = request.POST.get('order')
         data_type = request.POST.get('type')
         where_str = ''
@@ -275,6 +284,16 @@ def accounts(request):
         if search_str is None:
             search_str = ""
 
+
+        if shard is None:
+            shard = -1
+
+        if pool is None:
+            pool = -1
+
+        if limit is None:
+            limit = ""
+            
         order = request.POST.get('order')
         where_str = ''
         if int(shard) != -1:
