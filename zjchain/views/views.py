@@ -79,10 +79,9 @@ def get_balance(request, account_id):
         'address': account_id,
         'country': get_country(request),
         'valid_country': 'AU,CA,CN,DE,FR,GB,HK,IN,JP,NL,SG,US,PH,KR,ID,MY,RU,PH,SA,TW,AE,BR,VN',
-        'balance': result[0][2]})
+        'balance': result[0][2]})  
 
-
-def transactions(request):
+def tmp_transactions(request, clear_seach):
     if request.method == 'POST':
         block_hash = request.POST.get('hash')
         height = request.POST.get('height')
@@ -90,6 +89,9 @@ def transactions(request):
         pool = request.POST.get('pool')
         limit = request.POST.get('limit')
         search_str = request.POST.get('search')
+        if clear_seach:
+            search_str = None
+
         if search_str is None:
             search_str = ""
 
@@ -223,6 +225,8 @@ def transactions(request):
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
         return JsonHttpResponse({'status': 1, 'msg': 'msg'})
 
+def transactions(request):
+    return tmp_transactions(request, False)
 
 def vpn_transactions(request):
     if request.method == 'POST':
@@ -490,7 +494,8 @@ def confirm_transactions(request):
                 data_type = int(data_type)
 
             if data_type == 1:
-                return transactions(request)
+                request.POST.set()
+                return tmp_transactions(request, True)
             
             if search_str is None:
                 search_str = ""
@@ -727,7 +732,7 @@ def ars_transactions(request):
                 data_type = int(data_type)
 
             if data_type == 1:
-                return transactions(request)
+                return transactions(request, True)
             
             if search_str is None:
                 search_str = ""
@@ -1189,7 +1194,7 @@ def penc_transactions(request):
                 data_type = int(data_type)
 
             if data_type == 1:
-                return transactions(request)
+                return transactions(request, True)
             
             if search_str is None:
                 search_str = ""
