@@ -154,8 +154,7 @@ def transactions(request):
 
         cmd = 'SELECT shard_id, pool_index, height, type, timestamp, gid, from, to, amount, gas_limit, gas_used, gas_price, storages FROM zjc_ck_transaction_table '
         if data_type == 1:
-            cmd = 'SELECT shard_id, pool_index, height, timestamp, prehash, hash, vss, elect_height, timeblock_height, tx_size FROM zjc_ck_block_table '
-
+            cmd = 'SELECT shard_id, pool_index, height, timestamp, prehash, hash, vss, elect_height, timeblock_height, tx_size, version, bitmap, bls_agg_sign_x,bls_agg_sign_y,commit_bitmap FROM zjc_ck_block_table '
         if where_str != "":
             cmd += " where " + where_str
 
@@ -213,7 +212,11 @@ def transactions(request):
                         "Vss": item[6],
                         "ElectHeight": item[7],
                         "TimeHeight": item[8],
-                        "TxSize": item[9]
+                        "tx_size": item[9],
+                        "version": item[10],
+                        "nodes": "2864341299694b31d0d9bcc0e35b7aeb3cf7aaae,b846b4b9631bcc0d32ca67a4545ec9d926549129,0bffcf3b6857658d047a36a1fd6a3d8f8e5fe382",
+                        "bls_agg_sign": item[12] + "," + item[13],
+                        "commit_bitmap": item[14],
                     })
             return JsonHttpResponse({'status': 0, 'cmd': cmd, 'value': tmp_result})
         except Exception as ex:
