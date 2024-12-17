@@ -732,7 +732,7 @@ def ars_transactions(request):
                 data_type = int(data_type)
 
             if data_type == 1:
-                return transactions(request, True)
+                return tmp_transactions(request, True)
             
             if search_str is None:
                 search_str = ""
@@ -1194,7 +1194,7 @@ def penc_transactions(request):
                 data_type = int(data_type)
 
             if data_type == 1:
-                return transactions(request, True)
+                return tmp_transactions(request, True)
             
             if search_str is None:
                 search_str = ""
