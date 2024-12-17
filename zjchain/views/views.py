@@ -66,6 +66,7 @@ def get_balance(request, account_id):
         return JsonHttpResponse({
             'status': 0, 'cmd': cmd,
             'shard_id': -1,
+            'address': account_id,
             'pool_index': -1,
             'country': get_country(request),
             'valid_country': 'AU,CA,CN,DE,FR,GB,HK,IN,JP,NL,SG,US,PH,KR,ID,MY,RU,PH,SA,TW,AE,BR,VN',
@@ -75,6 +76,7 @@ def get_balance(request, account_id):
         'status': 0, 'cmd': cmd,
         'shard_id': result[0][0],
         'pool_index': result[0][1],
+        'address': account_id,
         'country': get_country(request),
         'valid_country': 'AU,CA,CN,DE,FR,GB,HK,IN,JP,NL,SG,US,PH,KR,ID,MY,RU,PH,SA,TW,AE,BR,VN',
         'balance': result[0][2]})
@@ -168,7 +170,6 @@ def transactions(request):
             cmd += " limit 100 "
 
         try:
-
             ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
             result = ck_client.execute(cmd)
             tmp_result = []
@@ -479,6 +480,15 @@ def confirm_transactions(request):
             pool = request.POST.get('pool')
             limit = request.POST.get('limit')
             search_str = request.POST.get('search')
+            data_type = request.POST.get('type')
+            if data_type is None:
+                data_type = 0
+            else:
+                data_type = int(data_type)
+
+            if data_type == 1:
+                return transactions(request)
+            
             if search_str is None:
                 search_str = ""
 
@@ -707,6 +717,15 @@ def ars_transactions(request):
             pool = request.POST.get('pool')
             limit = request.POST.get('limit')
             search_str = request.POST.get('search')
+            data_type = request.POST.get('type')
+            if data_type is None:
+                data_type = 0
+            else:
+                data_type = int(data_type)
+
+            if data_type == 1:
+                return transactions(request)
+            
             if search_str is None:
                 search_str = ""
 
@@ -1160,6 +1179,15 @@ def penc_transactions(request):
             pool = request.POST.get('pool')
             limit = request.POST.get('limit')
             search_str = request.POST.get('search')
+            data_type = request.POST.get('type')
+            if data_type is None:
+                data_type = 0
+            else:
+                data_type = int(data_type)
+
+            if data_type == 1:
+                return transactions(request)
+            
             if search_str is None:
                 search_str = ""
 
