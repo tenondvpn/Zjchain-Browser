@@ -156,7 +156,8 @@ def tmp_transactions(request, clear_seach):
 
         cmd = 'SELECT shard_id, pool_index, height, type, timestamp, gid, from, to, amount, gas_limit, gas_used, gas_price, storages FROM zjc_ck_transaction_table '
         if data_type == 1:
-            cmd = 'SELECT shard_id, pool_index, height, timestamp, prehash, hash, vss, elect_height, timeblock_height, tx_size, version, bitmap, bls_agg_sign_x,bls_agg_sign_y,commit_bitmap FROM zjc_ck_block_table '
+            where_str += " and bls_elect_info.shard_id=3 and bls_elect_info.member_idx=0 and zjc_ck_block_table.shard_id=3 "
+            cmd = 'SELECT shard_id, pool_index, height, timestamp, prehash, hash, vss, elect_height, timeblock_height, tx_size, version, bitmap, bls_agg_sign_x,bls_agg_sign_y,commit_bitmap FROM zjc_ck_block_table LEFT OUTER JOIN bls_elect_info on zjc_ck_block_table.elect_height=bls_elect_info.elect_height '
         if where_str != "":
             cmd += " where " + where_str
 
@@ -235,7 +236,7 @@ def vpn_transactions(request):
         vpn_addr = request.POST.get('vpn_addr')
         order = request.POST.get('order')
         data_type = 0
-        where_str = " (`from`='" + addr + "' and `to`='" + vpn_addr + "') or (`from`='" + vpn_addr + "' and `to`='" + addr + "') ";
+        where_str = " (`from`='" + addr + "' and `to`='" + vpn_addr + "') or (`from`='" + vpn_addr + "' and `to`='" + addr + "') "
         cmd = 'SELECT shard_id, pool_index, height, type, timestamp, gid, from, to, amount, gas_limit, gas_used, gas_price,balance,to_add FROM zjc_ck_transaction_table '
         if where_str != "":
             cmd += " where " + where_str
