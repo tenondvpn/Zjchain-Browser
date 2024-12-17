@@ -156,7 +156,11 @@ def tmp_transactions(request, clear_seach):
 
         cmd = 'SELECT shard_id, pool_index, height, type, timestamp, gid, from, to, amount, gas_limit, gas_used, gas_price, storages FROM zjc_ck_transaction_table '
         if data_type == 1:
-            where_str += " and bls_elect_info.shard_id=3 and bls_elect_info.member_idx=0 and zjc_ck_block_table.shard_id=3 "
+            if where_str != "":
+                where_str += " and bls_elect_info.shard_id=3 and bls_elect_info.member_idx=0 and zjc_ck_block_table.shard_id=3 "
+            else:
+                where_str += " bls_elect_info.shard_id=3 and bls_elect_info.member_idx=0 and zjc_ck_block_table.shard_id=3 "
+
             cmd = 'SELECT shard_id, pool_index, height, timestamp, prehash, hash, vss, elect_height, timeblock_height, tx_size, version, bitmap, bls_agg_sign_x,bls_agg_sign_y,commit_bitmap,common_pk FROM zjc_ck_block_table LEFT OUTER JOIN bls_elect_info on zjc_ck_block_table.elect_height=bls_elect_info.elect_height '
         if where_str != "":
             cmd += " where " + where_str
