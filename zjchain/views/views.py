@@ -258,7 +258,7 @@ def transaction(request):
         pubkey = request.POST.get('pubkey')
         key = request.POST.get('key')
         value = request.POST.get('value')
-        post_data = {
+        data = {
             "gid": gid,
             "pubkey": pubkey,
             "to": to,
@@ -273,7 +273,7 @@ def transaction(request):
             "sign_s": sign_s,
             "sign_v": sign_v
         }
-        res = post_data("http://{}:{}/transaction".format("127.0.0.1", 23001), post_data)
+        res = post_data("http://{}:{}/transaction".format("127.0.0.1", 23001), data)
         return JsonHttpResponse({'status': res.status_code, "msg": "ok"})
 
 def vpn_transactions(request):
