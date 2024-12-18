@@ -234,6 +234,48 @@ def tmp_transactions(request, clear_seach):
 def transactions(request):
     return tmp_transactions(request, False)
 
+def post_data(path: str, data: dict):
+    querystr = urlencode(data)
+    print(path)
+    print(data)
+    res = requests.post(path, data=data, headers={
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Length': str(len(bytes(querystr, 'utf-8'))),
+    })
+    print(res)
+    return res
+
+def transaction(request):
+    if request.method == 'POST':
+        # to, amount, sign, pkbytes, value
+        gid = request.POST.get('gid')
+        to = request.POST.get('to')
+        gas_limit = int(request.POST.get('gas_limit'))
+        amount = int(request.POST.get('amount'))
+        sign_r = request.POST.get('sign_r')
+        sign_s = request.POST.get('sign_s')
+        sign_v = request.POST.get('sign_v')
+        pubkey = request.POST.get('pubkey')
+        key = request.POST.get('key')
+        value = request.POST.get('value')
+        post_data = {
+            "gid": gid,
+            "pubkey": pubkey,
+            "to": to,
+            "amount": amount,
+            "gas_limit": gas_limit,
+            "gas_price": 1,
+            "type": 0,
+            "shard_id": 3,
+            "key": key,
+            "val": value,
+            "sign_r": sign_r,
+            "sign_s": sign_s,
+            "sign_v": sign_v
+        }
+        res = post_data("http://{}:{}/transaction".format("127.0.0.1", 23001), post_data)
+        return JsonHttpResponse({'status': res.status_code, "msg": "ok"})
+
 def vpn_transactions(request):
     if request.method == 'POST':
         limit = request.POST.get('limit')

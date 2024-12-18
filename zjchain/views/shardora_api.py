@@ -37,6 +37,23 @@ def transfer(str_prikey: str, to: str, amount: int, step=0, gid="", contract_byt
     param = get_transfer_params(gid, to, amount, 90000000000, 1, keypair, 3, contract_bytes, input, 0, step, key, val)
     return _call_tx(param)
 
+def call_tx(gid, to, amount, gas_limit, sign_r, sign_s, sign_v, pkbytes_str, key, value):
+    params = _get_tx_params(sign=sign,
+                            pkbytes=pkbytes,
+                            gid=gid,
+                            to=to,
+                            amount=amount,
+                            prepay=0,
+                            gas_limit=1000000,
+                            gas_price=1,
+                            contract_bytes="",
+                            input="",
+                            des_shard_id=3,
+                            step=0,
+                            key="confirm",
+                            val=value)
+    return _call_tx(params)
+
 def gen_gid() -> str:
     return _gen_gid()
 

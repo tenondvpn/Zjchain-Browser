@@ -4,6 +4,7 @@ from zjchain.views import views, transactions_view, block_view, account_view, da
 
 urlpatterns = (
     re_path(r'^$',views.zjchain_index),
+    re_path(r'^transaction/$',views.transaction),
     re_path(r'^transactions/$',views.transactions),
     re_path(r'^vpn_transactions/$',views.vpn_transactions),
     re_path(r'^nodes/$',views.nodes),
