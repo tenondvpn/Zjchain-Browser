@@ -367,7 +367,10 @@ def accounts(request):
 
         cmd = 'SELECT id, shard_id, pool_index, balance FROM zjc_ck_account_table '
         if where_str != "":
-            cmd += " where " + where_str
+            cmd += " where " + where_str + " and id != ''"
+        else:
+            cmd += " where " + " id != ''"
+
 
         if order is not None:
             cmd += " " + order + " "
