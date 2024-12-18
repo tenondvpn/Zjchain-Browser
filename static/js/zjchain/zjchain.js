@@ -570,7 +570,7 @@ function do_transaction() {
     $.ajax({
         type: 'post',
         async: true,
-        url: '/zjchain/transaction',
+        url: '/zjchain/transaction/',
         data: data,
         dataType: "json"
     }).done(function (response) {
