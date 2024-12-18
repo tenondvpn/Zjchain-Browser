@@ -257,7 +257,7 @@ def transaction(request):
         sign_v = request.POST.get('sign_v')
         pubkey = request.POST.get('pubkey')
         key = request.POST.get('key')
-        value = request.POST.get('value')
+        value = request.POST.get('val')
         data = {
             "gid": gid,
             "pubkey": pubkey,
