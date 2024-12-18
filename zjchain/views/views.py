@@ -274,7 +274,7 @@ def transaction(request):
             "sign_v": sign_v
         }
         res = post_data("http://{}:{}/transaction".format("127.0.0.1", 23001), data)
-        res_json = json.loads(res.data)
+        res_json = json.loads(res.text)
         print(res_json)
         return JsonHttpResponse({'status': res.status_code, "msg": "ok"})
 
