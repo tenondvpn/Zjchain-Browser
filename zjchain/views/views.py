@@ -896,6 +896,7 @@ def ars_transactions(request):
                     pass
 
                 group_info = ""
+                agg_sign = ""
                 user_info = {
                     "username": "",
                     "addr": "",
@@ -910,7 +911,12 @@ def ars_transactions(request):
                     data_type = int(data[64: 65])
                     data = data[65:]
                     if data_type == 1:
-                        group_info = data
+                        splits = data.split(",")
+                        if len(splits) > 1:
+                            group_info = splits[0]
+                            agg_sign = splits[1]
+                        else:
+                            group_info = data
 
                     if 0 in id_map[id]:
                         user_info = id_map[id][0]
@@ -934,6 +940,7 @@ def ars_transactions(request):
                     "group_info": group_info,
                     "username": user_info["username"],
                     "useraddr": user_info["addr"],
+                    "agg_sign": agg_sign,
                     "user_now_credit": user_info["now_credit"],
                     "user_add_credit": user_info["add_credit"],
                     "Gas": item[10] * item[11]
