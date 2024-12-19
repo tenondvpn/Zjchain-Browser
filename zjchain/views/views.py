@@ -903,6 +903,7 @@ def ars_transactions(request):
                     "add_credit": 0,
                 }
 
+                voted_count = 0
                 if len(data) > 65:
                     id = data[0: 64]
                     print(data + ":" + id)
@@ -914,6 +915,9 @@ def ars_transactions(request):
                     if 0 in id_map[id]:
                         user_info = id_map[id][0]
 
+                    if 1 in id_map[id]:
+                        voted_count = id_map[id][1]
+
                 tmp_result.append({
                     "Time": dt_object,
                     "Shard": item[0],
@@ -924,6 +928,8 @@ def ars_transactions(request):
                     "From": item[6],
                     "To": item[7],
                     "Amount": item[8],
+                    "vote_id": id,
+                    "vote_count": voted_count,
                     "data": data,
                     "group_info": group_info,
                     "username": user_info["username"],
