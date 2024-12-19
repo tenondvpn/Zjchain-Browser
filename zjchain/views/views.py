@@ -872,6 +872,7 @@ def ars_transactions(request):
 
                     if data_type == 0:
                         user_info = json.loads(hex_to_str(data))
+                        print(f"get tx info id: {id}, data type: {data_type} data: {data} json data: {user_info}")
                         id_map[id][data_type] = user_info
                         if 1 in id_map[id]:
                             if id_map[id][1] >= 2:
