@@ -759,6 +759,7 @@ def ars_vote(request):
             if group_info is None:
                 group_info = ""
 
+            print(f"ars vote id {id}, index: {index}, group_info: {group_info}")
             val =f"{index},{data},{addr}-{id}"
             res = ArsVote(id, id+"1"+group_info, val)
             if res.status_code != 200:
