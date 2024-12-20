@@ -12,6 +12,7 @@ import uuid
 import geoip2.database
 import json
 import urllib.request
+import re
 import time
 from django.shortcuts import render
 from django.conf import settings
@@ -1248,6 +1249,10 @@ def penc_get_share_data(request):
         except Exception as ex:
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
 
+def is_hex_str(s):
+    pattern = re.compile(r'^[0-9a-fA-F]+$')
+    return bool(pattern.match(s))
+
 def penc_transactions(request):
     if request.method == 'POST':
         # try:
@@ -1395,9 +1400,8 @@ def penc_transactions(request):
                     if 3 in id_map[id]:
                         vote_count = id_map[id][3]
 
-                    if data_type == 3:
+                    if data_type == 3 and not is_hex_str(data):
                         group_info = data
-                
 
                 tmp_result.append({
                     "Time": dt_object,
