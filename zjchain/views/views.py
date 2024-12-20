@@ -1388,7 +1388,11 @@ def penc_transactions(request):
                 prxoy_reenc_id = ""
                 if len(data) > 65:
                     id = data[0: 64]
-                    data_type = int(data[64: 65])
+                    try:
+                        data_type = int(data[64: 65])
+                    except:
+                        continue
+                    
                     if id not in id_map:
                         continue
                     
