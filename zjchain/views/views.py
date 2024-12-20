@@ -912,9 +912,9 @@ def ars_transactions(request):
                     data = data[65:]
                     if data_type == 1:
                         splits = data.split(",")
-                        if len(splits) > 1:
+                        if len(splits) > 2:
                             group_info = splits[0]
-                            agg_sign = splits[1]
+                            agg_sign = splits[2]
                         else:
                             group_info = data
 
@@ -1206,7 +1206,7 @@ def penc_vote(request):
     if request.method == 'POST':
         try:
             id = request.POST.get('id')
-            content = request.POST.get('content')
+            content = request.POST.get('group_info')
             if content is None:
                 content = ""
                 
