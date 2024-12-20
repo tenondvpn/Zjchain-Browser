@@ -1250,7 +1250,7 @@ def penc_get_share_data(request):
 
 def penc_transactions(request):
     if request.method == 'POST':
-        try:
+        # try:
             block_hash = request.POST.get('hash')
             height = request.POST.get('height')
             shard = request.POST.get('shard')
@@ -1405,9 +1405,8 @@ def penc_transactions(request):
                     "Gas": item[10] * item[11]
                 })
             return JsonHttpResponse({'status': 0, 'cmd': cmd, 'value': tmp_result})
-        except Exception as ex:
-            return JsonHttpResponse({'status': 1, 'msg': str(ex)})
-        return JsonHttpResponse({'status': 1, 'msg': 'msg'})
+        # except Exception as ex:
+        #     return JsonHttpResponse({'status': 1, 'msg': str(ex)})
 
 def get_all_contracts(request):
     if request.method == 'POST':
