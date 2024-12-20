@@ -1232,7 +1232,7 @@ def penc_get_share_data(request):
         try:
             id = request.POST.get('id')
             seckey = request.POST.get('seckey')
-            enc_data = request.POST.get('encdata')
+            enc_data = request.POST.get('encData')
             post_data = {
                 "id": id,
                 "enc_data": enc_data,
