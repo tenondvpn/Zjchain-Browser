@@ -1367,6 +1367,7 @@ def penc_transactions(request):
                     except:
                         pass
                 
+            group_info = ""
             for item in result:
                 dt_object = ""
                 dt_object = datetime.datetime.fromtimestamp(int(item[4] / 1000) + 8 * 3600)
@@ -1382,6 +1383,7 @@ def penc_transactions(request):
                 prxoy_reenc_id = ""
                 if len(data) > 65:
                     id = data[0: 64]
+                    data_type = int(data[64: 65])
                     if id not in id_map:
                         continue
                     
@@ -1392,6 +1394,9 @@ def penc_transactions(request):
 
                     if 3 in id_map[id]:
                         vote_count = id_map[id][3]
+
+                    if data_type == 3:
+                        group_info = data
                 
 
                 tmp_result.append({
@@ -1404,6 +1409,7 @@ def penc_transactions(request):
                     "From": item[6],
                     "To": item[7],
                     "Amount": item[8],
+                    "group_info": group_info,
                     "prxoy_reenc_id": prxoy_reenc_id,
                     "data": data,
                     "share_data": share_data,
