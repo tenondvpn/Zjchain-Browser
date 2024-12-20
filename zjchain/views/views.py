@@ -754,7 +754,7 @@ def ars_vote(request):
         try:
             id = request.POST.get('id')
             data = "00"
-            index = int(request.POST.get('index'))
+            index = int(request.POST.get('index')) - 1
             if index > len(ars_addrs):
                 return JsonHttpResponse({'status': 1, 'msg': f"index {index} error"})
 
