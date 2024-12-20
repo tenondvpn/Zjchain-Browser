@@ -1346,23 +1346,26 @@ def penc_transactions(request):
                 if len(data) > 65:
                     id = data[0: 64]
                     print(data + ":" + id)
-                    data_type = int(data[64: 65])
-                    data = data[65:]
+                    try:
+                        data_type = int(data[64: 65])
+                        data = data[65:]
 
-                    if id not in id_map:
-                        id_map[id] = {}
+                        if id not in id_map:
+                            id_map[id] = {}
 
-                    if data_type == 0:
-                        id_map[id][data_type] = data
+                        if data_type == 0:
+                            id_map[id][data_type] = data
 
-                    if data_type == 2:
-                        id_map[id][data_type] = data
+                        if data_type == 2:
+                            id_map[id][data_type] = data
 
-                    if data_type == 3:
-                        if data_type not in id_map[id]:
-                            id_map[id][data_type] = 1
-                        else:
-                            id_map[id][data_type] += 1
+                        if data_type == 3:
+                            if data_type not in id_map[id]:
+                                id_map[id][data_type] = 1
+                            else:
+                                id_map[id][data_type] += 1
+                    except:
+                        pass
                 
             for item in result:
                 dt_object = ""
