@@ -1535,6 +1535,13 @@ def get_all_videos(request):
 def get_contract_detail(request):
     if request.method == 'POST':
         contract_id = request.POST.get('contract_id')
+        if contract_id == "44a5c714cb3f502fb77618a4a0353d96148fde7e":
+            sol_cotent = "// just create transaction"
+            if sol_cotent is None:
+                return JsonHttpResponse({'status': 1, 'msg': "read solidity file failed!"})
+            
+            return JsonHttpResponse({'status': 0, 'msg': 'ok', 'solidity': sol_cotent, 'desc': '直接在交易中发起确权即可'})
+    
         where_str = "where type = 6 and key in('5f5f6b437265617465436f6e74726163744279746573436f6465', '5f5f6b437265617465436f6e74726163744279746573436f6465') and to ='" + contract_id + "'";
         cmd = 'SELECT from, to, key, value FROM zjc_ck_account_key_value_table '
         if where_str != "":
