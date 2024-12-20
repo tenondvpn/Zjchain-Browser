@@ -602,7 +602,10 @@ def confirm_transactions(request):
             cmd = 'SELECT shard_id, pool_index, height, type, timestamp, gid, from, to, amount, gas_limit, gas_used, gas_price, storages FROM zjc_ck_transaction_table '
 
             if where_str != "":
-                cmd += " where " + where_str
+                cmd += " where " + where_str + " and storages != ''"
+            else:
+                cmd += " where storages != ''"
+
 
             if order is not None:
                 cmd += " " + order + " "
