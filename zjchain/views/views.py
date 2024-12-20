@@ -920,7 +920,10 @@ def ars_transactions(request):
                             group_info = splits[0]
                             agg_sign = splits[2]
                         else:
-                            group_info = data
+                            if len(splits) > 1:
+                                group_info = splits[0]
+                            else:
+                                group_info = data
 
                     if 0 in id_map[id]:
                         user_info = id_map[id][0]
