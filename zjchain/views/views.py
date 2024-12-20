@@ -912,7 +912,7 @@ def ars_transactions(request):
                     data = data[65:]
                     if data_type == 1:
                         splits = data.split(",")
-                        if len(splits) > 2:
+                        if len(splits) > 2 and len(splits[2]) > 64:
                             group_info = splits[0]
                             agg_sign = splits[2]
                         else:
