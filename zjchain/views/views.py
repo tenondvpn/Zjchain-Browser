@@ -922,6 +922,7 @@ def ars_transactions(request):
                         else:
                             if len(splits) > 1:
                                 group_info = splits[0]
+                                agg_sign = splits[1]
                             else:
                                 group_info = data
 
