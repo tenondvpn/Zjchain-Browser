@@ -949,7 +949,7 @@ def ars_transactions(request):
                     "username": user_info["username"],
                     "useraddr": user_info["addr"],
                     "agg_sign": agg_sign,
-                    "user_now_credit": user_info["now_credit"],
+                    "user_now_credit": 0 #user_info["now_credit"],
                     "user_add_credit": user_info["add_credit"],
                     "Gas": item[10] * item[11]
                 })
