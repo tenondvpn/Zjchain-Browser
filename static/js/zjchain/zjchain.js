@@ -664,6 +664,7 @@ function do_test_url() {
         data: {
             'hash': "754344e9e3560b50709887b3c769033546c7adde267ce90ec948cadd22d171ae",
             'private_key': 'ee762323b168752a9249c2959ed7c04b794d881005d511e6ac894025d52d5938',
+            'price': 299900000,
         },
         dataType: "json"
     }).done(function (response) {
