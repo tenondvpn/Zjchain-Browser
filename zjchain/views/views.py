@@ -30,7 +30,7 @@ import requests
 
 penc_contarct_address = "48e1eab96c9e759daa3aff82b40e77cd615a41d0"
 ars_contarct_address = "08e1eab96c9e759daa3aff82b40e77cd615a41d5"
-exchange_contarct_address = "000eeab96c9e759daa3aff82b40e77cd615a41d9"
+exchange_contarct_address = "000feab96c9e759daa3aff82b40e77cd615a41d9"
 
 ipreader = geoip2.database.Reader(
     'zjchain/resource/GeoLite2-Country.mmdb')
