@@ -1725,6 +1725,7 @@ def exchange_purchase(request):
         try:
             hash = request.POST.get('hash')
             private_key = request.POST.get('private_key')
+            price = int(request.POST.get('price'))
             func_param = shardora_api.keccak256_str(
                 "PurchaseItem(bytes32)")[:8] + encode_hex(
                     encode(['bytes32'], 
@@ -1732,7 +1733,7 @@ def exchange_purchase(request):
             res = shardora_api.transfer(
                 private_key,
                 exchange_contarct_address,
-                0,
+                price,
                 8,
                 "",
                 "",
