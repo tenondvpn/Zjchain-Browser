@@ -1766,6 +1766,7 @@ def exchange_sell_list(request):
                 return JsonHttpResponse({'status': 1, 'msg': "error"})
             else:
                 print(res.text)
+                res.text.replace('00', 'test')
                 return JsonHttpResponse({'status': 0, 'msg': "ok", 'data': json.loads(res.text)})
         except Exception as ex:
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})        
