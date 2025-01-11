@@ -1695,7 +1695,7 @@ def exchange_new_sell(request):
             price = int(request.POST.get('price'))
             start = int(request.POST.get('start'))
             end = int(request.POST.get('end'))
-            private_key = int(request.POST.get('private_key'))
+            private_key = request.POST.get('private_key')
             func_param = shardora_api.keccak256_str(
                 "CreateNewItem(bytes32,bytes,uint256,uint256,uint256)")[:8] + encode_hex(
                     encode(['bytes32', 'bytes', 'uint256', 'uint256', 'uint256'], 
@@ -1724,7 +1724,7 @@ def exchange_purchase(request):
     if request.method == 'POST':
         try:
             hash = request.POST.get('hash')
-            private_key = int(request.POST.get('private_key'))
+            private_key = request.POST.get('private_key')
             func_param = shardora_api.keccak256_str(
                 "PurchaseItem(bytes32)")[:8] + encode_hex(
                     encode(['bytes32'], 
