@@ -1771,6 +1771,6 @@ def exchange_sell_list(request):
                     print(f"{des_str0[i]} == {des_str1[i]}, {des_str0[i] == des_str1[i]}")
 
                 print(des_str0 == des_str1)
-                return JsonHttpResponse({'status': 0, 'msg': "ok", 'data': json.loads(des_str0)})
+                return JsonHttpResponse({'status': 0, 'msg': "ok", 'data': res.text})
         # except Exception as ex:
         #     return JsonHttpResponse({'status': 1, 'msg': str(ex)})        
