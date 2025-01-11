@@ -5,6 +5,8 @@ from zjchain.views import views, transactions_view, block_view, account_view, da
 urlpatterns = (
     re_path(r'^$',views.zjchain_index),
     re_path(r'^transaction/$',views.transaction),
+    re_path(r'^check_contract_deploy_success/$', views.check_contract_deploy_success),
+    re_path(r'^check_contract_prepayment_success/$', views.check_contract_prepayment_success),
     re_path(r'^transactions/$',views.transactions),
     re_path(r'^vpn_transactions/$',views.vpn_transactions),
     re_path(r'^nodes/$',views.nodes),
@@ -44,6 +46,12 @@ urlpatterns = (
     re_path(r'^penc_vote/$', views.penc_vote),
     re_path(r'^penc_get_share_data/$', views.penc_get_share_data),
     re_path(r'^penc_transactions/$', views.penc_transactions),
+
+    # 创建卖单
+    re_path(r'^exchange_new_sell/$', views.exchange_new_sell),
+    re_path(r'^exchange_purchase/$', views.exchange_purchase),
+    re_path(r'^exchange_sell_list/$', views.exchange_sell_list),
+
 
     re_path(r'^get_transaction/$', transactions_view.get_transaction),
     re_path(r'^transactions_list/$', transactions_view.transactions_list),

@@ -30,6 +30,7 @@ import requests
 
 penc_contarct_address = "48e1eab96c9e759daa3aff82b40e77cd615a41d0"
 ars_contarct_address = "08e1eab96c9e759daa3aff82b40e77cd615a41d5"
+exchange_contarct_address = "1000eab96c9e759daa3aff82b40e77cd615a41d5"
 
 ipreader = geoip2.database.Reader(
     'zjchain/resource/GeoLite2-Country.mmdb')
@@ -278,6 +279,41 @@ def transaction(request):
         print(res.text)
         return JsonHttpResponse({'status': res.status_code, "msg": res.text})
 
+def check_contract_deploy_success(request):
+    if request.method == 'POST':
+        contract_address = request.POST.get('contract_address')
+        cmd = f"SELECT to FROM zjc_ck_account_key_value_table where type = 6 and key in ('5f5f6b437265617465436f6e74726163744279746573436f6465',  '5f5f6b437265617465436f6e74726163744279746573436f6465') and to='{contract_address}' limit 1;"
+        try:
+            ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
+            result = ck_client.execute(cmd)
+            tmp_result = []
+            print(f"cmd: {cmd}, result: {result}")
+            for item in result:
+                if item[0] == contract_address:
+                    return JsonHttpResponse({'status': 0, 'msg': "ok"})
+                
+            return JsonHttpResponse({'status': 1, 'msg': "not found"})
+        except Exception as ex:
+            return JsonHttpResponse({'status': 1, 'msg': str(ex)})
+        
+def check_contract_prepayment_success(request):
+    if request.method == 'POST':
+        address = request.POST.get('address')
+        contract_address = request.POST.get('contract_address')
+        prepayment = request.POST.get('prepayment')
+        cmd = f"select count(distinct(user)) from zjc_ck_prepayment_table where contract='{contract_address}' and user='{address}' and prepayment>={prepayment};"
+        try:
+            ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
+            result = ck_client.execute(cmd)
+            print(f"cmd: {cmd}, result: {result}")
+            for item in result:
+                if item[0] == 1:
+                    return JsonHttpResponse({'status': 0, 'msg': "ok"})
+                
+            return JsonHttpResponse({'status': 1, 'msg': "not found"})
+        except Exception as ex:
+            return JsonHttpResponse({'status': 1, 'msg': str(ex)})
+        
 def vpn_transactions(request):
     if request.method == 'POST':
         limit = request.POST.get('limit')
@@ -1650,3 +1686,85 @@ def set_private_key(request):
             return JsonHttpResponse({'status': 0, 'msg': 'ok'})
         except Exception as ex:
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
+
+def exchange_new_sell(request):
+    if request.method == 'POST':
+        try:
+            hash = request.POST.get('hash')
+            info = request.POST.get('info')
+            price = int(request.POST.get('price'))
+            start = int(request.POST.get('start'))
+            end = int(request.POST.get('end'))
+            private_key = int(request.POST.get('private_key'))
+            func_param = shardora_api.keccak256_str(
+                "CreateNewItem(bytes32,bytes,uint256,uint256,uint256)")[:8] + encode_hex(
+                    encode(['bytes32', 'bytes', 'uint256', 'uint256', 'uint256'], 
+                    [decode_hex(hash), decode_hex(info), price, start, end]))[2:]
+            res = shardora_api.transfer(
+                private_key,
+                exchange_contarct_address,
+                0,
+                8,
+                "",
+                "",
+                func_param,
+                "",
+                "",
+                0,
+                check_gid_valid=True)
+            
+            if not res:
+                return JsonHttpResponse({'status': 1, 'msg': "error"})
+            else:
+                return JsonHttpResponse({'status': 0, 'msg': "ok"})
+        except Exception as ex:
+            return JsonHttpResponse({'status': 1, 'msg': str(ex)})
+        
+def exchange_purchase(request):
+    if request.method == 'POST':
+        try:
+            hash = request.POST.get('hash')
+            private_key = int(request.POST.get('private_key'))
+            func_param = shardora_api.keccak256_str(
+                "PurchaseItem(bytes32)")[:8] + encode_hex(
+                    encode(['bytes32'], 
+                    [decode_hex(hash)]))[2:]
+            res = shardora_api.transfer(
+                private_key,
+                exchange_contarct_address,
+                0,
+                8,
+                "",
+                "",
+                func_param,
+                "",
+                "",
+                0,
+                check_gid_valid=True)
+            
+            if not res:
+                return JsonHttpResponse({'status': 1, 'msg': "error"})
+            else:
+                return JsonHttpResponse({'status': 0, 'msg': "ok"})
+        except Exception as ex:
+            return JsonHttpResponse({'status': 1, 'msg': str(ex)})
+        
+def exchange_sell_list(request):
+    if request.method == 'POST':
+        try:
+            private_key = request.POST.get('private_key')
+            start_pos = request.POST.get('start_pos')
+            len = request.POST.get('len')
+            res = shardora_api.query_contract_function(
+                private_key=private_key, 
+                contract_address=exchange_contarct_address,
+                function="GetAllItemJson",
+                types_list=['uint256', 'uint256'],
+                params_list=[start_pos, len])
+            
+            if res.status_code != 200:
+                return JsonHttpResponse({'status': 1, 'msg': "error"})
+            else:
+                return JsonHttpResponse({'status': 0, 'msg': "ok", 'data': json.loads(res.text)})
+        except Exception as ex:
+            return JsonHttpResponse({'status': 1, 'msg': str(ex)})        
