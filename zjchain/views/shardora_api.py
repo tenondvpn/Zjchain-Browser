@@ -284,7 +284,7 @@ def query_contract_function(
 
 def check_transaction_gid_valid(gid):
     for i in range(0, 30):
-        res = post_data(f"http://82.156.224.174:801/zjchain/transactions/", data = {
+        res = post_data(f"/zjchain/transactions/", data = {
             "shard": -1,
             "pool": -1,
             "limit": "1",
