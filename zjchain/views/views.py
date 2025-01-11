@@ -1711,7 +1711,7 @@ def exchange_new_sell(request):
                 "",
                 "",
                 0,
-                check_gid_valid=True)
+                check_gid_valid=False)
             
             if not res:
                 return JsonHttpResponse({'status': 1, 'msg': "error"})
@@ -1740,7 +1740,7 @@ def exchange_purchase(request):
                 "",
                 "",
                 0,
-                check_gid_valid=True)
+                check_gid_valid=False)
             
             if not res:
                 return JsonHttpResponse({'status': 1, 'msg': "error"})
@@ -1753,8 +1753,8 @@ def exchange_sell_list(request):
     if request.method == 'POST':
         try:
             private_key = request.POST.get('private_key')
-            start_pos = request.POST.get('start_pos')
-            len = request.POST.get('len')
+            start_pos = int(request.POST.get('start_pos'))
+            len = int(request.POST.get('len'))
             res = shardora_api.query_contract_function(
                 private_key=private_key, 
                 contract_address=exchange_contarct_address,
