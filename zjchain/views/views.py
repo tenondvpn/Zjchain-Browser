@@ -1711,7 +1711,7 @@ def exchange_new_sell(request):
                 "",
                 "",
                 0,
-                check_gid_valid=False)
+                check_gid_valid=True)
             
             if not res:
                 return JsonHttpResponse({'status': 1, 'msg': "error"})
@@ -1741,7 +1741,7 @@ def exchange_purchase(request):
                 "",
                 "",
                 0,
-                check_gid_valid=False)
+                check_gid_valid=True)
             
             if not res:
                 return JsonHttpResponse({'status': 1, 'msg': "error"})
@@ -1768,7 +1768,7 @@ def exchange_confirm(request):
                 "",
                 "",
                 0,
-                check_gid_valid=False)
+                check_gid_valid=True)
             
             if not res:
                 return JsonHttpResponse({'status': 1, 'msg': "error"})
@@ -1779,20 +1779,39 @@ def exchange_confirm(request):
         
 def exchange_sell_list(request):
     if request.method == 'POST':
-        # try:
+        try:
             private_key = request.POST.get('private_key')
+            search = request.POST.get('search')
             start_pos = int(request.POST.get('start_pos'))
-            len = int(request.POST.get('len'))
+            get_len = int(request.POST.get('len'))
             res = shardora_api.query_contract_function(
                 private_key=private_key, 
                 contract_address=exchange_contarct_address,
                 function="GetAllItemJson",
                 types_list=['uint256', 'uint256'],
-                params_list=[start_pos, len])
+                params_list=[0, 1000])
             
             if res.status_code != 200:
                 return JsonHttpResponse({'status': 1, 'msg': "error"})
             else:
-                return JsonHttpResponse({'status': 0, 'msg': "ok", 'data': json.loads(res.text)})
-        # except Exception as ex:
-        #     return JsonHttpResponse({'status': 1, 'msg': str(ex)})        
+                tmp_datas = json.loads(res.text)
+                datas = []
+                if search.strip() != "":
+                    for item in tmp_datas:
+                        json_str = json.dumps(item)
+                        if search in json_str:
+                            datas.append(item)
+                else:
+                    datas = tmp_datas
+
+                if len(datas) <= start_pos:
+                    return JsonHttpResponse({'status': 0, 'msg': "ok", 'data': []})
+
+                if len(datas) <= (start_pos + get_len):
+                    get_len = len(datas)
+                else:
+                    get_len = start_pos + get_len
+
+                return JsonHttpResponse({'status': 0, 'msg': "ok", 'data': datas[start_pos: get_len]})
+        except Exception as ex:
+            return JsonHttpResponse({'status': 1, 'msg': str(ex)})        
