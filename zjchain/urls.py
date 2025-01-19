@@ -50,6 +50,7 @@ urlpatterns = (
     # 创建卖单
     re_path(r'^exchange_new_sell/$', views.exchange_new_sell),
     re_path(r'^exchange_purchase/$', views.exchange_purchase),
+    re_path(r'^exchange_confirm/$', views.exchange_confirm),
     re_path(r'^exchange_sell_list/$', views.exchange_sell_list),
 
 

@@ -1750,6 +1750,33 @@ def exchange_purchase(request):
         except Exception as ex:
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
         
+def exchange_confirm(request):
+    if request.method == 'POST':
+        try:
+            hash = request.POST.get('hash')
+            private_key = request.POST.get('private_key')
+            func_param = shardora_api.keccak256_str(
+                "ConfirmPurchase(bytes32)")[:8] + encode_hex(encode(['bytes32'], [decode_hex(hash)]))[2:]
+            res = shardora_api.transfer(
+                private_key,
+                exchange_contarct_address,
+                0,
+                8,
+                "",
+                "",
+                func_param,
+                "",
+                "",
+                0,
+                check_gid_valid=False)
+            
+            if not res:
+                return JsonHttpResponse({'status': 1, 'msg': "error"})
+            else:
+                return JsonHttpResponse({'status': 0, 'msg': "ok"})
+        except Exception as ex:
+            return JsonHttpResponse({'status': 1, 'msg': str(ex)})
+        
 def exchange_sell_list(request):
     if request.method == 'POST':
         # try:
