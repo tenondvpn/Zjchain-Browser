@@ -55,6 +55,7 @@ def transfer(
         prepayment, step, key, val)
     res = _call_tx(param)
     if res.status_code != 200:
+        print(f"invalid status {res.status_code}, message: {res.text}")
         return False
     
     if not check_gid_valid:
@@ -87,6 +88,15 @@ def gen_gid() -> str:
 
 def keccak256_str(s: str) -> str:
     return _keccak256_str(s)
+
+def check_accounts_valid(post_data: dict):
+    return _post_data("http://{}:{}/accounts_valid".format("127.0.0.1", 23001), post_data)
+
+def check_prepayments_valid(post_data: dict):
+    return _post_data("http://{}:{}/prepayment_valid".format("127.0.0.1", 23001), post_data)
+
+def check_gid_valid(post_data: dict):
+    return _post_data("http://{}:{}/commit_gid_valid".format("127.0.0.1", 23001), post_data)
 
 def get_transfer_params(
         gid: str, 
@@ -198,14 +208,19 @@ def deploy_contract(
     
     return contract_address
 
-def contract_prepayment(private_key: str, contract_address: str, prepayment: int):
+def contract_prepayment(private_key: str, contract_address: str, prepayment: int, check_res: bool, gid: str):
     if not transfer(
-        str_prikey=private_key, 
-        to=contract_address, 
-        amount=0, 
-        step=7, 
-        prepayment=prepayment):
+            str_prikey=private_key, 
+            to=contract_address, 
+            amount=0, 
+            check_gid_valid=check_res,
+            gid=gid,
+            step=7, 
+            prepayment=prepayment):
         return False
+    
+    if not check_res:
+        return True
     
     keypair = get_keypair(bytes.fromhex(private_key))
 
@@ -283,27 +298,30 @@ def query_contract_function(
     return res
 
 def check_transaction_gid_valid(gid):
+    post_data = {"gids": gid}
     for i in range(0, 30):
-        res = post_data(f"http://127.0.0.1:8091/zjchain/transactions/", data = {
-            "shard": -1,
-            "pool": -1,
-            "limit": "1",
-            "hash": "",
-            "search": gid,
-            "type": 0,
-        })
-        # print(res)
-        # print(res.text)
+        res = _post_data("http://{}:{}/commit_gid_valid".format("127.0.0.1", 23001), post_data)
+        
+        print(f"check_transaction_gid_valid status {res.status_code}, message: {res.text}")
         try:
-            res_json = json.loads(res.text)
-            if len(res_json["value"]) > 0:
-                return True
+            json_res = json.loads(res.text)
+            if json_res["gids"] is not None:
+                for res_gid in json_res["gids"]:
+                    if res_gid == gid:
+                        return True
         except:
             pass
         
         time.sleep(1)
 
     return False
+
+def keccak256_bytes(b: bytes) -> str:
+    return _keccak256_bytes(b)
+
+def keccak256_str(s: str) -> str:
+    return _keccak256_str(s)
+
 
 def _keccak256_bytes(b: bytes) -> str:
     k = sha3.keccak_256()

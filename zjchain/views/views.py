@@ -1796,7 +1796,7 @@ def exchange_sell_list(request):
             else:
                 tmp_datas = json.loads(res.text)
                 datas = []
-                if search.strip() != "":
+                if search is not None and search.strip() != "":
                     for item in tmp_datas:
                         json_str = json.dumps(item)
                         if search in json_str:
