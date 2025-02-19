@@ -1780,6 +1780,9 @@ def exchange_confirm(request):
 def exchange_sell_list(request):
     if request.method == 'POST':
         try:
+            gpu_type = request.POST.get('gpu_type')
+            gpu_count = request.POST.get('gpu_count')
+            storage_size = request.POST.get('storage_size')
             private_key = request.POST.get('private_key')
             search = request.POST.get('search')
             start_pos = int(request.POST.get('start_pos'))
@@ -1815,3 +1818,23 @@ def exchange_sell_list(request):
                 return JsonHttpResponse({'status': 0, 'msg': "ok", 'data': datas[start_pos: get_len]})
         except Exception as ex:
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})        
+        
+def exchange_sell_detail(request):
+    if request.method == 'POST':
+        try:
+            hash = request.POST.get('hash')
+            private_key = request.POST.get('private_key')
+            res = shardora_api.query_contract_function(
+                private_key=private_key, 
+                contract_address=exchange_contarct_address,
+                function="GetSellDetail",
+                types_list=['bytes32'],
+                params_list=[decode_hex(hash)])
+            if res.status_code != 200:
+                return JsonHttpResponse({'status': 1, 'msg': "error"})
+            else:
+                tmp_datas = json.loads(res.text)
+                logger.info('exchange_sell_detail success hash = %s, res: %s' % (hash, res.text))
+                return JsonHttpResponse({'status': 0, 'msg': "ok", 'data': tmp_datas})
+        except Exception as ex:
+            return JsonHttpResponse({'status': 1, 'msg': str(ex)})  

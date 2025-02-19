@@ -301,7 +301,6 @@ def check_transaction_gid_valid(gid):
     post_data = {"gids": gid}
     for i in range(0, 30):
         res = _post_data("http://{}:{}/commit_gid_valid".format("127.0.0.1", 23001), post_data)
-        
         print(f"check_transaction_gid_valid status {res.status_code}, message: {res.text}")
         try:
             json_res = json.loads(res.text)
