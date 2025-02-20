@@ -643,7 +643,7 @@ function do_test_url() {
         url: '/zjchain/exchange_new_sell/',
         data: {
             'hash': "754344e9e3560b50709887b3c769033546c7adde267ce90ec948cadd22d171ae",
-            'info': str_to_hex('[{"id":"00","hash":"3e07c561e4a40074e6344f1a62ad739be146ea945f0fda414d459a70b87d8a5a","owner":"44a5c714cb3f502fb77618a4a0353d96148fde7e","info":"746573745f6a736f6e","price":"01","start_time":"00","end_time":"00","buyers":[{"buyer":"0000000000000000000000000000000000000000","price":"00"},{"buyer":"611cf0f0a69ef9c74ef36d2e0892280dc4494fe5","price":"64"}]}]'),
+            'info': str_to_hex('{"type":0,"name":"databaas_data_00001"}'),
             'price': 1,
             'start': 0,
             'end': 1,
@@ -698,6 +698,22 @@ function do_test_url() {
             'search': "",
             'start_pos': 0,
             'len': 100,
+            'private_key': 'cefc2c33064ea7691aee3e5e4f7842935d26f3ad790d81cf015e79b78958e848',
+        },
+        dataType: "json"
+    }).done(function (response) {
+        Toast.fire({
+            icon: 'info',
+            title: response.value
+        })
+    });
+
+    $.ajax({
+        type: 'post',
+        async: true,
+        url: '/zjchain/exchange_sell_detail/',
+        data: {
+            'hash': "754344e9e3560b50709887b3c769033546c7adde267ce90ec948cadd22d171ae",
             'private_key': 'cefc2c33064ea7691aee3e5e4f7842935d26f3ad790d81cf015e79b78958e848',
         },
         dataType: "json"

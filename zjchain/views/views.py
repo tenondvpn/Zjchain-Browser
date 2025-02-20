@@ -1680,7 +1680,6 @@ def set_private_key(request):
         prkey = request.POST.get('enc')
         cmd = "insert into private_key_table values('" + seckkey + "', '" + prkey + "', 0, 0)"
         try:
-
             ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
             ck_client.execute(cmd)
             return JsonHttpResponse({'status': 0, 'msg': 'ok'})
@@ -1838,3 +1837,4 @@ def exchange_sell_detail(request):
                 return JsonHttpResponse({'status': 0, 'msg': "ok", 'data': tmp_datas})
         except Exception as ex:
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})  
+        
