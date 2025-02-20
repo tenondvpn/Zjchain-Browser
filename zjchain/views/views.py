@@ -1904,7 +1904,7 @@ def exchange_sell_detail(request):
         except Exception as ex:
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})  
         
-def get_owner_transactions(request, clear_seach):
+def get_owner_transactions(request):
     if request.method == 'POST':
         private_key = request.POST.get('private_key')
         key_pair = shardora_api.get_keypair(bytes.fromhex(private_key))
