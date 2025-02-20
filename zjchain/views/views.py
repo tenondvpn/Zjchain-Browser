@@ -1784,14 +1784,23 @@ def exchange_sell_list(request):
             storage_size = request.POST.get('storage_size')
             private_key = request.POST.get('private_key')
             search = request.POST.get('search')
+            owner = request.POST.get('owner')
             start_pos = int(request.POST.get('start_pos'))
             get_len = int(request.POST.get('len'))
-            res = shardora_api.query_contract_function(
-                private_key=private_key, 
-                contract_address=exchange_contarct_address,
-                function="GetAllItemJson",
-                types_list=['uint256', 'uint256'],
-                params_list=[0, 1000])
+            if owner.strip() != "":
+                res = shardora_api.query_contract_function(
+                    private_key=private_key, 
+                    contract_address=exchange_contarct_address,
+                    function="GetOwnerItemJson",
+                    types_list=['uint256', 'uint256', 'address'],
+                    params_list=[start_pos, get_len, decode_hex(owner)])
+            else:
+                res = shardora_api.query_contract_function(
+                    private_key=private_key, 
+                    contract_address=exchange_contarct_address,
+                    function="GetAllItemJson",
+                    types_list=['uint256', 'uint256'],
+                    params_list=[start_pos, get_len])
             
             if res.status_code != 200:
                 return JsonHttpResponse({'status': 1, 'msg': "error"})
