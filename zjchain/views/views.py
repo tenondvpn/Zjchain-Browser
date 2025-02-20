@@ -1840,7 +1840,7 @@ def get_table_detail(db_name, table_name):
 
     res["fileds"] = tmp_result
     res["table"] = db_name + "." + table_name
-    result = ck_client.execute("select * from " + db_name + "." + table_name + " limit 100", with_column_types=True)
+    result = ck_client.execute("select * from " + db_name + "." + table_name + " where is_leaf=true limit 100", with_column_types=True)
     fields = []
     for filed in result[1]:
         fields.append({ 'name': filed[0], 'type': "text", 'align': "center", 'width': 90 },)
