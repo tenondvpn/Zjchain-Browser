@@ -1784,16 +1784,17 @@ def exchange_sell_list(request):
             storage_size = request.POST.get('storage_size')
             private_key = request.POST.get('private_key')
             search = request.POST.get('search')
-            owner = request.POST.get('owner')
+            owner = int(request.POST.get('owner'))
             start_pos = int(request.POST.get('start_pos'))
             get_len = int(request.POST.get('len'))
-            if owner.strip() != "":
+            if owner == 1:
+                key_pair = shardora_api.get_keypair(bytes.fromhex(private_key))
                 res = shardora_api.query_contract_function(
                     private_key=private_key, 
                     contract_address=exchange_contarct_address,
                     function="GetOwnerItemJson",
                     types_list=['uint256', 'uint256', 'address'],
-                    params_list=[start_pos, get_len, decode_hex(owner)])
+                    params_list=[start_pos, get_len, decode_hex(key_pair.account_id)])
             else:
                 res = shardora_api.query_contract_function(
                     private_key=private_key, 
