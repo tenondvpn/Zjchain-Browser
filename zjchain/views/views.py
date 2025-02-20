@@ -1743,7 +1743,7 @@ def exchange_purchase(request):
                 check_gid_valid=True)
             
             if not res:
-                return JsonHttpResponse({'status': 1, 'msg': "error"})
+                return JsonHttpResponse({'status': 1, 'msg': "call purchase contract function failed"})
             else:
                 return JsonHttpResponse({'status': 0, 'msg': "ok"})
         except Exception as ex:

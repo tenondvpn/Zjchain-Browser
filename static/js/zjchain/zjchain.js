@@ -663,7 +663,7 @@ function do_test_url() {
         url: '/zjchain/exchange_purchase/',
         data: {
             'hash': "754344e9e3560b50709887b3c769033546c7adde267ce90ec948cadd22d171ae",
-            'private_key': '6ad7b4019956c958da14121fa273a34b612a2a03239771e8e16fa730e43e6512',
+            'private_key': '6d36dc82744a049e58beb80555d15f5381cb46981b11224f4af421660300b350',
             'price': 299900000,
         },
         dataType: "json"
