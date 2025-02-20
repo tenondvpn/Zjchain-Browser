@@ -1904,3 +1904,26 @@ def exchange_sell_detail(request):
         except Exception as ex:
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})  
         
+def get_owner_transactions(request, clear_seach):
+    if request.method == 'POST':
+        private_key = request.POST.get('private_key')
+        key_pair = shardora_api.get_keypair(bytes.fromhex(private_key))
+        cmd = f"select timestamp, amount, gid, balance from zjc_ck_transaction_table where from='{key_pair.account_id}' or to = '{key_pair.account_id}' order by timestamp desc limit 100;"
+        try:
+            ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
+            result = ck_client.execute(cmd)
+            tmp_result = []
+            for item in result:
+                dt_object = datetime.datetime.fromtimestamp(int(item[0] / 1000) + 8 * 3600)
+                dt_object = dt_object.strftime("%Y/%m/%d %H:%M:%S") + "." + str(item[0] % 1000)
+                tmp_result.append({
+                    "time": dt_object,
+                    "amount": item[1],
+                    "gid": item[2],
+                    "balance": item[3],
+                })
+                
+            return JsonHttpResponse({'status': 0, 'cmd': cmd, 'value': tmp_result})
+        except Exception as ex:
+            return JsonHttpResponse({'status': 1, 'msg': str(ex)})
+    

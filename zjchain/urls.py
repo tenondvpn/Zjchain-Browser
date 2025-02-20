@@ -53,6 +53,7 @@ urlpatterns = (
     re_path(r'^exchange_confirm/$', views.exchange_confirm),
     re_path(r'^exchange_sell_list/$', views.exchange_sell_list),
     re_path(r'^exchange_sell_detail/$', views.exchange_sell_detail),
+    re_path(r'^get_owner_transactions/$', views.get_owner_transactions),
 
 
     re_path(r'^get_transaction/$', transactions_view.get_transaction),
