@@ -89,6 +89,11 @@ def gen_gid() -> str:
 def keccak256_str(s: str) -> str:
     return _keccak256_str(s)
 
+def keccak256_bytes(s: bytes) -> str:
+    k = sha3.keccak_256()
+    k.update(s)
+    return k.hexdigest()
+
 def check_accounts_valid(post_data: dict):
     return _post_data("http://{}:{}/accounts_valid".format("127.0.0.1", 23001), post_data)
 
@@ -298,18 +303,17 @@ def query_contract_function(
     return res
 
 def check_transaction_gid_valid(gid):
-    post_data = {"gids": gid}
     for i in range(0, 30):
-        res = _post_data("http://{}:{}/commit_gid_valid".format("127.0.0.1", 23001), post_data)
-        print(f"check_transaction_gid_valid status {res.status_code}, message: {res.text}")
-        try:
+        res = check_gid_valid({"gids": [gid]})
+        print(f"res status: {res.status_code}, text: {res.text}")
+        if res.status_code != 200:
+            print("post check gids failed!")
+        else:
             json_res = json.loads(res.text)
             if json_res["gids"] is not None:
-                for res_gid in json_res["gids"]:
-                    if res_gid == gid:
+                for tmp_gid in json_res["gids"]:
+                    if gid == tmp_gid:
                         return True
-        except:
-            pass
         
         time.sleep(1)
 
@@ -321,6 +325,8 @@ def keccak256_bytes(b: bytes) -> str:
 def keccak256_str(s: str) -> str:
     return _keccak256_str(s)
 
+def get_block_info_with_gid(gid: str):
+    return _post_data("http://{}:{}/get_block_with_gid".format(http_ip, http_port), {'gid': gid})
 
 def _keccak256_bytes(b: bytes) -> str:
     k = sha3.keccak_256()
@@ -395,7 +401,6 @@ def _gen_gid() -> str:
     hex_str = _get_random_hex_str()
     ret = hashlib.sha256(hex_str.encode('utf-8')).hexdigest()
     return (64 - len(ret)) * '0' + ret
-
 
 def _get_tx_params(sign, pkbytes: bytes, gid: str, gas_limit: int, gas_price: int,
                    to: str, amount: int, prepay: int, contract_bytes: str, des_shard_id: int,

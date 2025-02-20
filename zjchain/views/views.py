@@ -1818,6 +1818,43 @@ def exchange_sell_list(request):
         except Exception as ex:
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})        
         
+def get_table_detail(db_name, table_name):
+    ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
+    show_create_res = ck_client.execute("show create table " + db_name + "." + table_name)
+    res = {}
+    res["create"] = show_create_res[0][0]
+    show_fileds = ck_client.execute("desc " + db_name + "." + table_name)
+    tmp_result = []
+    for filed in show_fileds:
+        res_item = {
+            "name": filed[0],
+            "type": filed[1],
+            "default_type": filed[2],
+            "default_expression": filed[3],
+            "comment": filed[4],
+            "codec_expression": filed[5],
+            "ttl_expression": filed[6],
+        }
+            
+        tmp_result.append(res_item)
+
+    res["fileds"] = tmp_result
+    res["table"] = db_name + "." + table_name
+    result = ck_client.execute("select * from " + db_name + "." + table_name + " limit 100", with_column_types=True)
+    fields = []
+    for filed in result[1]:
+        fields.append({ 'name': filed[0], 'type': "text", 'align': "center", 'width': 90 },)
+
+    tmp_result = []
+    for item in result[0]:
+        res_item = {}
+        for i in range(0, len(item)):
+            res_item[result[1][i][0]] = str(item[i])
+            
+        tmp_result.append(res_item)
+
+    return fields, tmp_result
+    
 def exchange_sell_detail(request):
     if request.method == 'POST':
         try:
@@ -1829,12 +1866,31 @@ def exchange_sell_detail(request):
                 function="GetSellDetail",
                 types_list=['bytes32'],
                 params_list=[decode_hex(hash)])
+            ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
             if res.status_code != 200:
                 return JsonHttpResponse({'status': 1, 'msg': "error"})
             else:
+                res_json = {}
                 tmp_datas = json.loads(res.text)
-                logger.info('exchange_sell_detail success hash = %s, res: %s' % (hash, res.text))
-                return JsonHttpResponse({'status': 0, 'msg': "ok", 'data': tmp_datas})
+                res_json["sell_info"] = tmp_datas
+                info_json = json.loads(hex_to_str(tmp_datas["info"]))
+                table_name = info_json['name']
+                if info_json['type'] == 0:
+                    fields_info, tmp_result = get_table_detail('default', table_name)
+                    res_json["table_info"] = fields_info
+                    res_json["data_example"] = tmp_result
+
+                gid_ck_info_cmd = f"select gid from {table_name}_info limit 1;"
+                gid_ck_info_res = ck_client.execute(gid_ck_info_cmd)
+                gid = gid_ck_info_res[0][0]
+                block_info = shardora_api.get_block_info_with_gid(gid)
+                if block_info.status_code != 200:
+                    return JsonHttpResponse({'status': 1, 'msg': 'invalid block info.'})  
+
+                res_json["confirm_info"] = json.loads(block_info.text)
+
+                logger.info('exchange_sell_detail success hash = %s, res: %s' % (hash, json.dumps(res_json)))
+                return JsonHttpResponse({'status': 0, 'msg': "ok", 'data': res_json})
         except Exception as ex:
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})  
         
