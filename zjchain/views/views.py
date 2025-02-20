@@ -1887,7 +1887,7 @@ def exchange_sell_detail(request):
                 if block_info.status_code != 200:
                     return JsonHttpResponse({'status': 1, 'msg': 'invalid block info.'})  
 
-                res_json["confirm_info"] = json.loads(block_info.text)
+                res_json["confirm_info"] = json.loads(block_info.text)['block']
 
                 logger.info('exchange_sell_detail success hash = %s, res: %s' % (hash, json.dumps(res_json)))
                 return JsonHttpResponse({'status': 0, 'msg': "ok", 'data': res_json})
