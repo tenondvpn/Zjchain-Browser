@@ -696,6 +696,26 @@ function do_test_url() {
         url: '/zjchain/exchange_sell_list/',
         data: {
             'search': "",
+            'owner': 0,
+            'start_pos': 0,
+            'len': 100,
+            'private_key': 'cefc2c33064ea7691aee3e5e4f7842935d26f3ad790d81cf015e79b78958e848',
+        },
+        dataType: "json"
+    }).done(function (response) {
+        Toast.fire({
+            icon: 'info',
+            title: response.value
+        })
+    });
+
+    $.ajax({
+        type: 'post',
+        async: true,
+        url: '/zjchain/exchange_sell_list/',
+        data: {
+            'search': "",
+            'owner': 1,
             'start_pos': 0,
             'len': 100,
             'private_key': 'cefc2c33064ea7691aee3e5e4f7842935d26f3ad790d81cf015e79b78958e848',
