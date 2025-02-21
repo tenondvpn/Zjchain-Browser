@@ -1908,7 +1908,9 @@ def get_owner_transactions(request):
     if request.method == 'POST':
         private_key = request.POST.get('private_key')
         key_pair = shardora_api.get_keypair(bytes.fromhex(private_key))
-        cmd = f"select timestamp, amount, gid, balance from zjc_ck_transaction_table where from='{key_pair.account_id}' or to = '{key_pair.account_id}' order by timestamp desc limit 100;"
+        cmd = (f"select timestamp, amount, gid, balance, type from "
+        "zjc_ck_transaction_table where (from='{key_pair.account_id}' "
+        "or to = '{key_pair.account_id}') and shard_id = 3 and type in(0,5,6,7,14,17) order by timestamp desc limit 100;")
         try:
             ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
             result = ck_client.execute(cmd)
@@ -1921,6 +1923,7 @@ def get_owner_transactions(request):
                     "amount": item[1],
                     "gid": item[2],
                     "balance": item[3],
+                    "type": int(item[4]),
                 })
                 
             return JsonHttpResponse({'status': 0, 'cmd': cmd, 'value': tmp_result})
