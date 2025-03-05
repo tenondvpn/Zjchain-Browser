@@ -1786,6 +1786,9 @@ def exchange_sell_list(request):
             search = request.POST.get('search')
             owner = int(request.POST.get('owner'))
             start_pos = int(request.POST.get('start_pos'))
+            if start_pos > 0:
+                start_pos -= 1
+                
             get_len = int(request.POST.get('len'))
             if owner == 1:
                 key_pair = shardora_api.get_keypair(bytes.fromhex(private_key))
@@ -1908,13 +1911,12 @@ def get_owner_transactions(request):
     if request.method == 'POST':
         private_key = request.POST.get('private_key')
         key_pair = shardora_api.get_keypair(bytes.fromhex(private_key))
-        cmd = (f"select timestamp, amount, gid, balance, type from "
-        "zjc_ck_transaction_table where (from='{key_pair.account_id}' "
-        "or to = '{key_pair.account_id}') and shard_id = 3 and type in(0,5,6,7,14,17) order by timestamp desc limit 100;")
+        cmd = (f"select timestamp, amount, gid, balance, type from  zjc_ck_transaction_table where (from='{key_pair.account_id}' or to = '{key_pair.account_id}') and shard_id = 3 and type in(0,5,6,7,14,17) order by timestamp desc limit 100;")
         try:
             ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
             result = ck_client.execute(cmd)
             tmp_result = []
+            balance = 0
             for item in result:
                 dt_object = datetime.datetime.fromtimestamp(int(item[0] / 1000) + 8 * 3600)
                 dt_object = dt_object.strftime("%Y/%m/%d %H:%M:%S") + "." + str(item[0] % 1000)
@@ -1925,8 +1927,11 @@ def get_owner_transactions(request):
                     "balance": item[3],
                     "type": int(item[4]),
                 })
+
+                if len(tmp_result) == 1:
+                    balance = item[3]
                 
-            return JsonHttpResponse({'status': 0, 'cmd': cmd, 'value': tmp_result})
+            return JsonHttpResponse({'status': 0, 'cmd': cmd, 'id': key_pair.account_id, 'balance': balance, 'value': tmp_result})
         except Exception as ex:
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
     
