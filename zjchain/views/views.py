@@ -1823,14 +1823,16 @@ def exchange_sell_list(request):
                 for item in tmp_datas:
                     json_str = json.dumps(item)
                     try:
-                        info_dex = str_to_hex(item['info'])
-                        if search not in info_dex and search not in json_str:
+                        info_dex = hex_to_str(item['info'])
+                        print(info_dex)
+                        print(item)
+                        if search is not None and search != '' and search not in info_dex and search not in json_str:
                             continue
                                 
                         info_json = json.loads(info_dex)
                         tmp_datas['info_json'] = info_json
-                        #if type != -1 and type != info_json['type']:
-                        #    continue
+                        if type != -1 and type != info_json['type']:
+                           continue
 
                         if type == 2:
                             if gpu_type is not None and gpu_type != "":
