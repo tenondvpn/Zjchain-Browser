@@ -1829,8 +1829,8 @@ def exchange_sell_list(request):
                                 
                         info_json = json.loads(info_dex)
                         tmp_datas['info_json'] = info_json
-                        if type != -1 and type != info_json['type']:
-                            continue
+                        #if type != -1 and type != info_json['type']:
+                        #    continue
 
                         if type == 2:
                             if gpu_type is not None and gpu_type != "":
