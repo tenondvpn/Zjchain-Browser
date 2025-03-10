@@ -1831,7 +1831,7 @@ def exchange_sell_list(request):
                             continue
                                 
                         info_json = json.loads(info_dex)
-                        tmp_datas['info_json'] = info_json
+                        #tmp_datas['info_json'] = info_json
                         if type != -1 and type != info_json['type']:
                             in_type = info_json['type']
                             print(f'type invalid {type} {in_type}')
