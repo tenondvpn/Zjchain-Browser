@@ -1924,7 +1924,7 @@ def get_table_detail(db_name, table_name):
 
         return fields, tmp_result
     except Exception as e:
-        return [], []
+        return str(e), None
     
 def exchange_sell_detail(request):
     if request.method == 'POST':
@@ -1948,8 +1948,12 @@ def exchange_sell_detail(request):
                 table_name = info_json['name']
                 if info_json['type'] == 0:
                     fields_info, tmp_result = get_table_detail('default', table_name)
-                    res_json["table_info"] = fields_info
-                    res_json["data_example"] = tmp_result
+                    if tmp_result is None:
+                        res_json["table_info"] = fields_info
+                        res_json["data_example"] = []
+                    else:
+                        res_json["table_info"] = fields_info
+                        res_json["data_example"] = tmp_result
 
                 gid_ck_info_cmd = f"select gid from {table_name}_info limit 1;"
                 gid_ck_info_res = ck_client.execute(gid_ck_info_cmd)
