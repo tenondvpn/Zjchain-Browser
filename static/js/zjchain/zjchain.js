@@ -643,7 +643,7 @@ function do_test_url() {
         url: '/zjchain/exchange_new_sell/',
         data: {
             'hash': "754344e9e3560b50709887b3c769033546c7adde267ce90ec948cadd22d171ae",
-            'info': str_to_hex('{"type":0,"name":"databaas_data_00001"}'),
+            'info': str_to_hex('{"type":0,"table_name":"databaas_data_00001","name":"databaas_data_00001"}'),
             'price': 1,
             'start': 0,
             'end': 1,
