@@ -1821,11 +1821,11 @@ def exchange_sell_list(request):
 
                 datas = []
                 for item in tmp_datas:
-                    json_str = json.dumps(item)
                     try:
                         info_dex = hex_to_str(item['info'])
                         print(info_dex)
                         print(item)
+                        json_str = json.dumps(item)
                         if search is not None and search != '' and search not in info_dex and search not in json_str:
                             print(f'searc invalid {search}')
                             continue
@@ -1856,8 +1856,10 @@ def exchange_sell_list(request):
                                     print(f'gpu_type invalid {storage_size} {in_storage_size}')
                                     continue
                     except:
+                        print('catch error')
                         continue
                         
+                    print(f"add {len(datas)} {item}")
                     datas.append(item)
 
                 if len(datas) <= (start_pos + get_len):
