@@ -1785,6 +1785,7 @@ def exchange_sell_list(request):
             private_key = request.POST.get('private_key')
             search = request.POST.get('search')
             owner = int(request.POST.get('owner'))
+            type = int(request.POST.get('type'))
             start_pos = int(request.POST.get('start_pos'))
             if start_pos > 0:
                 start_pos -= 1
@@ -1813,25 +1814,43 @@ def exchange_sell_list(request):
                 if len(tmp_datas) <= start_pos:
                     return JsonHttpResponse({'status': 0, 'msg': "ok", 'data': []})
 
-                if len(tmp_datas) <= (start_pos + get_len):
-                    get_len = len(tmp_datas)
+                datas = []
+                for item in tmp_datas:
+                    json_str = json.dumps(item)
+                    try:
+                        info_dex = str_to_hex(item['info'])
+                        if search not in info_dex and search not in json_str:
+                            continue
+                                
+                        info_json = json.loads(info_dex)
+                        if type != info_json['type']:
+                            continue
+
+                        if type == 2:
+                            if gpu_type is not None and gpu_type != "":
+                                if (info_json['gpu_type'] != gpu_type):
+                                    continue
+
+                            if gpu_count is not None and gpu_count != "":
+                                if (int(info_json['gpu_count']) < int(gpu_count)):
+                                    continue
+                                
+                            if storage_size is not None and storage_size != "":
+                                if (int(info_json['storage_size']) < int(storage_size)):
+                                    continue
+                    except:
+                        continue
+                        
+                    datas.append(item)
+
+                if len(datas) <= (start_pos + get_len):
+                    get_len = len(datas)
                 else:
                     get_len = start_pos + get_len
-
-                datas = []
-                total_count = 0
-                if search is not None and search.strip() != "":
-                    for item in tmp_datas:
-                        json_str = json.dumps(item)
-                        if search in json_str:
-                            total_count += 1
-                            if len(datas) < get_len:
-                                datas.append(item)
-                else:
-                    datas = tmp_datas[start_pos: start_pos + get_len]
-                    total_count = len(tmp_datas)
-
-                for data in datas:
+              
+                res_datas = datas[start_pos: start_pos + get_len]
+                total_count = len(datas)
+                for data in res_datas:
                     data['selled_price'] = int(data['selled_price'], 16)
                     data['selled'] = int(data['selled'], 16)
                     data['price'] = int(data['price'], 16)
@@ -1842,7 +1861,7 @@ def exchange_sell_list(request):
 
                 
 
-                return JsonHttpResponse({'status': 0, 'msg': "ok", 'data': datas[start_pos: get_len], 'total': total_count})
+                return JsonHttpResponse({'status': 0, 'msg': "ok", 'data': res_datas, 'total': total_count})
         except Exception as ex:
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})        
         
