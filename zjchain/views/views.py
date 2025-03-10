@@ -1956,13 +1956,17 @@ def exchange_sell_detail(request):
                         res_json["data_example"] = tmp_result
 
                 gid_ck_info_cmd = f"select gid from {table_name}_info limit 1;"
-                gid_ck_info_res = ck_client.execute(gid_ck_info_cmd)
-                gid = gid_ck_info_res[0][0]
-                block_info = shardora_api.get_block_info_with_gid(gid)
-                if block_info.status_code != 200:
-                    return JsonHttpResponse({'status': 1, 'msg': 'invalid block info.'})  
+                try:
+                    gid_ck_info_res = ck_client.execute(gid_ck_info_cmd)
+                    gid = gid_ck_info_res[0][0]
+                    
+                    block_info = shardora_api.get_block_info_with_gid(gid)
+                    if block_info.status_code != 200:
+                        return JsonHttpResponse({'status': 1, 'msg': 'invalid block info.'})  
 
-                res_json["confirm_info"] = json.loads(block_info.text)['block']
+                    res_json["confirm_info"] = json.loads(block_info.text)['block']
+                except Exception as ex:
+                    res_json["confirm_info"] = str(ex)
 
                 logger.info('exchange_sell_detail success hash = %s, res: %s' % (hash, json.dumps(res_json)))
                 return JsonHttpResponse({'status': 0, 'msg': "ok", 'data': res_json})
