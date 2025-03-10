@@ -1945,28 +1945,33 @@ def exchange_sell_detail(request):
                 tmp_datas = json.loads(res.text)
                 res_json["sell_info"] = tmp_datas
                 info_json = json.loads(hex_to_str(tmp_datas["info"]))
-                table_name = info_json['name']
-                if info_json['type'] == 0:
-                    fields_info, tmp_result = get_table_detail('default', table_name)
-                    if tmp_result is None:
-                        res_json["table_info"] = fields_info
-                        res_json["data_example"] = []
-                    else:
-                        res_json["table_info"] = fields_info
-                        res_json["data_example"] = tmp_result
+                if 'table_name' in info_json:
+                    table_name = info_json['table_name']
+                    if info_json['type'] == 0:
+                        fields_info, tmp_result = get_table_detail('default', table_name)
+                        if tmp_result is None:
+                            res_json["table_info"] = fields_info
+                            res_json["data_example"] = []
+                        else:
+                            res_json["table_info"] = fields_info
+                            res_json["data_example"] = tmp_result
 
-                gid_ck_info_cmd = f"select gid from {table_name}_info limit 1;"
-                try:
-                    gid_ck_info_res = ck_client.execute(gid_ck_info_cmd)
-                    gid = gid_ck_info_res[0][0]
-                    
-                    block_info = shardora_api.get_block_info_with_gid(gid)
-                    if block_info.status_code != 200:
-                        return JsonHttpResponse({'status': 1, 'msg': 'invalid block info.'})  
+                    gid_ck_info_cmd = f"select gid from {table_name}_info limit 1;"
+                    try:
+                        gid_ck_info_res = ck_client.execute(gid_ck_info_cmd)
+                        gid = gid_ck_info_res[0][0]
+                        
+                        block_info = shardora_api.get_block_info_with_gid(gid)
+                        if block_info.status_code != 200:
+                            return JsonHttpResponse({'status': 1, 'msg': 'invalid block info.'})  
 
-                    res_json["confirm_info"] = json.loads(block_info.text)['block']
-                except Exception as ex:
-                    res_json["confirm_info"] = str(ex)
+                        res_json["confirm_info"] = json.loads(block_info.text)['block']
+                    except Exception as ex:
+                        res_json["confirm_info"] = str(ex)
+                else:
+                    res_json["table_info"] = 'table_name invalid'
+                    res_json["data_example"] = []
+                    res_json["confirm_info"] = 'table_name invalid'
 
                 logger.info('exchange_sell_detail success hash = %s, res: %s' % (hash, json.dumps(res_json)))
                 return JsonHttpResponse({'status': 0, 'msg': "ok", 'data': res_json})
