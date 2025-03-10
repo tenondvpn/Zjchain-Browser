@@ -1797,37 +1797,52 @@ def exchange_sell_list(request):
                     contract_address=exchange_contarct_address,
                     function="GetOwnerItemJson",
                     types_list=['uint256', 'uint256', 'address'],
-                    params_list=[start_pos, get_len, decode_hex(key_pair.account_id)])
+                    params_list=[start_pos, 1000, decode_hex(key_pair.account_id)])
             else:
                 res = shardora_api.query_contract_function(
                     private_key=private_key, 
                     contract_address=exchange_contarct_address,
                     function="GetAllItemJson",
                     types_list=['uint256', 'uint256'],
-                    params_list=[start_pos, get_len])
+                    params_list=[start_pos, 1000])
             
             if res.status_code != 200:
                 return JsonHttpResponse({'status': 1, 'msg': "error"})
             else:
                 tmp_datas = json.loads(res.text)
+                if len(tmp_datas) <= start_pos:
+                    return JsonHttpResponse({'status': 0, 'msg': "ok", 'data': []})
+
+                if len(tmp_datas) <= (start_pos + get_len):
+                    get_len = len(tmp_datas)
+                else:
+                    get_len = start_pos + get_len
+
                 datas = []
+                total_count = 0
                 if search is not None and search.strip() != "":
                     for item in tmp_datas:
                         json_str = json.dumps(item)
                         if search in json_str:
-                            datas.append(item)
+                            total_count += 1
+                            if len(datas) < get_len:
+                                datas.append(item)
                 else:
-                    datas = tmp_datas
+                    datas = tmp_datas[start_pos: start_pos + get_len]
+                    total_count = len(tmp_datas)
 
-                if len(datas) <= start_pos:
-                    return JsonHttpResponse({'status': 0, 'msg': "ok", 'data': []})
+                for data in datas:
+                    data['selled_price'] = int(data['selled_price'], 16)
+                    data['selled'] = int(data['selled'], 16)
+                    data['price'] = int(data['price'], 16)
+                    data['start_time'] = int(data['start_time'], 16)
+                    data['end_time'] = int(data['end_time'], 16)
+                    for buyer in data['buyers']:
+                        buyer['price'] = int(buyer['price'], 16)
 
-                if len(datas) <= (start_pos + get_len):
-                    get_len = len(datas)
-                else:
-                    get_len = start_pos + get_len
+                
 
-                return JsonHttpResponse({'status': 0, 'msg': "ok", 'data': datas[start_pos: get_len]})
+                return JsonHttpResponse({'status': 0, 'msg': "ok", 'data': datas[start_pos: get_len], 'total': total_count})
         except Exception as ex:
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})        
         
