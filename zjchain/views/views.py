@@ -1827,24 +1827,29 @@ def exchange_sell_list(request):
                         print(info_dex)
                         print(item)
                         if search is not None and search != '' and search not in info_dex and search not in json_str:
+                            print(f'searc invalid {search}')
                             continue
                                 
                         info_json = json.loads(info_dex)
                         tmp_datas['info_json'] = info_json
                         if type != -1 and type != info_json['type']:
-                           continue
+                            print(f'type invalid {type} {info_json['type']}')
+                            continue
 
                         if type == 2:
                             if gpu_type is not None and gpu_type != "":
                                 if (info_json['gpu_type'] != gpu_type):
+                                    print(f'gpu_type invalid {gpu_type} {info_json['gpu_type']}')
                                     continue
 
                             if gpu_count is not None and gpu_count != "":
                                 if (int(info_json['gpu_count']) < int(gpu_count)):
+                                    print(f'gpu_type invalid {gpu_count} {info_json['gpu_count']}')
                                     continue
                                 
                             if storage_size is not None and storage_size != "":
                                 if (int(info_json['storage_size']) < int(storage_size)):
+                                    print(f'gpu_type invalid {storage_size} {info_json['storage_size']}')
                                     continue
                     except:
                         continue
