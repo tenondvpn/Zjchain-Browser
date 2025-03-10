@@ -1785,7 +1785,12 @@ def exchange_sell_list(request):
             private_key = request.POST.get('private_key')
             search = request.POST.get('search')
             owner = int(request.POST.get('owner'))
-            type = int(request.POST.get('type'))
+            type = request.POST.get('type')
+            if type is not None:
+                type = int(type)
+            else:
+                type = -1
+            
             start_pos = int(request.POST.get('start_pos'))
             if start_pos > 0:
                 start_pos -= 1
@@ -1823,7 +1828,7 @@ def exchange_sell_list(request):
                             continue
                                 
                         info_json = json.loads(info_dex)
-                        if type != info_json['type']:
+                        if type != -1 and type != info_json['type']:
                             continue
 
                         if type == 2:
