@@ -1877,8 +1877,10 @@ def exchange_sell_list(request):
                     data['end_time'] = int(data['end_time'], 16)
                     for buyer in data['buyers']:
                         buyer['price'] = int(buyer['price'], 16)
-
+                        dt_object = datetime.datetime.fromtimestamp(int(int(buyer['time'], 16) / 1000) + 8 * 3600)
+                        buyer['time'] =  dt_object.strftime("%Y-%m-%d %H:%M:%S")
                 
+                    data['buyers'] = sorted(tmp_datas['buyers'] , key=lambda x: x['price']) 
 
                 return JsonHttpResponse({'status': 0, 'msg': "ok", 'data': res_datas, 'total': total_count})
         except Exception as ex:
@@ -1951,7 +1953,10 @@ def exchange_sell_detail(request):
                 tmp_datas['end_time'] = int(tmp_datas['end_time'], 16)
                 for buyer in tmp_datas['buyers']:
                     buyer['price'] = int(buyer['price'], 16)
+                    dt_object = datetime.datetime.fromtimestamp(int(int(buyer['time'], 16) / 1000) + 8 * 3600)
+                    buyer['time'] =  dt_object.strftime("%Y-%m-%d %H:%M:%S")
 
+                tmp_datas['buyers'] = sorted(tmp_datas['buyers'] , key=lambda x: x['price']) 
                 res_json["sell_info"] = tmp_datas
                 info_json = json.loads(hex_to_str(tmp_datas["info"]))
                 if 'table_name' in info_json:
