@@ -1780,8 +1780,10 @@ def exchange_sell_list(request):
     if request.method == 'POST':
         try:
             gpu_type = request.POST.get('gpu_type')
-            gpu_count = request.POST.get('gpu_count')
-            storage_size = request.POST.get('storage_size')
+            gpu_count_min = request.POST.get('gpu_count_min')
+            gpu_count_max = request.POST.get('gpu_count_max')
+            storage_size_min = request.POST.get('storage_size_min')
+            storage_size_max = request.POST.get('storage_size_max')
             private_key = request.POST.get('private_key')
             search = request.POST.get('search')
             owner = int(request.POST.get('owner'))
@@ -1844,16 +1846,26 @@ def exchange_sell_list(request):
                                     print(f'gpu_type invalid {gpu_type} {in_type}')
                                     continue
 
-                            if gpu_count is not None and gpu_count != "":
-                                if (int(info_json['gpu_count']) < int(gpu_count)):
+                            if ('gpu_count' in info_json and 
+                                    gpu_count_min is not None and 
+                                    gpu_count_min != "" and 
+                                    gpu_count_max is not None and 
+                                    gpu_count_max != ""):
+                                if (int(info_json['gpu_count']) < int(gpu_count_min) or 
+                                        int(info_json['gpu_count']) >= int(gpu_count_max)):
                                     in_gpu_count = info_json['gpu_count']
-                                    print(f'gpu_type invalid {gpu_count} {in_gpu_count}')
+                                    print(f'gpu_type invalid {gpu_count_min} {gpu_count_max} {in_gpu_count}')
                                     continue
                                 
-                            if storage_size is not None and storage_size != "":
-                                if (int(info_json['storage_size']) < int(storage_size)):
+                            if ('storage_size' in info_json and 
+                                    storage_size_min is not None and 
+                                    storage_size_min != "" and 
+                                    storage_size_max is not None and 
+                                    storage_size_max != ""):
+                                if (int(info_json['storage_size']) < int(storage_size_min) or 
+                                        int(info_json['storage_size']) >= int(storage_size_max)):
                                     in_storage_size = info_json['storage_size']
-                                    print(f'gpu_type invalid {storage_size} {in_storage_size}')
+                                    print(f'gpu_type invalid {storage_size_min} {storage_size_max} {in_storage_size}')
                                     continue
                     except:
                         print('catch error')
