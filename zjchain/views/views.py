@@ -1880,7 +1880,7 @@ def exchange_sell_list(request):
                         dt_object = datetime.datetime.fromtimestamp(int(int(buyer['time'], 16) / 1000) + 8 * 3600)
                         buyer['time'] =  dt_object.strftime("%Y-%m-%d %H:%M:%S")
                 
-                    data['buyers'] = sorted(tmp_datas['buyers'] , key=lambda x: x['price']) 
+                    data['buyers'] = sorted(data['buyers'] , key=lambda x: x['price']) 
 
                 return JsonHttpResponse({'status': 0, 'msg': "ok", 'data': res_datas, 'total': total_count})
         except Exception as ex:
