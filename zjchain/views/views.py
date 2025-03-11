@@ -1900,12 +1900,7 @@ def exchange_sell_list(request):
         
 def get_table_detail(db_name, table_name):
     ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
-    cmd = "show create table " + db_name + "." + table_name
-    print(cmd)
     try:
-        show_create_res = ck_client.execute(cmd)
-        res = {}
-        res["create"] = show_create_res[0][0]
         show_fileds = ck_client.execute("desc " + db_name + "." + table_name)
         fields = []
         for filed in show_fileds:
@@ -1921,8 +1916,6 @@ def get_table_detail(db_name, table_name):
                 
             fields.append(res_item)
 
-        res["fileds"] = tmp_result
-        res["table"] = db_name + "." + table_name
         result = ck_client.execute("select * from " + db_name + "." + table_name + " where is_leaf=true limit 100", with_column_types=True)
         tmp_result = []
         for item in result[0]:
