@@ -1943,6 +1943,15 @@ def exchange_sell_detail(request):
             else:
                 res_json = {}
                 tmp_datas = json.loads(res.text)
+                tmp_datas['id'] = int(tmp_datas['id'], 16)
+                tmp_datas['selled_price'] = int(tmp_datas['selled_price'], 16)
+                tmp_datas['selled'] = int(tmp_datas['selled'], 16)
+                tmp_datas['price'] = int(tmp_datas['price'], 16)
+                tmp_datas['start_time'] = int(tmp_datas['start_time'], 16)
+                tmp_datas['end_time'] = int(tmp_datas['end_time'], 16)
+                for buyer in tmp_datas['buyers']:
+                    buyer['price'] = int(tmp_datas['end_time'], 16)
+                    
                 res_json["sell_info"] = tmp_datas
                 info_json = json.loads(hex_to_str(tmp_datas["info"]))
                 if 'table_name' in info_json:
