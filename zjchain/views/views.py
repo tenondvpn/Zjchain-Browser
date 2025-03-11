@@ -1907,7 +1907,7 @@ def get_table_detail(db_name, table_name):
         res = {}
         res["create"] = show_create_res[0][0]
         show_fileds = ck_client.execute("desc " + db_name + "." + table_name)
-        tmp_result = []
+        fields = []
         for filed in show_fileds:
             res_item = {
                 "name": filed[0],
@@ -1919,15 +1919,11 @@ def get_table_detail(db_name, table_name):
                 "ttl_expression": filed[6],
             }
                 
-            tmp_result.append(res_item)
+            fields.append(res_item)
 
         res["fileds"] = tmp_result
         res["table"] = db_name + "." + table_name
         result = ck_client.execute("select * from " + db_name + "." + table_name + " where is_leaf=true limit 100", with_column_types=True)
-        fields = []
-        for filed in result[1]:
-            fields.append({ 'name': filed[0], 'type': "text", 'align': "center", 'width': 90 },)
-
         tmp_result = []
         for item in result[0]:
             res_item = {}
