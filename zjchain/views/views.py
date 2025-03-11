@@ -1839,10 +1839,7 @@ def exchange_sell_list(request):
                             print(f'type invalid {type} {in_type}')
                             continue
 
-                        if type == 2 or type == -1:
-                            if info_json['type'] != 2:
-                                continue
-                            
+                        if (type == 2 or type == -1) and info_json['type'] == 2:
                             if gpu_type is not None and gpu_type != "":
                                 if (info_json['gpu_type'] != gpu_type):
                                     in_type = info_json['gpu_type']
