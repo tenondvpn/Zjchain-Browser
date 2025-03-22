@@ -637,147 +637,147 @@ function initializeGridWithHeadBox(fields, name) {
 }
 
 function do_test_url() {
-    $.ajax({
-        type: 'post',
-        async: true,
-        url: '/zjchain/exchange_new_sell/',
-        data: {
-            'hash': "754344e9e3560b50709887b3c769033546c7adde267ce90ec948cadd22d171ae",
-            'info': str_to_hex('{"type":0,"table_name":"databaas_data_00001","name":"databaas_data_00001"}'),
-            'price': 1,
-            'start': 0,
-            'end': 1,
-            'private_key': 'cefc2c33064ea7691aee3e5e4f7842935d26f3ad790d81cf015e79b78958e848',
-        },
-        dataType: "json"
-    }).done(function (response) {
-        Toast.fire({
-            icon: 'info',
-            title: response.value
-        })
-    });
+    // $.ajax({
+    //     type: 'post',
+    //     async: true,
+    //     url: '/zjchain/exchange_new_sell/',
+    //     data: {
+    //         'hash': "754344e9e3560b50709887b3c769033546c7adde267ce90ec948cadd22d171ae",
+    //         'info': str_to_hex('{"type":0,"table_name":"databaas_data_00001","name":"databaas_data_00001"}'),
+    //         'price': 1,
+    //         'start': 0,
+    //         'end': 1,
+    //         'private_key': 'cefc2c33064ea7691aee3e5e4f7842935d26f3ad790d81cf015e79b78958e848',
+    //     },
+    //     dataType: "json"
+    // }).done(function (response) {
+    //     Toast.fire({
+    //         icon: 'info',
+    //         title: response.value
+    //     })
+    // });
 
-    $.ajax({
-        type: 'post',
-        async: true,
-        url: '/zjchain/exchange_purchase/',
-        data: {
-            'hash': "754344e9e3560b50709887b3c769033546c7adde267ce90ec948cadd22d171ae",
-            'private_key': '6d36dc82744a049e58beb80555d15f5381cb46981b11224f4af421660300b350',
-            'price': 299900000,
-        },
-        dataType: "json"
-    }).done(function (response) {
-        Toast.fire({
-            icon: 'info',
-            title: response.value
-        })
-    });
+    // $.ajax({
+    //     type: 'post',
+    //     async: true,
+    //     url: '/zjchain/exchange_purchase/',
+    //     data: {
+    //         'hash': "754344e9e3560b50709887b3c769033546c7adde267ce90ec948cadd22d171ae",
+    //         'private_key': '6d36dc82744a049e58beb80555d15f5381cb46981b11224f4af421660300b350',
+    //         'price': 299900000,
+    //     },
+    //     dataType: "json"
+    // }).done(function (response) {
+    //     Toast.fire({
+    //         icon: 'info',
+    //         title: response.value
+    //     })
+    // });
 
-    $.ajax({
-        type: 'post',
-        async: true,
-        url: '/zjchain/exchange_confirm/',
-        data: {
-            'hash': "754344e9e3560b50709887b3c769033546c7adde267ce90ec948cadd22d171ae",
-            'private_key': 'cefc2c33064ea7691aee3e5e4f7842935d26f3ad790d81cf015e79b78958e848',
-        },
-        dataType: "json"
-    }).done(function (response) {
-        Toast.fire({
-            icon: 'info',
-            title: response.value
-        })
-    });
+    // $.ajax({
+    //     type: 'post',
+    //     async: true,
+    //     url: '/zjchain/exchange_confirm/',
+    //     data: {
+    //         'hash': "754344e9e3560b50709887b3c769033546c7adde267ce90ec948cadd22d171ae",
+    //         'private_key': 'cefc2c33064ea7691aee3e5e4f7842935d26f3ad790d81cf015e79b78958e848',
+    //     },
+    //     dataType: "json"
+    // }).done(function (response) {
+    //     Toast.fire({
+    //         icon: 'info',
+    //         title: response.value
+    //     })
+    // });
 
-    $.ajax({
-        type: 'post',
-        async: true,
-        url: '/zjchain/exchange_sell_list/',
-        data: {
-            'search': "",
-            'owner': 0,
-            'start_pos': 0,
-            'type': 0,
-            'len': 100,
-            'private_key': 'cefc2c33064ea7691aee3e5e4f7842935d26f3ad790d81cf015e79b78958e848',
-        },
-        dataType: "json"
-    }).done(function (response) {
-        Toast.fire({
-            icon: 'info',
-            title: response.value
-        })
-    });
+    // $.ajax({
+    //     type: 'post',
+    //     async: true,
+    //     url: '/zjchain/exchange_sell_list/',
+    //     data: {
+    //         'search': "",
+    //         'owner': 0,
+    //         'start_pos': 0,
+    //         'type': 0,
+    //         'len': 100,
+    //         'private_key': 'cefc2c33064ea7691aee3e5e4f7842935d26f3ad790d81cf015e79b78958e848',
+    //     },
+    //     dataType: "json"
+    // }).done(function (response) {
+    //     Toast.fire({
+    //         icon: 'info',
+    //         title: response.value
+    //     })
+    // });
 
-    $.ajax({
-        type: 'post',
-        async: true,
-        url: '/zjchain/exchange_sell_list/',
-        data: {
-            'search': "",
-            'owner': 1,
-            'start_pos': 0,
-            'len': 100,
-            'private_key': 'cefc2c33064ea7691aee3e5e4f7842935d26f3ad790d81cf015e79b78958e848',
-        },
-        dataType: "json"
-    }).done(function (response) {
-        Toast.fire({
-            icon: 'info',
-            title: response.value
-        })
-    });
+    // $.ajax({
+    //     type: 'post',
+    //     async: true,
+    //     url: '/zjchain/exchange_sell_list/',
+    //     data: {
+    //         'search': "",
+    //         'owner': 1,
+    //         'start_pos': 0,
+    //         'len': 100,
+    //         'private_key': 'cefc2c33064ea7691aee3e5e4f7842935d26f3ad790d81cf015e79b78958e848',
+    //     },
+    //     dataType: "json"
+    // }).done(function (response) {
+    //     Toast.fire({
+    //         icon: 'info',
+    //         title: response.value
+    //     })
+    // });
 
-    $.ajax({
-        type: 'post',
-        async: true,
-        url: '/zjchain/exchange_sell_list/',
-        data: {
-            'search': "",
-            'owner': 1,
-            'start_pos': 0,
-            'len': 100,
-            'private_key': '6d36dc82744a049e58beb80555d15f5381cb46981b11224f4af421660300b350',
-        },
-        dataType: "json"
-    }).done(function (response) {
-        Toast.fire({
-            icon: 'info',
-            title: response.value
-        })
-    });
+    // $.ajax({
+    //     type: 'post',
+    //     async: true,
+    //     url: '/zjchain/exchange_sell_list/',
+    //     data: {
+    //         'search': "",
+    //         'owner': 1,
+    //         'start_pos': 0,
+    //         'len': 100,
+    //         'private_key': '6d36dc82744a049e58beb80555d15f5381cb46981b11224f4af421660300b350',
+    //     },
+    //     dataType: "json"
+    // }).done(function (response) {
+    //     Toast.fire({
+    //         icon: 'info',
+    //         title: response.value
+    //     })
+    // });
 
-    $.ajax({
-        type: 'post',
-        async: true,
-        url: '/zjchain/get_owner_transactions/',
-        data: {
-            'private_key': 'cefc2c33064ea7691aee3e5e4f7842935d26f3ad790d81cf015e79b78958e848',
-        },
-        dataType: "json"
-    }).done(function (response) {
-        Toast.fire({
-            icon: 'info',
-            title: response.value
-        })
-    });
+    // $.ajax({
+    //     type: 'post',
+    //     async: true,
+    //     url: '/zjchain/get_owner_transactions/',
+    //     data: {
+    //         'private_key': 'cefc2c33064ea7691aee3e5e4f7842935d26f3ad790d81cf015e79b78958e848',
+    //     },
+    //     dataType: "json"
+    // }).done(function (response) {
+    //     Toast.fire({
+    //         icon: 'info',
+    //         title: response.value
+    //     })
+    // });
 
-    $.ajax({
-        type: 'post',
-        async: true,
-        url: '/zjchain/exchange_sell_detail/',
-        data: {
-            'hash': "754344e9e3560b50709887b3c769033546c7adde267ce90ec948cadd22d171ae",
-            'private_key': 'cefc2c33064ea7691aee3e5e4f7842935d26f3ad790d81cf015e79b78958e848',
-        },
-        dataType: "json"
-    }).done(function (response) {
-        Toast.fire({
-            icon: 'info',
-            title: response.value
-        })
-    });
+    // $.ajax({
+    //     type: 'post',
+    //     async: true,
+    //     url: '/zjchain/exchange_sell_detail/',
+    //     data: {
+    //         'hash': "754344e9e3560b50709887b3c769033546c7adde267ce90ec948cadd22d171ae",
+    //         'private_key': 'cefc2c33064ea7691aee3e5e4f7842935d26f3ad790d81cf015e79b78958e848',
+    //     },
+    //     dataType: "json"
+    // }).done(function (response) {
+    //     Toast.fire({
+    //         icon: 'info',
+    //         title: response.value
+    //     })
+    // });
 
     // $.ajax({
     //     type: 'post',

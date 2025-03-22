@@ -1739,8 +1739,13 @@ def exchange_new_sell(request):
     if request.method == 'POST':
         try:
             hash = request.POST.get('hash')
+            res = update_table_sell_hash(table_name, sell_hash=hash)
             info = request.POST.get('info')
             info_json = json.loads(hex_to_str(info))
+            if not res:
+                table_name = info_json['table_name']
+                return JsonHttpResponse({'status': 1, 'msg': f'update data sell hash failed, selled: {table_name}'})
+        
             price = int(request.POST.get('price'))
             start = int(request.POST.get('start'))
             end = int(request.POST.get('end'))
@@ -1777,10 +1782,6 @@ def exchange_new_sell(request):
                 res = save_trace_info(table_name, None, key_pair.account_id, info_json)
                 if not res:
                     return JsonHttpResponse({'status': 1, 'msg': 'save trace info failed!'})
-                
-                res = update_table_sell_hash(table_name, sell_hash=hash)
-                if not res:
-                    return JsonHttpResponse({'status': 1, 'msg': 'save data sell hash failed!'})
 
             return JsonHttpResponse({'status': 0, 'msg': "ok"})
         except Exception as ex:
