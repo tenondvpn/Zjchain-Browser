@@ -1725,7 +1725,7 @@ def save_trace_info(tale_name, sell_hash, user, info):
     return True
 
 def check_data_has_selled(tale_name):
-    cmd = f"select from exchange_data_meta_info where table='{tale_name}' and sell_hash!='';"
+    cmd = f"select sell_hash from exchange_data_meta_info where table='{tale_name}' and sell_hash!='';"
     ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
     res = ck_client.execute(cmd)
     if len(res) > 0:
