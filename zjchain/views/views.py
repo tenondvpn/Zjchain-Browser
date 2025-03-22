@@ -1696,6 +1696,7 @@ def get_table_info(table_name, sell_hash):
     ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
     result = ck_client.execute(cmd)
     if result is None or len(result) <= 0:
+        logger.error(f'get table info fail cmd = {cmd}')
         return None
 
     return result[0]
@@ -1703,13 +1704,12 @@ def get_table_info(table_name, sell_hash):
 def save_trace_info(tale_name, sell_hash, user, info):
     if tale_name is not None:
         table_info = get_table_info(table_name=tale_name, sell_hash=None)
-        if table_info is None:
-            return False
     elif sell_hash is not None:
         table_info = get_table_info(table_name=None, sell_hash=sell_hash)
-        if table_info is None:
-            return False
 
+    if table_info is None:
+        return False
+    
     info["databaas_user"] = table_info[2]
     info["databaas_local_id"] = table_info[4]
     info["databaas_data_id"] = table_info[3]
@@ -1717,7 +1717,6 @@ def save_trace_info(tale_name, sell_hash, user, info):
     info["databaas_gid"] = table_info[1]
     info["exchange_user"] = user
     info["exchange_sell_hash"] = table_info[6]
-
     info_str = json.dumps(info)
     now_tm = int(time.time() * 1000)
     cmd = f"insert into {tale_name}_trace_info values('{table_info[3]}', {now_tm}, '{user}', '{info_str}', false);"
