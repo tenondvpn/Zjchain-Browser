@@ -1721,12 +1721,9 @@ def save_trace_info(tale_name, sell_hash, user, info):
     info_str = json.loads(info)
     now_tm = int(time.time() * 1000)
     cmd = f"insert into {tale_name}_trace_info values('{table_info[3]}', {now_tm}, '{user}', '{info_str}', false);"
-    try:
-        ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
-        ck_client.execute(cmd)
-        return True
-    except Exception as ex:
-        return False
+    ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
+    ck_client.execute(cmd)
+    return True
     
 def update_table_sell_hash(tale_name, sell_hash):
     cmd = f"update exchange_data_meta_info set sell_hash='{sell_hash}' where table='{tale_name}';"
