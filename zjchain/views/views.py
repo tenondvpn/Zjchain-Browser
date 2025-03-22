@@ -1725,13 +1725,14 @@ def save_trace_info(tale_name, sell_hash, user, info):
     return True
     
 def update_table_sell_hash(tale_name, sell_hash):
-    cmd = f"update exchange_data_meta_info set sell_hash='{sell_hash}' where table='{tale_name}';"
+    cmd = f"ALTER TABLE exchange_data_meta_info update sell_hash='{sell_hash}' where table='{tale_name}';"
     try:
         ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
         ck_client.execute(cmd)
         return True
     except Exception as ex:
         logging.error(f"update sell hash failed cmd: {cmd}, error: {str(ex)}")
+        print(f"update sell hash failed cmd: {cmd}, error: {str(ex)}")
         return False
 
 def exchange_new_sell(request):
@@ -1761,7 +1762,9 @@ def exchange_new_sell(request):
                 "",
                 0,
                 check_gid_valid=True)
-            
+            if not res:
+                return JsonHttpResponse({'status': 1, 'msg': "error"})
+
             if 'table_name' in info_json:
                 key_pair = shardora_api.get_keypair(bytes.fromhex(private_key))
                 table_name = info_json['table_name']
@@ -1779,10 +1782,7 @@ def exchange_new_sell(request):
                 if not res:
                     return JsonHttpResponse({'status': 1, 'msg': 'save data sell hash failed!'})
 
-            if not res:
-                return JsonHttpResponse({'status': 1, 'msg': "error"})
-            else:
-                return JsonHttpResponse({'status': 0, 'msg': "ok"})
+            return JsonHttpResponse({'status': 0, 'msg': "ok"})
         except Exception as ex:
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
         
