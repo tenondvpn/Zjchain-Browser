@@ -1723,22 +1723,29 @@ def save_trace_info(tale_name, sell_hash, user, info):
     ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
     ck_client.execute(cmd)
     return True
+
+def check_data_has_selled(tale_name):
+    cmd = f"select from exchange_data_meta_info where table='{tale_name}' and sell_hash!='';"
+    ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
+    res = ck_client.execute(cmd)
+    if len(res) > 0:
+        return False
+    return True
     
 def update_table_sell_hash(tale_name, sell_hash):
-    cmd = f"ALTER TABLE exchange_data_meta_info update sell_hash='{sell_hash}' where table='{tale_name}' and sell_hash='';"
-    try:
-        ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
-        res = ck_client.execute(cmd)
-        logging.error(f"update sell hash failed cmd: {cmd}, res: {res}")
-        print(f"update sell hash failed cmd: {cmd}, res: {res}")
-
-        if res[0][0] != 1:
-            return False
-        return True
-    except Exception as ex:
-        logging.error(f"update sell hash failed cmd: {cmd}, error: {str(ex)}")
-        print(f"update sell hash failed cmd: {cmd}, error: {str(ex)}")
+    if check_data_has_selled(tale_name):
+        print(f"update sell hash failed {tale_name} selled")
         return False
+    
+    cmd = f"ALTER TABLE exchange_data_meta_info update sell_hash='{sell_hash}' where table='{tale_name}' and sell_hash='';"
+    ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
+    res = ck_client.execute(cmd)
+    logging.error(f"update sell hash failed cmd: {cmd}, res: {res}")
+    print(f"update sell hash failed cmd: {cmd}, res: {res}")
+
+    if res[0][0] != 1:
+        return False
+    return True
 
 def exchange_new_sell(request):
     if request.method == 'POST':
