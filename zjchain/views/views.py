@@ -1725,10 +1725,10 @@ def save_trace_info(tale_name, sell_hash, user, info):
     return True
 
 def check_data_has_selled(tale_name):
-    cmd = f"select sell_hash from exchange_data_meta_info where table='{tale_name}' and sell_hash!='';"
+    cmd = f"select sell_hash from exchange_data_meta_info where table='{tale_name}' and sell_hash='';"
     ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
     res = ck_client.execute(cmd)
-    if len(res) > 0:
+    if len(res) <= 0:
         return False
     return True
     
@@ -1753,7 +1753,7 @@ def exchange_new_sell(request):
             table_name = info_json['table_name']
             res = update_table_sell_hash(table_name, sell_hash=hash)
             if not res:
-                return JsonHttpResponse({'status': 1, 'msg': f'update data sell hash failed, selled: {table_name}'})
+                return JsonHttpResponse({'status': 1, 'msg': f'update data sell hash failed, {table_name} not exists or selled'})
         
             price = int(request.POST.get('price'))
             start = int(request.POST.get('start'))
