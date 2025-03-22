@@ -1725,10 +1725,12 @@ def save_trace_info(tale_name, sell_hash, user, info):
     return True
     
 def update_table_sell_hash(tale_name, sell_hash):
-    cmd = f"ALTER TABLE exchange_data_meta_info update sell_hash='{sell_hash}' where table='{tale_name}';"
+    cmd = f"ALTER TABLE exchange_data_meta_info update sell_hash='{sell_hash}' where table='{tale_name}' and sell_hash='';"
     try:
         ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
-        ck_client.execute(cmd)
+        res = ck_client.execute(cmd)
+        logging.error(f"update sell hash failed cmd: {cmd}, res: {res}")
+        print(f"update sell hash failed cmd: {cmd}, res: {res}")
         return True
     except Exception as ex:
         logging.error(f"update sell hash failed cmd: {cmd}, error: {str(ex)}")
