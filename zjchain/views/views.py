@@ -1733,18 +1733,15 @@ def check_data_has_selled(tale_name):
     return True
     
 def update_table_sell_hash(tale_name, sell_hash):
-    if check_data_has_selled(tale_name):
+    if not check_data_has_selled(tale_name):
         print(f"update sell hash failed {tale_name} selled")
         return False
     
     cmd = f"ALTER TABLE exchange_data_meta_info update sell_hash='{sell_hash}' where table='{tale_name}' and sell_hash='';"
     ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
     res = ck_client.execute(cmd)
-    logging.error(f"update sell hash failed cmd: {cmd}, res: {res}")
-    print(f"update sell hash failed cmd: {cmd}, res: {res}")
-
-    if res[0][0] != 1:
-        return False
+    logging.error(f"update sell hash cmd: {cmd}, res: {res}")
+    print(f"update sell hash cmd: {cmd}, res: {res}")
     return True
 
 def exchange_new_sell(request):
