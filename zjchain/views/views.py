@@ -14,6 +14,7 @@ import json
 import urllib.request
 import re
 import time
+import copy
 from django.shortcuts import render
 from django.conf import settings
 import logging
@@ -1664,7 +1665,6 @@ def get_block_detail(request, block_hash):
 
 def get_prikey(request, seckey):
     cmd = "select ecn_prikey from private_key_table where seckey='" + seckey + "'"
-
     ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
     result = ck_client.execute(cmd)
     if result is None or len(result) <= 0:
@@ -1686,11 +1686,63 @@ def set_private_key(request):
         except Exception as ex:
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
 
+def get_table_info(table_name, sell_hash):
+    #(confirm_hash String,gid String,user String,data_id String,local_id String
+    if table_name is not None:
+        cmd = (f"select confirm_hash,gid,user,data_id,local_id,extern_info,sell_hash from exchange_data_meta_info where table='{table_name}' limit 1;")
+    else:
+        cmd = (f"select confirm_hash,gid,user,data_id,local_id,extern_info,sell_hash from exchange_data_meta_info where sell_hash='{sell_hash}' limit 1;")
+        
+    ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
+    result = ck_client.execute(cmd)
+    if result is None or len(result) <= 0:
+        return None
+
+    return result[0]
+
+def save_trace_info(tale_name, sell_hash, user, info):
+    if tale_name is not None:
+        table_info = get_table_info(table_name=tale_name, sell_hash=None)
+        if table_info is None:
+            return False
+    elif sell_hash is not None:
+        table_info = get_table_info(table_name=None, sell_hash=sell_hash)
+        if table_info is None:
+            return False
+
+    info["databaas_user"] = table_info[2]
+    info["databaas_local_id"] = table_info[4]
+    info["databaas_data_id"] = table_info[3]
+    info["databaas_confirm_hash"] = table_info[0]
+    info["databaas_gid"] = table_info[1]
+    info["exchange_user"] = user
+    info["exchange_sell_hash"] = table_info[6]
+
+    info_str = json.loads(info)
+    now_tm = int(time.time() * 1000)
+    cmd = f"insert into {tale_name}_trace_info values('{table_info[3]}', {now_tm}, '{user}', '{info_str}', false);"
+    try:
+        ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
+        ck_client.execute(cmd)
+        return True
+    except Exception as ex:
+        return False
+    
+def update_table_sell_hash(tale_name, sell_hash):
+    cmd = f"update exchange_data_meta_info set sell_hash='{sell_hash}' where table='{tale_name}';"
+    try:
+        ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
+        ck_client.execute(cmd)
+        return True
+    except Exception as ex:
+        return False
+
 def exchange_new_sell(request):
     if request.method == 'POST':
         try:
             hash = request.POST.get('hash')
             info = request.POST.get('info')
+            info_json = json.loads(hex_to_str(info))
             price = int(request.POST.get('price'))
             start = int(request.POST.get('start'))
             end = int(request.POST.get('end'))
@@ -1699,12 +1751,13 @@ def exchange_new_sell(request):
                 "CreateNewItem(bytes32,bytes,uint256,uint256,uint256)")[:8] + encode_hex(
                     encode(['bytes32', 'bytes', 'uint256', 'uint256', 'uint256'], 
                     [decode_hex(hash), decode_hex(info), price, start, end]))[2:]
+            gid = shardora_api.gen_gid()
             res = shardora_api.transfer(
                 private_key,
                 exchange_contarct_address,
                 0,
                 8,
-                "",
+                gid,
                 "",
                 func_param,
                 "",
@@ -1712,6 +1765,23 @@ def exchange_new_sell(request):
                 0,
                 check_gid_valid=True)
             
+            if 'table_name' in info_json:
+                key_pair = shardora_api.Keypair(bytes.fromhex(private_key))
+                table_name = info_json['table_name']
+                info_json['create_hash'] = hash
+                info_json['price'] = price
+                info_json['start'] = start
+                info_json['command'] = "exchange_new_sell"
+                info_json['end'] = end
+                info_json['gid'] = gid
+                res = save_trace_info(table_name, None, key_pair.account_id, info_json)
+                if not res:
+                    return JsonHttpResponse({'status': 1, 'msg': 'save trace info failed!'})
+                
+                res = update_table_sell_hash(table_name, sell_hash=hash)
+                if not res:
+                    return JsonHttpResponse({'status': 1, 'msg': 'save trace info failed!'})
+
             if not res:
                 return JsonHttpResponse({'status': 1, 'msg': "error"})
             else:
@@ -1729,23 +1799,26 @@ def exchange_purchase(request):
                 "PurchaseItem(bytes32,uint256)")[:8] + encode_hex(
                     encode(['bytes32','uint256'], 
                     [decode_hex(hash),int(time.time() * 1000)]))[2:]
+            gid = shardora_api.gen_gid()
             res = shardora_api.transfer(
                 private_key,
                 exchange_contarct_address,
                 price,
                 8,
-                "",
+                gid,
                 "",
                 func_param,
                 "",
                 "",
                 0,
                 check_gid_valid=True)
-            
             if not res:
                 return JsonHttpResponse({'status': 1, 'msg': "call purchase contract function failed"})
-            else:
-                return JsonHttpResponse({'status': 0, 'msg': "ok"})
+
+            info_json = {"gid": gid, "command": "exchange_purchase"}
+            key_pair = shardora_api.get_keypair(bytes.fromhex(private_key))
+            save_trace_info(None, hash, key_pair.account_id, info_json)
+            return JsonHttpResponse({'status': 0, 'msg': "ok"})
         except Exception as ex:
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
         
@@ -1756,23 +1829,26 @@ def exchange_confirm(request):
             private_key = request.POST.get('private_key')
             func_param = shardora_api.keccak256_str(
                 "ConfirmPurchase(bytes32)")[:8] + encode_hex(encode(['bytes32'], [decode_hex(hash)]))[2:]
+            gid = shardora_api.gen_gid()
             res = shardora_api.transfer(
                 private_key,
                 exchange_contarct_address,
                 0,
                 8,
-                "",
+                gid,
                 "",
                 func_param,
                 "",
                 "",
                 0,
                 check_gid_valid=True)
-            
             if not res:
                 return JsonHttpResponse({'status': 1, 'msg': "error"})
-            else:
-                return JsonHttpResponse({'status': 0, 'msg': "ok"})
+
+            info_json = {"gid": gid, "command": "exchange_confirm"}
+            key_pair = shardora_api.get_keypair(bytes.fromhex(private_key))
+            save_trace_info(None, hash, key_pair.account_id, info_json)
+            return JsonHttpResponse({'status': 0, 'msg': "ok"})
         except Exception as ex:
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
         
@@ -1931,7 +2007,7 @@ def get_table_detail(db_name, table_name):
     
 def exchange_sell_detail(request):
     if request.method == 'POST':
-        # try:
+        try:
             hash = request.POST.get('hash')
             private_key = request.POST.get('private_key')
             res = shardora_api.query_contract_function(
@@ -1990,8 +2066,8 @@ def exchange_sell_detail(request):
 
                 logger.info('exchange_sell_detail success hash = %s, res: %s' % (hash, json.dumps(res_json)))
                 return JsonHttpResponse({'status': 0, 'msg': "ok", 'data': res_json})
-        # except Exception as ex:
-        #     return JsonHttpResponse({'status': 1, 'msg': str(ex)})  
+        except Exception as ex:
+            return JsonHttpResponse({'status': 1, 'msg': str(ex)})  
         
 def get_owner_transactions(request):
     if request.method == 'POST':
@@ -2021,3 +2097,44 @@ def get_owner_transactions(request):
         except Exception as ex:
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
     
+def add_trace_info(request):
+    return JsonHttpResponse({'status': 1, 'msg': "invalid"})
+
+def get_trace_info_list(request):
+    if request.method == 'POST':
+        try:
+            latest_timestamp = request.POST.get('latest_timestamp')
+            checked = request.POST.get('checked')
+            count = request.POST.get('count')
+            data_id = request.POST.get('data_id')
+            private_key = request.POST.get('private_key')
+            if count > 1000:
+                count = 1000
+            
+            where = f"where data_id='{data_id}' "
+            if checked is not None:
+                where = f" and checked = {checked}"
+                
+            if latest_timestamp is not None:
+                if where != "":
+                    where += f" and time >= {latest_timestamp}"
+
+            cmd = f"select data_id,time,user,trace_info,checked from exchange_data_meta_info {where} limit {count};"
+            ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
+            result = ck_client.execute(cmd)
+            res_arr = []
+            for item in result:
+                res_item = {
+                    "data_id": item[0],
+                    "time": item[1],
+                    "user": item[2],
+                    "trace_info": item[3],
+                    "checked": item[4]
+                    }
+                
+                res_arr.append(res_item)
+
+            return JsonHttpResponse({'status': 0, 'msg': 'success', 'data': res_arr})
+        except Exception as ex:
+            return JsonHttpResponse({'status': 1, 'msg': str(ex)})
+    return JsonHttpResponse({'status': 1, 'msg': "invalid"})

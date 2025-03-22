@@ -55,6 +55,10 @@ urlpatterns = (
     re_path(r'^exchange_sell_detail/$', views.exchange_sell_detail),
     re_path(r'^get_owner_transactions/$', views.get_owner_transactions),
 
+    #全流程确权溯源
+    re_path(r'^add_trace_info/$', views.add_trace_info),
+    re_path(r'^get_trace_info_list/$', views.get_trace_info_list),
+
 
     re_path(r'^get_transaction/$', transactions_view.get_transaction),
     re_path(r'^transactions_list/$', transactions_view.transactions_list),
