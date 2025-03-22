@@ -1731,6 +1731,7 @@ def update_table_sell_hash(tale_name, sell_hash):
         ck_client.execute(cmd)
         return True
     except Exception as ex:
+        logging.error(f"update sell hash failed cmd: {cmd}, error: {str(ex)}")
         return False
 
 def exchange_new_sell(request):
@@ -1776,7 +1777,7 @@ def exchange_new_sell(request):
                 
                 res = update_table_sell_hash(table_name, sell_hash=hash)
                 if not res:
-                    return JsonHttpResponse({'status': 1, 'msg': 'save trace info failed!'})
+                    return JsonHttpResponse({'status': 1, 'msg': 'save data sell hash failed!'})
 
             if not res:
                 return JsonHttpResponse({'status': 1, 'msg': "error"})
