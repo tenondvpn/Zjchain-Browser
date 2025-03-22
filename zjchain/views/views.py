@@ -1718,7 +1718,7 @@ def save_trace_info(tale_name, sell_hash, user, info):
     info["exchange_user"] = user
     info["exchange_sell_hash"] = table_info[6]
 
-    info_str = json.loads(info)
+    info_str = json.dumps(info)
     now_tm = int(time.time() * 1000)
     cmd = f"insert into {tale_name}_trace_info values('{table_info[3]}', {now_tm}, '{user}', '{info_str}', false);"
     ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
