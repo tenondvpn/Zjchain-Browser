@@ -1766,7 +1766,7 @@ def exchange_new_sell(request):
                 check_gid_valid=True)
             
             if 'table_name' in info_json:
-                key_pair = shardora_api.Keypair(bytes.fromhex(private_key))
+                key_pair = shardora_api.get_keypair(bytes.fromhex(private_key))
                 table_name = info_json['table_name']
                 info_json['create_hash'] = hash
                 info_json['price'] = price
