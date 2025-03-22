@@ -1729,9 +1729,11 @@ def update_table_sell_hash(tale_name, sell_hash):
     try:
         ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
         res = ck_client.execute(cmd)
+        logging.error(f"update sell hash failed cmd: {cmd}, res: {res}")
+        print(f"update sell hash failed cmd: {cmd}, res: {res}")
+
         if res[0][0] != 1:
             return False
-        
         return True
     except Exception as ex:
         logging.error(f"update sell hash failed cmd: {cmd}, error: {str(ex)}")
