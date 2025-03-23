@@ -1689,9 +1689,9 @@ def set_private_key(request):
 def get_table_info(table_name, sell_hash):
     #(confirm_hash String,gid String,user String,data_id String,local_id String
     if table_name is not None:
-        cmd = (f"select confirm_hash,gid,user,data_id,local_id,extern_info,sell_hash from exchange_data_meta_info where table='{table_name}' limit 1;")
+        cmd = (f"select confirm_hash,gid,user,data_id,local_id,extern_info,sell_hash,table from exchange_data_meta_info where table='{table_name}' limit 1;")
     else:
-        cmd = (f"select confirm_hash,gid,user,data_id,local_id,extern_info,sell_hash from exchange_data_meta_info where sell_hash='{sell_hash}' limit 1;")
+        cmd = (f"select confirm_hash,gid,user,data_id,local_id,extern_info,sell_hash,table from exchange_data_meta_info where sell_hash='{sell_hash}' limit 1;")
         
     ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
     result = ck_client.execute(cmd)
@@ -1719,6 +1719,7 @@ def save_trace_info(tale_name, sell_hash, user, info):
     info["exchange_sell_hash"] = table_info[6]
     info_str = json.dumps(info)
     now_tm = int(time.time() * 1000)
+    tale_name = table_info[7]
     cmd = f"insert into {tale_name}_trace_info values('{table_info[3]}', {now_tm}, '{user}', '{info_str}', false);"
     ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
     ck_client.execute(cmd)
