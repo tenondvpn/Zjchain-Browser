@@ -2055,7 +2055,7 @@ def exchange_sell_detail(request):
                             res_json["table_info"] = fields_info
                             res_json["data_example"] = tmp_result
 
-                    gid_ck_info_cmd = f"select gid from {table_name}_info limit 1;"
+                    gid_ck_info_cmd = f"select gid from exchange_data_meta_info where table='{table_name}' limit 1;" 
                     try:
                         gid_ck_info_res = ck_client.execute(gid_ck_info_cmd)
                         gid = gid_ck_info_res[0][0]
