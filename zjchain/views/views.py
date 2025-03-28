@@ -1687,11 +1687,11 @@ def set_private_key(request):
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
 
 def get_table_info(table_name, sell_hash):
-    #(confirm_hash String,gid String,user String,data_id String,local_id String
+    #(confirm_hash String,gid String,user String,data_id String,asset_id String
     if table_name is not None:
-        cmd = (f"select confirm_hash,gid,user,data_id,local_id,extern_info,sell_hash,table from exchange_data_meta_info where table='{table_name}' limit 1;")
+        cmd = (f"select confirm_hash,gid,user,data_id,asset_id,extern_info,sell_hash,table from exchange_data_meta_info where table='{table_name}' limit 1;")
     else:
-        cmd = (f"select confirm_hash,gid,user,data_id,local_id,extern_info,sell_hash,table from exchange_data_meta_info where sell_hash='{sell_hash}' limit 1;")
+        cmd = (f"select confirm_hash,gid,user,data_id,asset_id,extern_info,sell_hash,table from exchange_data_meta_info where sell_hash='{sell_hash}' limit 1;")
         
     ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
     result = ck_client.execute(cmd)
@@ -1711,7 +1711,7 @@ def save_trace_info(tale_name, sell_hash, user, info):
         return False
     
     info["databaas_user"] = table_info[2]
-    info["databaas_local_id"] = table_info[4]
+    info["databaas_asset_id"] = table_info[4]
     info["databaas_data_id"] = table_info[3]
     info["databaas_confirm_hash"] = table_info[0]
     info["databaas_gid"] = table_info[1]
