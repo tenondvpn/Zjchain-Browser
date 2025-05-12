@@ -1940,7 +1940,7 @@ def exchange_confirm(request):
         
 def exchange_sell_list(request):
     if request.method == 'POST':
-        try:
+        # try:
             gpu_type = request.POST.get('gpu_type')
             gpu_count_min = request.POST.get('gpu_count_min')
             gpu_count_max = request.POST.get('gpu_count_max')
@@ -2057,8 +2057,8 @@ def exchange_sell_list(request):
                     data['buyers'] = sorted(data['buyers'] , key=lambda x: x['price']) 
 
                 return JsonHttpResponse({'status': 0, 'msg': "ok", 'data': res_datas, 'total': total_count})
-        except Exception as ex:
-            return JsonHttpResponse({'status': 1, 'msg': str(ex)})        
+        # except Exception as ex:
+        #     return JsonHttpResponse({'status': 1, 'msg': str(ex)})        
         
 def get_table_detail(db_name, table_name):
     ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
