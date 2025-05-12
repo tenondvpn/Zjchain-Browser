@@ -2140,7 +2140,7 @@ def exchange_sell_detail(request):
                     gid_ck_info_cmd = f"select user, gid from exchange_data_meta_info where table='{table_name}' limit 1;" 
                     try:
                         gid_ck_info_res = ck_client.execute(gid_ck_info_cmd)
-                        user = gid_ck_info_res[0][0]
+                        user = exchange_contarct_address + gid_ck_info_res[0][0]
                         nonce = gid_ck_info_res[0][1]
                         block_info = shardora_api.get_block_info_with_addr_nonce(user, nonce)
                         if block_info.status_code != 200:
