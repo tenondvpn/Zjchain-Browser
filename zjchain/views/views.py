@@ -1752,9 +1752,6 @@ def exchange_new_sell(request):
             info = request.POST.get('info')
             info_json = json.loads(hex_to_str(info))
             table_name = info_json['table_name']
-            res = update_table_sell_hash(table_name, sell_hash=hash)
-            if not res:
-                return JsonHttpResponse({'status': 1, 'msg': f'update data sell hash failed, {table_name} not exists or selled'})
         
             price = int(request.POST.get('price'))
             start = int(request.POST.get('start'))
@@ -1805,6 +1802,10 @@ def exchange_new_sell(request):
             if not res:
                 return JsonHttpResponse({'status': 1, 'msg': "error"})
 
+            res = update_table_sell_hash(table_name, sell_hash=hash)
+            if not res:
+                return JsonHttpResponse({'status': 1, 'msg': f'update data sell hash failed, {table_name} not exists or selled'})
+
             if 'table_name' in info_json:
                 key_pair = shardora_api.get_keypair(bytes.fromhex(private_key))
                 table_name = info_json['table_name']
@@ -1813,7 +1814,7 @@ def exchange_new_sell(request):
                 info_json['start'] = start
                 info_json['command'] = "exchange_new_sell"
                 info_json['end'] = end
-                info_json['gid'] = gid
+                info_json['gid'] = str(nonce)
                 res = save_trace_info(table_name, None, key_pair.account_id, info_json)
                 if not res:
                     return JsonHttpResponse({'status': 1, 'msg': 'save trace info failed!'})
