@@ -88,7 +88,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'noah.wsgi.application'
 
-
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_HEADERS = ('*')
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
