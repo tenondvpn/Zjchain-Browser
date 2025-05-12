@@ -1979,7 +1979,7 @@ def exchange_sell_list(request):
                     call_type=1)
             
             if res.status_code != 200:
-                return JsonHttpResponse({'status': 1, 'msg': "error"})
+                return JsonHttpResponse({'status': 1, 'msg': "query contract error"})
             else:
                 print(res.text)
                 tmp_datas = json.loads(res.text)
@@ -2137,12 +2137,12 @@ def exchange_sell_detail(request):
                             res_json["table_info"] = fields_info
                             res_json["data_example"] = tmp_result
 
-                    gid_ck_info_cmd = f"select gid from exchange_data_meta_info where table='{table_name}' limit 1;" 
+                    gid_ck_info_cmd = f"select user, gid from exchange_data_meta_info where table='{table_name}' limit 1;" 
                     try:
                         gid_ck_info_res = ck_client.execute(gid_ck_info_cmd)
-                        gid = gid_ck_info_res[0][0]
-                        
-                        block_info = shardora_api.get_block_info_with_gid(gid)
+                        user = gid_ck_info_res[0][0]
+                        nonce = gid_ck_info_res[0][1]
+                        block_info = shardora_api.get_block_info_with_addr_nonce(user, nonce)
                         if block_info.status_code != 200:
                             return JsonHttpResponse({'status': 1, 'msg': 'invalid block info.'})  
 

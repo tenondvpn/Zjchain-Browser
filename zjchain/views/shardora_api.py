@@ -498,3 +498,5 @@ def _run_once(cmd):
     stderr_file.close()
     return stdout, stderr, return_code
 
+def get_block_info_with_addr_nonce(addr: str, nonce: int):
+    return _post_data("http://{}:{}/get_block_with_gid".format(http_ip, http_port), {'addr': addr, "nonce": nonce})
