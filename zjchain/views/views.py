@@ -1967,18 +1967,21 @@ def exchange_sell_list(request):
                     contract_address=exchange_contarct_address,
                     function="GetOwnerItemJson",
                     types_list=['uint256', 'uint256', 'address'],
-                    params_list=[start_pos, 1000, decode_hex(key_pair.account_id)])
+                    params_list=[start_pos, 1000, decode_hex(key_pair.account_id)],
+                    call_type=1)
             else:
                 res = shardora_api.query_contract_function(
                     private_key=private_key, 
                     contract_address=exchange_contarct_address,
                     function="GetAllItemJson",
                     types_list=['uint256', 'uint256'],
-                    params_list=[start_pos, 1000])
+                    params_list=[start_pos, 1000],
+                    call_type=1)
             
             if res.status_code != 200:
                 return JsonHttpResponse({'status': 1, 'msg': "error"})
             else:
+                print(res.text)
                 tmp_datas = json.loads(res.text)
                 if len(tmp_datas) <= start_pos:
                     return JsonHttpResponse({'status': 0, 'msg': "ok", 'data': []})
@@ -2101,7 +2104,8 @@ def exchange_sell_detail(request):
                 contract_address=exchange_contarct_address,
                 function="GetSellDetail",
                 types_list=['bytes32'],
-                params_list=[decode_hex(hash)])
+                params_list=[decode_hex(hash)],
+                call_type=1)
             ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
             if res.status_code != 200:
                 return JsonHttpResponse({'status': 1, 'msg': "error"})
