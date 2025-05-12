@@ -7,6 +7,7 @@ import os
 import time
 import json
 
+import linux_file_cmd
 from eth_keys import keys, datatypes
 from secp256k1 import PrivateKey, PublicKey
 from eth_utils import decode_hex, encode_hex
@@ -26,7 +27,7 @@ from coincurve import PrivateKey as cPrivateKey
 w3 = Web3(Web3.IPCProvider('/Users/myuser/Library/Ethereum/geth.ipc'))
 
 http_ip = "127.0.0.1"
-http_port = "23001"
+http_port = 23001
 
 Keypair = namedtuple('Keypair', ['skbytes', 'pkbytes', 'account_id'])
 Sign = namedtuple('Sign', ['r', 's', 'v'])
@@ -37,20 +38,27 @@ def transfer(
         str_prikey: str, 
         to: str, 
         amount: int, 
+        nonce=-1, 
         step=0, 
-        gid="", 
         contract_bytes="", 
         input="", 
         key="", 
         val="", 
         prepayment=0, 
-        check_gid_valid=True):
-    if gid == "":
-        gid = _gen_gid()
-
+        check_tx_valid=True,
+        gas_limit=999999):
     keypair = get_keypair(bytes.fromhex(str_prikey))
+    if nonce == -1:
+        add_info = get_account_info(keypair.account_id)
+        if add_info is None:
+            print(f"get address from chain failed: {keypair.account_id}")
+            return False
+        
+        print(f"get address: {keypair.account_id} info: {add_info}")
+        nonce = int(add_info["nonce"]) + 1
+        
     param = get_transfer_params(
-        gid, to, amount, 90000000000, 1, 
+        nonce, to, amount, gas_limit, 1, 
         keypair, 3, contract_bytes, input, 
         prepayment, step, key, val)
     res = _call_tx(param)
@@ -58,15 +66,28 @@ def transfer(
         print(f"invalid status {res.status_code}, message: {res.text}")
         return False
     
-    if not check_gid_valid:
+    if not check_tx_valid:
         return True
     
-    return check_transaction_gid_valid(gid)
+    print(f"check step: {nonce}")
+    addr = keypair.account_id
+    if step == 8:
+        addr = to + keypair.account_id
 
-def call_tx(gid, to, amount, gas_limit, sign_r, sign_s, sign_v, pkbytes_str, key, value):
+    return check_addr_nonce_valid(addr, nonce)
+
+def get_account_info(address):
+    res = _post_data("http://{}:{}/query_account".format(http_ip, http_port), {'address': address})
+    if res.status_code != 200:
+        return None
+    
+    json_res = json.loads(res.text)
+    return json_res
+
+def call_tx(nonce, to, amount, gas_limit, sign_r, sign_s, sign_v, pkbytes_str, key, value):
     params = _get_tx_params(sign=sign,
                             pkbytes=pkbytes,
-                            gid=gid,
+                            nonce=nonce,
                             to=to,
                             amount=amount,
                             prepay=0,
@@ -89,22 +110,29 @@ def gen_gid() -> str:
 def keccak256_str(s: str) -> str:
     return _keccak256_str(s)
 
-def keccak256_bytes(s: bytes) -> str:
-    k = sha3.keccak_256()
-    k.update(s)
-    return k.hexdigest()
+def check_address_valid(address, balance=0):
+    post_data = {"addrs":[address], "balance": balance}
+    res = _post_data("http://{}:{}/accounts_valid".format(http_ip, http_port), post_data)
+    if res.status_code != 200:
+        return False
+    
+    json_res = json.loads(res.text)
+    if "addrs" in json_res and json_res["addrs"] is not None:
+        for addr in json_res["addrs"]:
+            if addr == address:
+                return True
+            
+    return False
+
 
 def check_accounts_valid(post_data: dict):
-    return _post_data("http://{}:{}/accounts_valid".format("127.0.0.1", 23001), post_data)
+    return _post_data("http://{}:{}/accounts_valid".format(http_ip, http_port), post_data)
 
 def check_prepayments_valid(post_data: dict):
-    return _post_data("http://{}:{}/prepayment_valid".format("127.0.0.1", 23001), post_data)
-
-def check_gid_valid(post_data: dict):
-    return _post_data("http://{}:{}/commit_gid_valid".format("127.0.0.1", 23001), post_data)
+    return _post_data("http://{}:{}/prepayment_valid".format(http_ip, http_port), post_data)
 
 def get_transfer_params(
-        gid: str, 
+        nonce: int, 
         to: str, 
         amount: int, 
         gas_limit: int, 
@@ -117,10 +145,8 @@ def get_transfer_params(
         step: 0,
         key: str,
         val: str):
-    if gid == '':
-        gid = _gen_gid()
     sign = _sign_message(keypair=keypair,
-                        gid=gid,
+                        nonce=nonce,
                         to=to,
                         amount=amount,
                         gas_limit=gas_limit,
@@ -133,7 +159,7 @@ def get_transfer_params(
                         val=val)
     params = _get_tx_params(sign=sign,
                             pkbytes=keypair.pkbytes,
-                            gid=gid,
+                            nonce=nonce,
                             to=to,
                             amount=amount,
                             prepay=prepay,
@@ -184,90 +210,96 @@ def deploy_contract(
         amount: int, 
         sol_file_path: str, 
         constructor_types: list, 
-        constructor_params: list):
-    ret, stdout, stderr = _run_once(f"../solc --bin {sol_file_path}")
+        constructor_params: list,
+        nonce = -1,
+        prepayment=0,
+        check_tx_valid=False,
+        is_library=False,
+        in_libraries="",
+        contract_address=None):
+    libraries = ""
+    if in_libraries != "":
+        libraries = f"--libraries '{in_libraries}'"
+
+    file_name = sol_file_path.split('/')[-1].split('.')[0]
+    cmd = f"/usr/bin/solc {libraries} --overwrite --bin {sol_file_path} -o {file_name}"
+    ret, stdout, stderr = _run_once(cmd)
+    print(cmd)
     # print(f"solc --bin {sol_file_path}")
     func_param = ""
     if len(constructor_types) > 0 and len(constructor_types) == len(constructor_params):
-        func_param = keccak256_str(encode_hex(encode(constructor_types, constructor_params)))[2:]
+        func_param = encode_hex(encode(constructor_types, constructor_params))[2:]
 
-    ret_split = (ret.decode('utf-8')).split("Binary:")
-    if len(ret_split) != 2:
+    bytes_codes = None
+    file_cmd = linux_file_cmd.LinuxFileCommand()
+    contract_line = None
+    with open(sol_file_path, 'r') as f:
+        for line in f.readlines():
+            if line.find('contract') >= 0:
+                contract_line = line
+                break
+        
+    file_list = file_cmd.list_files(f'./{file_name}/')
+    for file in file_list:
+        file_name = file.split('/')[-1].split('.')[0]
+        if contract_line.find(file_name) >= 0:
+            print(f"read contract file: {file} contract_line: {contract_line}")
+            with open(file, "r") as f:
+                bytes_codes = f.read()
+            break
+
+    if bytes_codes is None:
+        print("get sol bytes code failed!")
         return None
-    
-    bytes_codes = ret_split[1].strip()
-    # print(f"bytes_codes: {bytes_codes}, \nstdout: {stdout}, \nstderr: {stderr}, \nfunc_param: {func_param}")
+
+    print(f"bytes_codes: {bytes_codes}, \nstdout: {stdout}, \nstderr: {stderr}, \nfunc_param: {func_param}", flush=True)
     call_str = bytes_codes + func_param
-    contract_address_hash = keccak256_str(call_str)
-    contract_address = contract_address_hash[len(contract_address_hash)-40: len(contract_address_hash)]
-    transfer(
+    if contract_address is None:
+        contract_address_hash = keccak256_str(call_str+gen_gid())
+        contract_address = contract_address_hash[len(contract_address_hash)-40: len(contract_address_hash)]
+        
+    step = 6
+    if is_library:
+        step = 14
+
+    res = transfer(
         str_prikey=private_key, 
         to=contract_address, 
         amount=amount, 
-        step=6, 
+        step=step, 
+        nonce=nonce,
         contract_bytes=call_str, 
-        prepayment=0,
-        check_gid_valid=False)
-    if not check_contract_deploy_success(contract_address):
+        prepayment=prepayment,
+        check_tx_valid=check_tx_valid)
+    if not res:
         return None
     
-    return contract_address
+    if check_tx_valid:
+        for i in range(0, 30):
+            if prepayment > 0:
+                keypair = get_keypair(bytes.fromhex(private_key))
+                if check_address_valid(contract_address + keypair.account_id, prepayment):
+                    return contract_address
+                
+            elif check_address_valid(contract_address):
+                return contract_address
+            
+            time.sleep(1)
 
-def contract_prepayment(private_key: str, contract_address: str, prepayment: int, check_res: bool, gid: str):
+    return None
+
+def contract_prepayment(private_key: str, contract_address: str, prepayment: int, check_res: bool, nonce: int):
     if not transfer(
             str_prikey=private_key, 
             to=contract_address, 
             amount=0, 
-            check_gid_valid=check_res,
-            gid=gid,
+            check_tx_valid=check_res,
+            nonce=nonce,
             step=7, 
             prepayment=prepayment):
         return False
     
-    if not check_res:
-        return True
-    
-    keypair = get_keypair(bytes.fromhex(private_key))
-
-    return check_contract_prepayment_success(
-        address=keypair.account_id, 
-        contract_address=contract_address, 
-        prepayment=prepayment)
-
-def check_contract_deploy_success(contract_address: str, try_times=30):
-    for i in range(0, 30):
-        res = post_data("http://82.156.224.174:801/zjchain/check_contract_deploy_success/", 
-                        data={"contract_address": contract_address})
-        # print(res)
-        # print(res.text)
-        try:
-            res_json = json.loads(res.text)
-            if res_json["status"] == 0:
-                return True
-        except:
-            pass
-        
-        time.sleep(1)
-
-    return False
-
-def check_contract_prepayment_success(address: str, contract_address: str, prepayment: int, try_times=30):
-    for i in range(0, 30):
-        res = post_data(
-            "http://82.156.224.174:801/zjchain/check_contract_prepayment_success/", 
-            data={"contract_address": contract_address, "address": address, "prepayment": prepayment})
-        # print(res)
-        # print(res.text)
-        try:
-            res_json = json.loads(res.text)
-            if res_json["status"] == 0:
-                return True
-        except:
-            pass
-        
-        time.sleep(1)
-
-    return False
+    return True
 
 def call_contract_function(
         private_key: str, 
@@ -287,33 +319,35 @@ def query_contract_function(
         contract_address: str, 
         function: str, 
         types_list: list, 
-        params_list: list):
+        params_list: list,
+        call_type=0):
     func_param = (keccak256_str(f"{function}({','.join(types_list)})")[:8] + 
         encode_hex(encode(types_list, params_list))[2:])
 
     # print(f"func_param: {func_param}")
     keypair = get_keypair(bytes.fromhex(private_key))
     # print(keypair.account_id)
-    res = post_data(f"http://{http_ip}:{http_port}/query_contract", data = {
-        "input": func_param,
-        'address': contract_address,
-        'from': keypair.account_id,
-    })
+    if call_type == 0:
+        res = post_data(f"http://{http_ip}:{http_port}/abi_query_contract", data = {
+            "input": func_param,
+            'address': contract_address,
+            'from': keypair.account_id,
+        })
+    else:
+        res = post_data(f"http://{http_ip}:{http_port}/query_contract", data = {
+            "input": func_param,
+            'address': contract_address,
+            'from': keypair.account_id,
+        })
 
     return res
 
-def check_transaction_gid_valid(gid):
+def check_addr_nonce_valid(addr, in_nonce):
     for i in range(0, 30):
-        res = check_gid_valid({"gids": [gid]})
-        print(f"res status: {res.status_code}, text: {res.text}")
-        if res.status_code != 200:
-            print("post check gids failed!")
-        else:
-            json_res = json.loads(res.text)
-            if json_res["gids"] is not None:
-                for tmp_gid in json_res["gids"]:
-                    if gid == tmp_gid:
-                        return True
+        add_info = get_account_info(addr)
+        if add_info is not None and int(add_info['nonce']) >= in_nonce:
+            print(f"get address info: {add_info}")
+            return True
         
         time.sleep(1)
 
@@ -325,8 +359,6 @@ def keccak256_bytes(b: bytes) -> str:
 def keccak256_str(s: str) -> str:
     return _keccak256_str(s)
 
-def get_block_info_with_gid(gid: str):
-    return _post_data("http://{}:{}/get_block_with_gid".format(http_ip, http_port), {'gid': gid})
 
 def _keccak256_bytes(b: bytes) -> str:
     k = sha3.keccak_256()
@@ -340,7 +372,7 @@ def _keccak256_str(s: str) -> str:
     
 def _sign_message(
         keypair: Keypair, 
-        gid: str, 
+        nonce: int, 
         to: str, 
         amount: int, 
         gas_limit: int, 
@@ -352,7 +384,7 @@ def _sign_message(
         key:str,
         val:str):
     frompk = keypair.pkbytes
-    b = decode_hex(gid) + \
+    b = _long_to_bytes(nonce) + \
          frompk + \
          decode_hex(to) + \
          _long_to_bytes(amount) + \
@@ -402,11 +434,12 @@ def _gen_gid() -> str:
     ret = hashlib.sha256(hex_str.encode('utf-8')).hexdigest()
     return (64 - len(ret)) * '0' + ret
 
-def _get_tx_params(sign, pkbytes: bytes, gid: str, gas_limit: int, gas_price: int,
+
+def _get_tx_params(sign, pkbytes: bytes, nonce: int, gas_limit: int, gas_price: int,
                    to: str, amount: int, prepay: int, contract_bytes: str, des_shard_id: int,
                    input: str, step: int, key: str, val: str):
     ret = {
-        'gid': gid,
+        'nonce': nonce,
         'pubkey': encode_hex(pkbytes)[2:],
         'to': to,
         'type': step,
@@ -464,3 +497,4 @@ def _run_once(cmd):
     stdout_file.close()
     stderr_file.close()
     return stdout, stderr, return_code
+

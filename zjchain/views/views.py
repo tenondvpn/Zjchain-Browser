@@ -1764,19 +1764,44 @@ def exchange_new_sell(request):
                 "CreateNewItem(bytes32,bytes,uint256,uint256,uint256)")[:8] + encode_hex(
                     encode(['bytes32', 'bytes', 'uint256', 'uint256', 'uint256'], 
                     [decode_hex(hash), decode_hex(info), price, start, end]))[2:]
-            gid = shardora_api.gen_gid()
+            key_pair = shardora_api.get_keypair(bytes.fromhex(private_key))
+            id = key_pair.account_id
+            addr_info = shardora_api.get_account_info(id)
+            if addr_info is None:
+                print(f"invalid private key {private_key} and get addr info failed: {id} ")
+                sys.exit(1)
+
+            print(f"did_contract_address: {addr_info}")
+            nonce = int(addr_info["nonce"]) + 1
             res = shardora_api.transfer(
                 private_key,
                 exchange_contarct_address,
                 0,
+                nonce,
                 8,
-                gid,
                 "",
                 func_param,
                 "",
                 "",
                 0,
-                check_gid_valid=True)
+                check_tx_valid=True,
+                gas_limit=9000000)
+            if not res:
+                print("call contract failed!")
+            else:
+                print("call contract success!")
+            # res = shardora_api.transfer(
+            #     private_key,
+            #     exchange_contarct_address,
+            #     0,
+            #     8,
+            #     gid,
+            #     "",
+            #     func_param,
+            #     "",
+            #     "",
+            #     0,
+            #     check_gid_valid=True)
             if not res:
                 return JsonHttpResponse({'status': 1, 'msg': "error"})
 
@@ -1807,19 +1832,45 @@ def exchange_purchase(request):
                 "PurchaseItem(bytes32,uint256)")[:8] + encode_hex(
                     encode(['bytes32','uint256'], 
                     [decode_hex(hash),int(time.time() * 1000)]))[2:]
-            gid = shardora_api.gen_gid()
+            key_pair = shardora_api.get_keypair(bytes.fromhex(private_key))
+            id = key_pair.account_id
+            addr_info = shardora_api.get_account_info(id)
+            if addr_info is None:
+                print(f"invalid private key {private_key} and get addr info failed: {id} ")
+                sys.exit(1)
+
+            print(f"did_contract_address: {addr_info}")
+            nonce = int(addr_info["nonce"]) + 1
             res = shardora_api.transfer(
                 private_key,
                 exchange_contarct_address,
                 price,
+                nonce,
                 8,
-                gid,
                 "",
                 func_param,
                 "",
                 "",
                 0,
-                check_gid_valid=True)
+                check_tx_valid=True,
+                gas_limit=9000000)
+            if not res:
+                print("call contract failed!")
+            else:
+                print("call contract success!")
+            # gid = shardora_api.gen_gid()
+            # res = shardora_api.transfer(
+            #     private_key,
+            #     exchange_contarct_address,
+            #     price,
+            #     8,
+            #     gid,
+            #     "",
+            #     func_param,
+            #     "",
+            #     "",
+            #     0,
+            #     check_gid_valid=True)
             if not res:
                 return JsonHttpResponse({'status': 1, 'msg': "call purchase contract function failed"})
 
