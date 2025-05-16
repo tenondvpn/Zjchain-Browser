@@ -1876,7 +1876,6 @@ def exchange_purchase(request):
                 return JsonHttpResponse({'status': 1, 'msg': "call purchase contract function failed"})
 
             info_json = {"gid": str(nonce), "command": "exchange_purchase"}
-            key_pair = shardora_api.get_keypair(bytes.fromhex(private_key))
             save_trace_info(None, hash, key_pair.account_id, info_json)
             return JsonHttpResponse({'status': 0, 'msg': "ok"})
         except Exception as ex:
