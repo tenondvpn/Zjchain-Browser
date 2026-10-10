@@ -2021,8 +2021,85 @@ def exchange_sell_list(request):
         except Exception as ex:
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
 
+import os
+import json
+from datetime import datetime
+
 
 def exchange_sell_detail(request):
+    if request.method == 'POST':
+        try:
+            hash = request.POST.get('hash')
+            private_key = request.POST.get('private_key')
+            if not private_key:
+                private_key = os.environ.get(
+                    'DEFAULT_QUERY_KEY',
+                    '58470b702f83fccda48472ec35acd9f62f834dab48694f8fba6ba815bbc4d609'
+                )
+
+            res = shardora_api.query_contract_function(
+                private_key=private_key,
+                contract_address=exchange_contarct_address,
+                function="GetSellDetail",
+                types_list=['bytes32'],
+                params_list=[decode_hex(hash)],
+                call_type=1
+            )
+            if res.status_code != 200:
+                return JsonHttpResponse({'status': 1, 'msg': 'query contract failed'})
+
+            try:
+                detail = json.loads(res.text)
+            except (json.JSONDecodeError, ValueError):
+                return JsonHttpResponse({'status': 1, 'msg': 'parse response failed'})
+
+            decoded = _decode_item(detail)
+
+            # ================= 对 buyers 列表中的 price 和 time 进行格式化处理 =================
+            buyers = decoded.get('buyers', [])
+            if isinstance(buyers, list):
+                for buyer in buyers:
+                    # 1. price 16进制转10进制整数
+                    raw_price = buyer.get('price')
+                    if isinstance(raw_price, str):
+                        try:
+                            buyer['price'] = int(raw_price, 16)
+                        except ValueError:
+                            pass
+
+                    # 2. time 16进制转10进制时间戳，并格式化为 年-月-日 时:分:秒
+                    raw_time = buyer.get('time')
+                    if raw_time is not None:
+                        try:
+                            ts = int(raw_time, 16) if isinstance(raw_time, str) else int(raw_time)
+                            buyer['time'] = datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+                        except (ValueError, TypeError, OSError):
+                            pass
+            # =================================================================================
+
+            info_hex = decoded.get('info', '')
+            try:
+                info_obj = json.loads(bytes.fromhex(info_hex).decode('utf-8', errors='ignore'))
+            except Exception:
+                info_obj = {}
+
+            result = {
+                'sell_info': decoded,
+                'table_info': info_obj.get('table_info', []),
+                'data_example': info_obj.get('data_example', []),
+                'confirm_info': {
+                    'hash': decoded.get('hash', ''),
+                    'owner': decoded.get('owner', ''),
+                    'buyer': decoded.get('buyer', ''),
+                    'selled': decoded.get('selled', 0),
+                    'selled_price': decoded.get('selled_price', 0),
+                }
+            }
+            return JsonHttpResponse({'status': 0, 'msg': 'ok', 'data': result})
+        except Exception as ex:
+            return JsonHttpResponse({'status': 1, 'msg': str(ex)})
+
+def idexchange_sell_detail(request):
     if request.method == 'POST':
         try:
             hash = request.POST.get('hash')
