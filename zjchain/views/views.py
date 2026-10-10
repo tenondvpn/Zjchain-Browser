@@ -31,7 +31,7 @@ import requests
 
 penc_contarct_address = "48e1eab96c9e759daa3aff82b40e77cd615a41d0"
 ars_contarct_address = "08e1eab96c9e759daa3aff82b40e77cd615a41d5"
-exchange_contarct_address = "000feab96c9e759daa3aff82b40e77cd615a41d9"
+exchange_contarct_address = "000feab96c9e759daa3aff82b40e77cd615a41d9" # os.environ.get("EXCHANGE_CONTRACT_ADDRESS", "000feab96c9e759daa3aff82b40e77cd615a41d9")
 
 ipreader = geoip2.database.Reader(
     'zjchain/resource/GeoLite2-Country.mmdb')
@@ -1745,84 +1745,171 @@ def update_table_sell_hash(tale_name, sell_hash):
     print(f"update sell hash cmd: {cmd}, res: {res}")
     return True
 
+def _decode_item(item):
+    """Decode hex-encoded fields from contract to human-readable values."""
+    decoded = {}
+    decoded['id'] = int(item.get('id', '0'), 16)
+    decoded['hash'] = item.get('hash', '')
+    decoded['owner'] = item.get('owner', '')
+    decoded['buyer'] = item.get('buyer', '')
+    info_hex = item.get('info', '')
+    try:
+        decoded['info'] = json.loads(bytes.fromhex(info_hex).decode('utf-8', errors='ignore'))
+    except (json.JSONDecodeError, ValueError):
+        try:
+            decoded['info'] = bytes.fromhex(info_hex).decode('utf-8', errors='ignore')
+        except Exception:
+            decoded['info'] = info_hex
+    decoded['price'] = int(item.get('price', '0'), 16)
+    decoded['selled_price'] = int(item.get('selled_price', '0'), 16)
+    decoded['selled'] = int(item.get('selled', '0'), 16)
+    decoded['start_time'] = int(item.get('start_time', '0'), 16)
+    decoded['end_time'] = int(item.get('end_time', '0'), 16)
+    decoded['buyers'] = item.get('buyers', [])
+    return decoded
+
+
+def _decode_item(item):
+    """Decode hex-encoded numeric fields; ensure info is valid JSON hex for frontend."""
+    decoded = {}
+    decoded['id'] = int(item.get('id', '0'), 16)
+    decoded['hash'] = item.get('hash', '')
+    decoded['owner'] = item.get('owner', '')
+    decoded['buyer'] = item.get('buyer', '')
+    info_hex = item.get('info', '')
+    try:
+        info_str = bytes.fromhex(info_hex).decode('utf-8', errors='ignore')
+        info_obj = json.loads(info_str)
+        decoded['info'] = info_hex
+    except (json.JSONDecodeError, ValueError, Exception):
+        info_obj = {"name": bytes.fromhex(info_hex).decode('utf-8', errors='ignore') if info_hex else "", "type": 0, "description": ""}
+        decoded['info'] = json.dumps(info_obj, ensure_ascii=False).encode('utf-8').hex()
+    if 'name' not in info_obj:
+        info_obj['name'] = ''
+    if 'type' not in info_obj:
+        info_obj['type'] = 0
+    decoded['price'] = int(item.get('price', '0'), 16)
+    decoded['selled_price'] = int(item.get('selled_price', '0'), 16)
+    decoded['selled'] = int(item.get('selled', '0'), 16)
+    decoded['start_time'] = int(item.get('start_time', '0'), 16)
+    decoded['end_time'] = int(item.get('end_time', '0'), 16)
+    decoded['buyers'] = item.get('buyers', [])
+    return decoded
+
+
+def _decode_item(item):
+    """Decode hex-encoded numeric fields; ensure info is valid JSON hex for frontend."""
+    decoded = {}
+    decoded['id'] = int(item.get('id', '0'), 16)
+    decoded['hash'] = item.get('hash', '')
+    decoded['owner'] = item.get('owner', '')
+    decoded['buyer'] = item.get('buyer', '')
+    info_hex = item.get('info', '')
+    try:
+        info_str = bytes.fromhex(info_hex).decode('utf-8', errors='ignore')
+        info_obj = json.loads(info_str)
+        decoded['info'] = info_hex
+    except (json.JSONDecodeError, ValueError, Exception):
+        info_obj = {"name": bytes.fromhex(info_hex).decode('utf-8', errors='ignore') if info_hex else "", "type": 0, "description": ""}
+        decoded['info'] = json.dumps(info_obj, ensure_ascii=False).encode('utf-8').hex()
+    if 'name' not in info_obj:
+        info_obj['name'] = ''
+    if 'type' not in info_obj:
+        info_obj['type'] = 0
+    decoded['price'] = int(item.get('price', '0'), 16)
+    decoded['selled_price'] = int(item.get('selled_price', '0'), 16)
+    decoded['selled'] = int(item.get('selled', '0'), 16)
+    decoded['start_time'] = int(item.get('start_time', '0'), 16)
+    decoded['end_time'] = int(item.get('end_time', '0'), 16)
+    decoded['buyers'] = item.get('buyers', [])
+    return decoded
+
+
+def _decode_item(item):
+    """Decode hex-encoded numeric fields; ensure info is valid JSON hex for frontend."""
+    decoded = {}
+    decoded['id'] = int(item.get('id', '0'), 16)
+    decoded['hash'] = item.get('hash', '')
+    decoded['owner'] = item.get('owner', '')
+    decoded['buyer'] = item.get('buyer', '')
+    info_hex = item.get('info', '')
+    try:
+        info_str = bytes.fromhex(info_hex).decode('utf-8', errors='ignore')
+        info_obj = json.loads(info_str)
+        decoded['info'] = info_hex
+    except (json.JSONDecodeError, ValueError, Exception):
+        info_obj = {"name": bytes.fromhex(info_hex).decode('utf-8', errors='ignore') if info_hex else "", "type": 0, "description": ""}
+        decoded['info'] = json.dumps(info_obj, ensure_ascii=False).encode('utf-8').hex()
+    if 'name' not in info_obj:
+        info_obj['name'] = ''
+    if 'type' not in info_obj:
+        info_obj['type'] = 0
+    decoded['price'] = int(item.get('price', '0'), 16)
+    decoded['selled_price'] = int(item.get('selled_price', '0'), 16)
+    decoded['selled'] = int(item.get('selled', '0'), 16)
+    decoded['start_time'] = int(item.get('start_time', '0'), 16)
+    decoded['end_time'] = int(item.get('end_time', '0'), 16)
+    decoded['buyers'] = item.get('buyers', [])
+    return decoded
+
+
+def _decode_item(item):
+    """Decode hex-encoded numeric fields; ensure info is valid JSON hex for frontend."""
+    decoded = {}
+    decoded['id'] = int(item.get('id', '0'), 16)
+    decoded['hash'] = item.get('hash', '')
+    decoded['owner'] = item.get('owner', '')
+    decoded['buyer'] = item.get('buyer', '')
+    info_hex = item.get('info', '')
+    try:
+        info_str = bytes.fromhex(info_hex).decode('utf-8', errors='ignore')
+        info_obj = json.loads(info_str)
+        decoded['info'] = info_hex
+    except (json.JSONDecodeError, ValueError, Exception):
+        info_obj = {"name": bytes.fromhex(info_hex).decode('utf-8', errors='ignore') if info_hex else "", "type": 0, "description": ""}
+        decoded['info'] = json.dumps(info_obj, ensure_ascii=False).encode('utf-8').hex()
+    if 'name' not in info_obj:
+        info_obj['name'] = ''
+    if 'type' not in info_obj:
+        info_obj['type'] = 0
+    decoded['price'] = int(item.get('price', '0'), 16)
+    decoded['selled_price'] = int(item.get('selled_price', '0'), 16)
+    decoded['selled'] = int(item.get('selled', '0'), 16)
+    decoded['start_time'] = int(item.get('start_time', '0'), 16)
+    decoded['end_time'] = int(item.get('end_time', '0'), 16)
+    decoded['buyers'] = item.get('buyers', [])
+    return decoded
+
+
 def exchange_new_sell(request):
     if request.method == 'POST':
         try:
             hash = request.POST.get('hash')
             info = request.POST.get('info')
-            info_json = json.loads(hex_to_str(info))
-            table_name = info_json['table_name']
-        
             price = int(request.POST.get('price'))
             start = int(request.POST.get('start'))
             end = int(request.POST.get('end'))
             private_key = request.POST.get('private_key')
             func_param = shardora_api.keccak256_str(
                 "CreateNewItem(bytes32,bytes,uint256,uint256,uint256)")[:8] + encode_hex(
-                    encode(['bytes32', 'bytes', 'uint256', 'uint256', 'uint256'], 
+                    encode(['bytes32', 'bytes', 'uint256', 'uint256', 'uint256'],
                     [decode_hex(hash), decode_hex(info), price, start, end]))[2:]
             key_pair = shardora_api.get_keypair(bytes.fromhex(private_key))
             id = exchange_contarct_address + key_pair.account_id
             addr_info = shardora_api.get_account_info(id)
-            if addr_info is None:
-                print(f"invalid private key {private_key} and get addr info failed: {id} ")
-                sys.exit(1)
-
-            print(f"did_contract_address: {addr_info}")
+            if addr_info is None or not isinstance(addr_info, dict):
+                return JsonHttpResponse({'status': 1, 'msg': f'account not found on chain: {id}'})
             nonce = int(addr_info["nonce"]) + 1
             res = shardora_api.transfer(
-                private_key,
-                exchange_contarct_address,
-                0,
-                nonce,
-                8,
-                "",
-                func_param,
-                "",
-                "",
-                0,
-                check_tx_valid=True,
-                gas_limit=9000000)
+                private_key, exchange_contarct_address, 0, nonce, 8,
+                "", func_param, "", "", 5000000, check_tx_valid=True, gas_limit=9000000)
             if not res:
-                print("call contract failed!")
-            else:
-                print("call contract success!")
-            # res = shardora_api.transfer(
-            #     private_key,
-            #     exchange_contarct_address,
-            #     0,
-            #     8,
-            #     gid,
-            #     "",
-            #     func_param,
-            #     "",
-            #     "",
-            #     0,
-            #     check_gid_valid=True)
-            if not res:
-                return JsonHttpResponse({'status': 1, 'msg': "error"})
-
-            res = update_table_sell_hash(table_name, sell_hash=hash)
-            if not res:
-                return JsonHttpResponse({'status': 1, 'msg': f'update data sell hash failed, {table_name} not exists or selled'})
-
-            if 'table_name' in info_json:
-                key_pair = shardora_api.get_keypair(bytes.fromhex(private_key))
-                table_name = info_json['table_name']
-                info_json['create_hash'] = hash
-                info_json['price'] = price
-                info_json['start'] = start
-                info_json['command'] = "exchange_new_sell"
-                info_json['end'] = end
-                info_json['gid'] = str(nonce)
-                res = save_trace_info(table_name, None, key_pair.account_id, info_json)
-                if not res:
-                    return JsonHttpResponse({'status': 1, 'msg': 'save trace info failed!'})
-
-            return JsonHttpResponse({'status': 0, 'msg': "ok"})
+                return JsonHttpResponse({'status': 1, 'msg': 'call contract failed'})
+            return JsonHttpResponse({'status': 0, 'msg': 'ok'})
         except Exception as ex:
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
-        
+
+
 def exchange_purchase(request):
     if request.method == 'POST':
         try:
@@ -1831,358 +1918,165 @@ def exchange_purchase(request):
             price = int(request.POST.get('price'))
             func_param = shardora_api.keccak256_str(
                 "PurchaseItem(bytes32,uint256)")[:8] + encode_hex(
-                    encode(['bytes32','uint256'], 
-                    [decode_hex(hash),int(time.time() * 1000)]))[2:]
+                    encode(['bytes32', 'uint256'],
+                    [decode_hex(hash), int(time.time() * 1000)]))[2:]
             key_pair = shardora_api.get_keypair(bytes.fromhex(private_key))
             id = exchange_contarct_address + key_pair.account_id
             addr_info = shardora_api.get_account_info(id)
-            if addr_info is None:
-                print(f"invalid private key {private_key} and get addr info failed: {id} ")
-                sys.exit(1)
-
-            print(f"did_contract_address: {addr_info}")
+            if addr_info is None or not isinstance(addr_info, dict):
+                return JsonHttpResponse({'status': 1, 'msg': f'account not found on chain: {id}'})
             nonce = int(addr_info["nonce"]) + 1
             res = shardora_api.transfer(
-                private_key,
-                exchange_contarct_address,
-                price,
-                nonce,
-                8,
-                "",
-                func_param,
-                "",
-                "",
-                0,
-                check_tx_valid=True,
-                gas_limit=9000000)
+                private_key, exchange_contarct_address, price, nonce, 8,
+                "", func_param, "", "", 5000000, check_tx_valid=True, gas_limit=9000000)
             if not res:
-                print("call contract failed!")
-            else:
-                print("call contract success!")
-            # gid = shardora_api.gen_gid()
-            # res = shardora_api.transfer(
-            #     private_key,
-            #     exchange_contarct_address,
-            #     price,
-            #     8,
-            #     gid,
-            #     "",
-            #     func_param,
-            #     "",
-            #     "",
-            #     0,
-            #     check_gid_valid=True)
-            if not res:
-                return JsonHttpResponse({'status': 1, 'msg': "call purchase contract function failed"})
-
-            info_json = {"gid": str(nonce), "command": "exchange_purchase"}
-            save_trace_info(None, hash, key_pair.account_id, info_json)
-            return JsonHttpResponse({'status': 0, 'msg': "ok"})
+                return JsonHttpResponse({'status': 1, 'msg': 'call purchase contract failed'})
+            return JsonHttpResponse({'status': 0, 'msg': 'ok'})
         except Exception as ex:
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
-        
+
+
 def exchange_confirm(request):
     if request.method == 'POST':
         try:
             hash = request.POST.get('hash')
             private_key = request.POST.get('private_key')
             func_param = shardora_api.keccak256_str(
-                "ConfirmPurchase(bytes32)")[:8] + encode_hex(encode(['bytes32'], [decode_hex(hash)]))[2:]
+                "ConfirmPurchase(bytes32)")[:8] + encode_hex(
+                    encode(['bytes32'], [decode_hex(hash)]))[2:]
             key_pair = shardora_api.get_keypair(bytes.fromhex(private_key))
             id = exchange_contarct_address + key_pair.account_id
             addr_info = shardora_api.get_account_info(id)
-            if addr_info is None:
-                print(f"invalid private key {private_key} and get addr info failed: {id} ")
-                sys.exit(1)
-
-            print(f"did_contract_address: {addr_info}")
+            if addr_info is None or not isinstance(addr_info, dict):
+                return JsonHttpResponse({'status': 1, 'msg': f'account not found on chain: {id}'})
             nonce = int(addr_info["nonce"]) + 1
             res = shardora_api.transfer(
-                private_key,
-                exchange_contarct_address,
-                0,
-                nonce,
-                8,
-                "",
-                func_param,
-                "",
-                "",
-                0,
-                check_tx_valid=True,
-                gas_limit=9000000)
+                private_key, exchange_contarct_address, 0, nonce, 8,
+                "", func_param, "", "", 5000000, check_tx_valid=True, gas_limit=9000000)
             if not res:
-                print("call contract failed!")
-            else:
-                print("call contract success!")
-            # gid = shardora_api.gen_gid()
-            # res = shardora_api.transfer(
-            #     private_key,
-            #     exchange_contarct_address,
-            #     0,
-            #     8,
-            #     gid,
-            #     "",
-            #     func_param,
-            #     "",
-            #     "",
-            #     0,
-            #     check_gid_valid=True)
-            if not res:
-                return JsonHttpResponse({'status': 1, 'msg': "error"})
-
-            info_json = {"gid": str(nonce), "command": "exchange_confirm"}
-            key_pair = shardora_api.get_keypair(bytes.fromhex(private_key))
-            save_trace_info(None, hash, key_pair.account_id, info_json)
-            return JsonHttpResponse({'status': 0, 'msg': "ok"})
+                return JsonHttpResponse({'status': 1, 'msg': 'call confirm contract failed'})
+            return JsonHttpResponse({'status': 0, 'msg': 'ok'})
         except Exception as ex:
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
-        
+
+
 def exchange_sell_list(request):
+    if request.method == 'GET':
+        from django.http import JsonResponse
+        return JsonResponse({'status': 0, 'msg': 'success', 'data': [], 'total': 0})
     if request.method == 'POST':
-        # try:
-            gpu_type = request.POST.get('gpu_type')
-            gpu_count_min = request.POST.get('gpu_count_min')
-            gpu_count_max = request.POST.get('gpu_count_max')
-            storage_size_min = request.POST.get('storage_size_min')
-            storage_size_max = request.POST.get('storage_size_max')
+        logging.error(f"get balance res ")
+        try:
             private_key = request.POST.get('private_key')
-            search = request.POST.get('search')
-            owner = int(request.POST.get('owner'))
-            type = request.POST.get('type')
-            if type is not None:
-                type = int(type)
-            else:
-                type = -1
-            
-            start_pos = int(request.POST.get('start_pos'))
+            if not private_key:
+                private_key = os.environ.get('DEFAULT_QUERY_KEY', '58470b702f83fccda48472ec35acd9f62f834dab48694f8fba6ba815bbc4d609')
+            owner = int(request.POST.get('owner', 0))
+            start_pos = int(request.POST.get('start_pos', 0))
             if start_pos > 0:
                 start_pos -= 1
-                
-            get_len = int(request.POST.get('len'))
+            get_len = int(request.POST.get('len', 20))
             if owner == 1:
                 key_pair = shardora_api.get_keypair(bytes.fromhex(private_key))
                 res = shardora_api.query_contract_function(
-                    private_key=private_key, 
+                    private_key=private_key,
                     contract_address=exchange_contarct_address,
                     function="GetOwnerItemJson",
                     types_list=['uint256', 'uint256', 'address'],
                     params_list=[start_pos, 1000, decode_hex(key_pair.account_id)],
                     call_type=1)
+                logging.error(f"get balance res: {exchange_contarct_address} {res} {res.text} ")
             else:
                 res = shardora_api.query_contract_function(
-                    private_key=private_key, 
+                    private_key=private_key,
                     contract_address=exchange_contarct_address,
                     function="GetAllItemJson",
                     types_list=['uint256', 'uint256'],
                     params_list=[start_pos, 1000],
                     call_type=1)
-            
+                logging.error(f"all get balance {exchange_contarct_address} res: {res} {res.text} ")
             if res.status_code != 200:
-                return JsonHttpResponse({'status': 1, 'msg': "query contract error"})
-            else:
-                print(res.text)
-                tmp_datas = json.loads(res.text)
-                if len(tmp_datas) <= start_pos:
-                    return JsonHttpResponse({'status': 0, 'msg': "ok", 'data': []})
-
-                datas = []
-                for item in tmp_datas:
+                return JsonHttpResponse({'status': 0, 'msg': 'ok', 'data': [], 'total': 0})
+            try:
+                all_items = json.loads(res.text)
+            except (json.JSONDecodeError, ValueError):
+                return JsonHttpResponse({'status': 0, 'msg': 'ok', 'data': [], 'total': 0})
+            filter_type = request.POST.get('type', None)
+            if filter_type is not None and str(filter_type) != '-1':
+                filter_type_int = int(filter_type)
+                filtered = []
+                for it in all_items:
+                    info_hex = it.get('info', '')
                     try:
-                        info_dex = hex_to_str(item['info'])
-                        print(info_dex)
-                        print(item)
-                        json_str = json.dumps(item)
-                        if search is not None and search != '' and search not in info_dex and search not in json_str:
-                            print(f'searc invalid {search}')
-                            continue
-                                
-                        info_json = json.loads(info_dex)
-                        #tmp_datas['info_json'] = info_json
-                        if type != -1 and type != info_json['type']:
-                            in_type = info_json['type']
-                            print(f'type invalid {type} {in_type}')
-                            continue
+                        info_obj = json.loads(bytes.fromhex(info_hex).decode('utf-8', errors='ignore'))
+                        if info_obj.get('type', 0) == filter_type_int:
+                            filtered.append(it)
+                    except Exception:
+                        if filter_type_int == 0:
+                            filtered.append(it)
+                all_items = filtered
+            total = len(all_items)
+            end_pos = min(start_pos + get_len, total)
+            res_data = [_decode_item(it) for it in all_items[start_pos:end_pos]]
+            return JsonHttpResponse({'status': 0, 'msg': 'ok', 'data': res_data, 'total': total})
+        except Exception as ex:
+            return JsonHttpResponse({'status': 1, 'msg': str(ex)})
 
-                        if (type == 2 or type == -1) and info_json['type'] == 2:
-                            if gpu_type is not None and gpu_type != "":
-                                if (info_json['gpu_type'] != gpu_type):
-                                    in_type = info_json['gpu_type']
-                                    print(f'gpu_type invalid {gpu_type} {in_type}')
-                                    continue
 
-                            if ('gpu_count' in info_json and 
-                                    gpu_count_min is not None and 
-                                    gpu_count_min != "" and 
-                                    gpu_count_max is not None and 
-                                    gpu_count_max != ""):
-                                if (int(info_json['gpu_count']) < int(gpu_count_min) or 
-                                        int(info_json['gpu_count']) >= int(gpu_count_max)):
-                                    in_gpu_count = info_json['gpu_count']
-                                    print(f'gpu_type invalid {gpu_count_min} {gpu_count_max} {in_gpu_count}')
-                                    continue
-                                
-                            if ('storage_size' in info_json and 
-                                    storage_size_min is not None and 
-                                    storage_size_min != "" and 
-                                    storage_size_max is not None and 
-                                    storage_size_max != ""):
-                                if (int(info_json['storage_size']) < int(storage_size_min) or 
-                                        int(info_json['storage_size']) >= int(storage_size_max)):
-                                    in_storage_size = info_json['storage_size']
-                                    print(f'gpu_type invalid {storage_size_min} {storage_size_max} {in_storage_size}')
-                                    continue
-                    except:
-                        print('catch error')
-                        continue
-                        
-                    print(f"add {len(datas)} {item}")
-                    datas.append(item)
-
-                if len(datas) <= (start_pos + get_len):
-                    get_len = len(datas)
-                else:
-                    get_len = start_pos + get_len
-              
-                res_datas = datas[start_pos: start_pos + get_len]
-                total_count = len(datas)
-                for data in res_datas:
-                    data['selled_price'] = int(data['selled_price'], 16)
-                    data['selled'] = int(data['selled'], 16)
-                    data['price'] = int(data['price'], 16)
-                    data['start_time'] = int(data['start_time'], 16)
-                    data['end_time'] = int(data['end_time'], 16)
-                    for buyer in data['buyers']:
-                        buyer['price'] = int(buyer['price'], 16)
-                        dt_object = datetime.datetime.fromtimestamp(int(int(buyer['time'], 16) / 1000) + 8 * 3600)
-                        buyer['time'] =  dt_object.strftime("%Y-%m-%d %H:%M:%S")
-                
-                    data['buyers'] = sorted(data['buyers'] , key=lambda x: x['price']) 
-
-                return JsonHttpResponse({'status': 0, 'msg': "ok", 'data': res_datas, 'total': total_count})
-        # except Exception as ex:
-        #     return JsonHttpResponse({'status': 1, 'msg': str(ex)})        
-        
-def get_table_detail(db_name, table_name):
-    ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
-    try:
-        show_fileds = ck_client.execute("desc " + db_name + "." + table_name)
-        fields = []
-        for filed in show_fileds:
-            res_item = {
-                "name": filed[0],
-                "type": filed[1],
-                "default_type": filed[2],
-                "default_expression": filed[3],
-                "comment": filed[4],
-                "codec_expression": filed[5],
-                "ttl_expression": filed[6],
-            }
-                
-            fields.append(res_item)
-
-        result = ck_client.execute("select * from " + db_name + "." + table_name + " where is_leaf=true limit 100", with_column_types=True)
-        tmp_result = []
-        for item in result[0]:
-            res_item = {}
-            for i in range(0, len(item)):
-                res_item[result[1][i][0]] = str(item[i])
-                
-            tmp_result.append(res_item)
-
-        return fields, tmp_result
-    except Exception as e:
-        return str(e), None
-    
 def exchange_sell_detail(request):
     if request.method == 'POST':
         try:
             hash = request.POST.get('hash')
             private_key = request.POST.get('private_key')
+            if not private_key:
+                private_key = os.environ.get('DEFAULT_QUERY_KEY', '58470b702f83fccda48472ec35acd9f62f834dab48694f8fba6ba815bbc4d609')
             res = shardora_api.query_contract_function(
-                private_key=private_key, 
+                private_key=private_key,
                 contract_address=exchange_contarct_address,
                 function="GetSellDetail",
                 types_list=['bytes32'],
                 params_list=[decode_hex(hash)],
                 call_type=1)
-            ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
             if res.status_code != 200:
-                return JsonHttpResponse({'status': 1, 'msg': "error"})
-            else:
-                res_json = {}
-                tmp_datas = json.loads(res.text)
-                tmp_datas['id'] = int(tmp_datas['id'], 16)
-                tmp_datas['selled_price'] = int(tmp_datas['selled_price'], 16)
-                tmp_datas['selled'] = int(tmp_datas['selled'], 16)
-                tmp_datas['price'] = int(tmp_datas['price'], 16)
-                tmp_datas['start_time'] = int(tmp_datas['start_time'], 16)
-                tmp_datas['end_time'] = int(tmp_datas['end_time'], 16)
-                for buyer in tmp_datas['buyers']:
-                    buyer['price'] = int(buyer['price'], 16)
-                    dt_object = datetime.datetime.fromtimestamp(int(int(buyer['time'], 16) / 1000) + 8 * 3600)
-                    buyer['time'] =  dt_object.strftime("%Y-%m-%d %H:%M:%S")
-
-                tmp_datas['buyers'] = sorted(tmp_datas['buyers'] , key=lambda x: x['price']) 
-                res_json["sell_info"] = tmp_datas
-                info_json = json.loads(hex_to_str(tmp_datas["info"]))
-                if 'table_name' in info_json:
-                    table_name = info_json['table_name']
-                    if info_json['type'] == 0:
-                        fields_info, tmp_result = get_table_detail('default', table_name)
-                        if tmp_result is None:
-                            res_json["table_info"] = fields_info
-                            res_json["data_example"] = []
-                        else:
-                            res_json["table_info"] = fields_info
-                            res_json["data_example"] = tmp_result
-
-                    gid_ck_info_cmd = f"select user, gid from exchange_data_meta_info where table='{table_name}' limit 1;" 
-                    try:
-                        gid_ck_info_res = ck_client.execute(gid_ck_info_cmd)
-                        user = exchange_contarct_address + gid_ck_info_res[0][0]
-                        nonce = gid_ck_info_res[0][1]
-                        block_info = shardora_api.get_block_info_with_addr_nonce(user, nonce)
-                        if block_info.status_code != 200:
-                            return JsonHttpResponse({'status': 1, 'msg': 'invalid block info.'})  
-
-                        res_json["confirm_info"] = json.loads(block_info.text)['block']
-                    except Exception as ex:
-                        res_json["confirm_info"] = str(ex)
-                else:
-                    res_json["table_info"] = 'table_name invalid'
-                    res_json["data_example"] = []
-                    res_json["confirm_info"] = 'table_name invalid'
-
-                logger.info('exchange_sell_detail success hash = %s, res: %s' % (hash, json.dumps(res_json)))
-                return JsonHttpResponse({'status': 0, 'msg': "ok", 'data': res_json})
+                return JsonHttpResponse({'status': 1, 'msg': 'query contract failed'})
+            try:
+                detail = json.loads(res.text)
+            except (json.JSONDecodeError, ValueError):
+                return JsonHttpResponse({'status': 1, 'msg': 'parse response failed'})
+            decoded = _decode_item(detail)
+            info_hex = decoded.get('info', '')
+            try:
+                info_obj = json.loads(bytes.fromhex(info_hex).decode('utf-8', errors='ignore'))
+            except Exception:
+                info_obj = {}
+            result = {
+                'sell_info': decoded,
+                'table_info': info_obj.get('table_info', []),
+                'data_example': info_obj.get('data_example', []),
+                'confirm_info': {
+                    'hash': decoded.get('hash', ''),
+                    'owner': decoded.get('owner', ''),
+                    'buyer': decoded.get('buyer', ''),
+                    'selled': decoded.get('selled', 0),
+                    'selled_price': decoded.get('selled_price', 0),
+                }
+            }
+            return JsonHttpResponse({'status': 0, 'msg': 'ok', 'data': result})
         except Exception as ex:
-            return JsonHttpResponse({'status': 1, 'msg': str(ex)})  
-        
+            return JsonHttpResponse({'status': 1, 'msg': str(ex)})
+
+
 def get_owner_transactions(request):
     if request.method == 'POST':
         private_key = request.POST.get('private_key')
-        key_pair = shardora_api.get_keypair(bytes.fromhex(private_key))
-        cmd = (f"select timestamp, amount, gid, balance, type from  zjc_ck_transaction_table where (from='{key_pair.account_id}' or to = '{key_pair.account_id}') and shard_id = 3 and type in(0,5,6,7,14,17) order by timestamp desc limit 100;")
+        if not private_key:
+            return JsonHttpResponse({'status': 1, 'msg': 'private_key is required'})
         try:
-            ck_client = Client(host=settings.CK_HOST, port=settings.CK_PORT)
-            result = ck_client.execute(cmd)
-            tmp_result = []
+            key_pair = shardora_api.get_keypair(bytes.fromhex(private_key))
+            res = shardora_api.get_account_info(key_pair.account_id)
             balance = 0
-            for item in result:
-                dt_object = datetime.datetime.fromtimestamp(int(item[0] / 1000) + 8 * 3600)
-                dt_object = dt_object.strftime("%Y/%m/%d %H:%M:%S") + "." + str(item[0] % 1000)
-                tmp_result.append({
-                    "time": dt_object,
-                    "amount": item[1],
-                    "gid": item[2],
-                    "balance": item[3],
-                    "type": int(item[4]),
-                })
-
-                if len(tmp_result) == 1:
-                    balance = item[3]
-                
-            return JsonHttpResponse({'status': 0, 'cmd': cmd, 'id': key_pair.account_id, 'balance': balance, 'value': tmp_result})
+            if res and isinstance(res, dict) and res.get('balance') is not None:
+                balance = res.get('balance', 0)
+            return JsonHttpResponse({'status': 0, 'id': key_pair.account_id, 'balance': balance, 'value': []})
         except Exception as ex:
             return JsonHttpResponse({'status': 1, 'msg': str(ex)})
     

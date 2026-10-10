@@ -26,8 +26,8 @@ from coincurve import PrivateKey as cPrivateKey
 
 w3 = Web3(Web3.IPCProvider('/Users/myuser/Library/Ethereum/geth.ipc'))
 
-http_ip = "127.0.0.1"
-http_port = 23001
+http_ip = os.environ.get("SETH_NODE_IP", "10.61.1.50")
+http_port = 23001 # int(os.environ.get("SETH_NODE_HTTP_PORT", "23001"))
 
 Keypair = namedtuple('Keypair', ['skbytes', 'pkbytes', 'account_id'])
 Sign = namedtuple('Sign', ['r', 's', 'v'])
@@ -77,12 +77,14 @@ def transfer(
     return check_addr_nonce_valid(addr, nonce)
 
 def get_account_info(address):
-    res = _post_data("http://{}:{}/query_account".format(http_ip, http_port), {'address': address})
+    res = _post_data("https://{}:{}/query_account".format(http_ip, http_port), {'address': address})
     if res.status_code != 200:
         return None
-    
-    json_res = json.loads(res.text)
-    return json_res
+    try:
+        json_res = json.loads(res.text)
+        return json_res
+    except (json.JSONDecodeError, ValueError):
+        return None
 
 def call_tx(nonce, to, amount, gas_limit, sign_r, sign_s, sign_v, pkbytes_str, key, value):
     params = _get_tx_params(sign=sign,
@@ -112,7 +114,7 @@ def keccak256_str(s: str) -> str:
 
 def check_address_valid(address, balance=0):
     post_data = {"addrs":[address], "balance": balance}
-    res = _post_data("http://{}:{}/accounts_valid".format(http_ip, http_port), post_data)
+    res = _post_data("https://{}:{}/accounts_valid".format(http_ip, http_port), post_data)
     if res.status_code != 200:
         return False
     
@@ -126,10 +128,10 @@ def check_address_valid(address, balance=0):
 
 
 def check_accounts_valid(post_data: dict):
-    return _post_data("http://{}:{}/accounts_valid".format(http_ip, http_port), post_data)
+    return _post_data("https://{}:{}/accounts_valid".format(http_ip, http_port), post_data)
 
 def check_prepayments_valid(post_data: dict):
-    return _post_data("http://{}:{}/prepayment_valid".format(http_ip, http_port), post_data)
+    return _post_data("https://{}:{}/prepayment_valid".format(http_ip, http_port), post_data)
 
 def get_transfer_params(
         nonce: int, 
@@ -328,13 +330,13 @@ def query_contract_function(
     keypair = get_keypair(bytes.fromhex(private_key))
     # print(keypair.account_id)
     if call_type == 0:
-        res = post_data(f"http://{http_ip}:{http_port}/abi_query_contract", data = {
+        res = post_data(f"https://{http_ip}:{http_port}/abi_query_contract", data = {
             "input": func_param,
             'address': contract_address,
             'from': keypair.account_id,
         })
     else:
-        res = post_data(f"http://{http_ip}:{http_port}/query_contract", data = {
+        res = post_data(f"https://{http_ip}:{http_port}/query_contract", data = {
             "input": func_param,
             'address': contract_address,
             'from': keypair.account_id,
@@ -395,7 +397,8 @@ def _sign_message(
         b += decode_hex(contract_bytes)
     if input != '':
         b += decode_hex(input)
-    b += _long_to_bytes(prepay)
+    if prepay > 0:
+        b += _long_to_bytes(prepay)
     if key != "":
         b += bytes(key, 'utf-8')
         if val != "":
@@ -449,7 +452,7 @@ def _get_tx_params(sign, pkbytes: bytes, nonce: int, gas_limit: int, gas_price: 
         'shard_id': des_shard_id,
         'key': key,
         'val': val,
-        "pepay": prepay,
+        "prefund": prepay,
         'sign_r': sign.r,
         'sign_s': sign.s,
         'sign_v': sign.v,
@@ -465,14 +468,14 @@ def _get_tx_params(sign, pkbytes: bytes, nonce: int, gas_limit: int, gas_price: 
 
 
 def _call_tx(post_data: dict):
-    return _post_data("http://{}:{}/transaction".format(http_ip, http_port), post_data)
+    return _post_data("https://{}:{}/transaction".format(http_ip, http_port), post_data)
 
 
 def _post_data(path: str, data: dict):
     querystr = urlencode(data)
     # print(path)
     # print(data)
-    res = requests.post(path, data=data, headers={
+    res = requests.post(path, data=data, verify=False, headers={
         'Content-Type': 'application/x-www-form-urlencoded',
         'Content-Length': str(len(bytes(querystr, 'utf-8'))),
     })
@@ -499,4 +502,4 @@ def _run_once(cmd):
     return stdout, stderr, return_code
 
 def get_block_info_with_addr_nonce(addr: str, nonce: int):
-    return _post_data("http://{}:{}/get_block_with_gid".format(http_ip, http_port), {'addr': addr, "nonce": nonce})
+    return _post_data("https://{}:{}/get_block_with_gid".format(http_ip, http_port), {'addr': addr, "nonce": nonce})
